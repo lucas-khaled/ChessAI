@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -15,12 +16,7 @@ public class Board : MonoBehaviour
     private List<List<Tile>> tilesListTransposed = new List<List<Tile>>();
     private List<List<Tile>> tilesDiagonals = new List<List<Tile>>();
 
-    private void Start()
-    {
-        StartBoard();
-    }
-
-    private void StartBoard()
+    public void StartBoard()
     {
         List<Tile> firstDiagonal = new();
         List<Tile> secondDiagonal = new();
@@ -35,6 +31,7 @@ public class Board : MonoBehaviour
                 float z = transform.position.z + tilesOffset.y * row;
 
                 Tile tile = Instantiate(tileprefab, new Vector3(x, y, z), Quaternion.identity);
+                tile.TilePosition = new TileCoordinates(row, column);
                 tile.transform.SetParent(transform);
                 tiles[row, column] = tile;
 
@@ -82,6 +79,94 @@ public class Board : MonoBehaviour
         return tilesDiagonals;
     }
 
+    /// <summary>
+    /// Returns Lists of tiles of the diagonals from the origin depending on piece color
+    /// </summary>
+    /// <param name="origin">The tile that will be compared</param>
+    /// <returns>Returns 4 lists:
+    /// 0 - Upper Left Diagonal
+    /// 1 - Upper Right Diagonal
+    /// 2 - Lower Left Diagonal
+    /// 3 - Lower Right Diagonal</returns>
+    public List<List<Tile>> GetDiagonalTilesFrom(TileCoordinates origin, PieceColor color) 
+    {
+        List<List<Tile>> diagonals = new();
+
+        var topLeft = (color == PieceColor.White) ? GetTopLeftDiagonals(origin) : GetDownRightDiagonals(origin);
+        var topRight = (color == PieceColor.White) ? GetTopRightDiagonals(origin) : GetDownLeftDiagonals(origin);
+        var downLeft = (color == PieceColor.White) ? GetDownLeftDiagonals(origin) : GetTopRightDiagonals(origin);
+        var downRight = (color == PieceColor.White) ? GetDownRightDiagonals(origin) : GetTopLeftDiagonals(origin);
+
+        diagonals.Add(topLeft);
+        diagonals.Add(topRight);
+        diagonals.Add(downLeft);
+        diagonals.Add(downRight);
+
+        return diagonals;
+    }
+
+    private List<Tile> GetDownRightDiagonals(TileCoordinates origin)
+    {
+        List<Tile> diagonal = new();
+
+        for (int row = origin.row, column = origin.column;
+            row >= 0 && column < tiles.GetLength(1); row--, column++)
+        {
+            diagonal.Add(tiles[row, column]);
+        }
+
+        return diagonal;
+    }
+
+    private List<Tile> GetDownLeftDiagonals(TileCoordinates origin)
+    {
+        List<Tile> diagonal = new();
+
+        for (int row = origin.row, column = origin.column;
+            row >= 0 && column >= 0; row--, column--)
+        {
+            diagonal.Add(tiles[row, column]);
+        }
+
+        return diagonal;
+    }
+
+    private List<Tile> GetTopRightDiagonals(TileCoordinates origin)
+    {
+        List<Tile> diagonal = new();
+
+        for (int row = origin.row, column = origin.column;
+            row < tiles.GetLength(1) && column < tiles.GetLength(1); row++, column++)
+        {
+            diagonal.Add(tiles[row, column]);
+        }
+
+        return diagonal;
+    }
+
+    private List<Tile> GetTopLeftDiagonals(TileCoordinates origin)
+    {
+        List<Tile> diagonal = new();
+
+        for (int row = origin.row, column = origin.column;
+            row < tiles.GetLength(1) && column >= 0; row++, column--)
+        {
+            diagonal.Add(tiles[row, column]);
+        }
+
+        return diagonal;
+    }
+
+    public List<List<Tile>> GetVerticalTilesFrom(TileCoordinates origin)
+    {
+        return null;
+    }
+
+    public List<List<Tile>> GetHorizontalTilesFrom(TileCoordinates origin)
+    {
+        return null;
+    }
+
     public void Clear()
     {
         foreach (var row in tilesList)
@@ -111,3 +196,5 @@ public class Board : MonoBehaviour
     }
 #endif
 }
+
+

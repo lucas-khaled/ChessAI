@@ -15,6 +15,8 @@ public class Tile : MonoBehaviour
     public bool IsOccupied => OccupiedBy != null;
     public Color ActualColor { get; private set; }
 
+    public TileCoordinates TilePosition { get; set; }
+
     public void Occupy(Piece piece)
     {
         OccupiedBy = piece;
@@ -35,5 +37,17 @@ public class Tile : MonoBehaviour
     {
         tileRenderer.material.color = lightColor;
         ActualColor = lightColor;
+    }
+}
+
+public struct TileCoordinates 
+{
+    public int row;
+    public int column;
+
+    public TileCoordinates(int row, int column) 
+    {
+        this.row = row;
+        this.column = column;
     }
 }
