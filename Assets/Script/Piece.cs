@@ -23,6 +23,7 @@ public abstract class Piece : MonoBehaviour
     {
         actualTile = tile;
         actualTile.Occupy(this);
+        transform.position = tile.transform.position;
     }
 
     public void Capture() 
@@ -34,6 +35,6 @@ public abstract class Piece : MonoBehaviour
 
     public bool IsEnemyPiece(Piece piece) 
     {
-        return pieceColor != piece.pieceColor;
+        return piece != null && pieceColor != piece.pieceColor;
     }
 }

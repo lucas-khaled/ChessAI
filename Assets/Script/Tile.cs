@@ -38,6 +38,11 @@ public class Tile : MonoBehaviour
         tileRenderer.material.color = lightColor;
         ActualColor = lightColor;
     }
+
+    public void Paint(Color color) 
+    {
+        tileRenderer.material.color = color;
+    }
 }
 
 public struct TileCoordinates 

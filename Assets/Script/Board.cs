@@ -10,6 +10,9 @@ public class Board : MonoBehaviour
     [SerializeField]
     private Vector2 tilesOffset = new Vector2(10, 10);
 
+    public int BoardRowSize => tiles.GetLength(0);
+    public int BoardColumnSize => tiles.GetLength(1);
+
     private Tile[,] tiles = new Tile[8, 8];
 
     private List<List<Tile>> tilesList = new List<List<Tile>>();
@@ -88,7 +91,7 @@ public class Board : MonoBehaviour
     /// 1 - Upper Right Diagonal
     /// 2 - Lower Left Diagonal
     /// 3 - Lower Right Diagonal</returns>
-    public List<List<Tile>> GetDiagonalTilesFrom(TileCoordinates origin, PieceColor color) 
+    public List<List<Tile>> GetDiagonalsFrom(TileCoordinates origin, PieceColor color) 
     {
         List<List<Tile>> diagonals = new();
 
@@ -109,8 +112,8 @@ public class Board : MonoBehaviour
     {
         List<Tile> diagonal = new();
 
-        for (int row = origin.row, column = origin.column;
-            row >= 0 && column < tiles.GetLength(1); row--, column++)
+        for (int row = origin.row-1, column = origin.column+1;
+            row >= 0 && column < BoardColumnSize; row--, column++)
         {
             diagonal.Add(tiles[row, column]);
         }
@@ -122,7 +125,7 @@ public class Board : MonoBehaviour
     {
         List<Tile> diagonal = new();
 
-        for (int row = origin.row, column = origin.column;
+        for (int row = origin.row-1, column = origin.column-1;
             row >= 0 && column >= 0; row--, column--)
         {
             diagonal.Add(tiles[row, column]);
@@ -135,8 +138,8 @@ public class Board : MonoBehaviour
     {
         List<Tile> diagonal = new();
 
-        for (int row = origin.row, column = origin.column;
-            row < tiles.GetLength(1) && column < tiles.GetLength(1); row++, column++)
+        for (int row = origin.row + 1, column = origin.column + 1;
+            row < BoardRowSize && column < BoardColumnSize; row++, column++)
         {
             diagonal.Add(tiles[row, column]);
         }
@@ -148,8 +151,8 @@ public class Board : MonoBehaviour
     {
         List<Tile> diagonal = new();
 
-        for (int row = origin.row, column = origin.column;
-            row < tiles.GetLength(1) && column >= 0; row++, column--)
+        for (int row = origin.row + 1, column = origin.column - 1;
+            row < BoardRowSize && column >= 0; row++, column--)
         {
             diagonal.Add(tiles[row, column]);
         }
