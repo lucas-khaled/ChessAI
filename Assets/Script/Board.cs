@@ -91,19 +91,14 @@ public class Board : MonoBehaviour
     /// 1 - Upper Right Diagonal
     /// 2 - Lower Left Diagonal
     /// 3 - Lower Right Diagonal</returns>
-    public List<List<Tile>> GetDiagonalsFrom(TileCoordinates origin, PieceColor color) 
+    public Diagonals GetDiagonalsFrom(TileCoordinates origin, PieceColor color) 
     {
-        List<List<Tile>> diagonals = new();
+        Diagonals diagonals = new();
 
-        var topLeft = (color == PieceColor.White) ? GetTopLeftDiagonals(origin) : GetDownRightDiagonals(origin);
-        var topRight = (color == PieceColor.White) ? GetTopRightDiagonals(origin) : GetDownLeftDiagonals(origin);
-        var downLeft = (color == PieceColor.White) ? GetDownLeftDiagonals(origin) : GetTopRightDiagonals(origin);
-        var downRight = (color == PieceColor.White) ? GetDownRightDiagonals(origin) : GetTopLeftDiagonals(origin);
-
-        diagonals.Add(topLeft);
-        diagonals.Add(topRight);
-        diagonals.Add(downLeft);
-        diagonals.Add(downRight);
+        diagonals.topLeftDiagonals = (color == PieceColor.White) ? GetTopLeftDiagonals(origin) : GetDownRightDiagonals(origin);
+        diagonals.topRightDiagonals = (color == PieceColor.White) ? GetTopRightDiagonals(origin) : GetDownLeftDiagonals(origin);
+        diagonals.downLeftDiagonals = (color == PieceColor.White) ? GetDownLeftDiagonals(origin) : GetTopRightDiagonals(origin);
+        diagonals.downRightDiagonals = (color == PieceColor.White) ? GetDownRightDiagonals(origin) : GetTopLeftDiagonals(origin);
 
         return diagonals;
     }
@@ -200,4 +195,23 @@ public class Board : MonoBehaviour
 #endif
 }
 
+public struct Diagonals 
+{
+    public List<Tile> topLeftDiagonals;
+    public List<Tile> topRightDiagonals;
+    public List<Tile> downLeftDiagonals;
+    public List<Tile> downRightDiagonals;
+}
+
+public struct Vericals
+{
+    public List<Tile> frontVerticals;
+    public List<Tile> backVerticals;
+}
+
+public struct Horizontals
+{
+    public List<Tile> leftHorizontals;
+    public List<Tile> rightHorizontals;
+}
 

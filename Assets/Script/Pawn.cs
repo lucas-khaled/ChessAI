@@ -14,12 +14,6 @@ public class Pawn : Piece
         return possibleMoves.ToArray();
     }
 
-    private bool IsOnInitialRow() 
-    {
-        return (Row == 1 && IsWhite)
-            || (Row == 6 && !IsWhite);
-    }
-
     private Move[] GetMoves() 
     {
         List<Move> moves = new List<Move>();
@@ -42,13 +36,19 @@ public class Pawn : Piece
         return moves.ToArray();
     }
 
+    private bool IsOnInitialRow()
+    {
+        return (Row == 1 && IsWhite)
+            || (Row == 6 && !IsWhite);
+    }
+
     private Move[] GetCaptures() 
     {
         List<Move> moves = new();
 
         var diagonals = GameManager.Board.GetDiagonalsFrom(actualTile.TilePosition, pieceColor);
-        var leftDiagonal = (diagonals[0].Count > 0) ? diagonals[0][0] : null;
-        var rightDiagonal = (diagonals[1].Count > 0) ? diagonals[1][0] : null;
+        var leftDiagonal = (diagonals.topLeftDiagonals.Count > 0) ? diagonals.topLeftDiagonals[0] : null;
+        var rightDiagonal = (diagonals.topRightDiagonals.Count > 0) ? diagonals.topLeftDiagonals[0] : null;
 
         if (leftDiagonal != null && IsEnemyPiece(leftDiagonal.OccupiedBy))
             moves.Add(new Move(actualTile, leftDiagonal, rightDiagonal.OccupiedBy));
