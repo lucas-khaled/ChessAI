@@ -71,18 +71,4 @@ public abstract class BlockableMovesPiece : Piece
 
         return finalTiles;
     }
-
-    protected Move[] CreateMovesFromSegment(List<Tile> segments)
-    {
-        Move[] moves = new Move[segments.Count];
-
-        for (int i = 0; i < segments.Count; i++)
-        {
-            var capture = (IsEnemyPiece(segments[i].OccupiedBy)) ? segments[i].OccupiedBy : null;
-
-            moves[i] = new Move(actualTile, segments[i], capture);
-        }
-
-        return moves;
-    }
 }
