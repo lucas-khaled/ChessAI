@@ -48,7 +48,7 @@ public class Pawn : Piece
 
         var diagonals = GameManager.Board.GetDiagonalsFrom(actualTile.TilePosition, pieceColor);
         var leftDiagonal = (diagonals.topLeftDiagonals.Count > 0) ? diagonals.topLeftDiagonals[0] : null;
-        var rightDiagonal = (diagonals.topRightDiagonals.Count > 0) ? diagonals.topLeftDiagonals[0] : null;
+        var rightDiagonal = (diagonals.topRightDiagonals.Count > 0) ? diagonals.topRightDiagonals[0] : null;
 
         if (leftDiagonal != null && IsEnemyPiece(leftDiagonal.OccupiedBy))
             moves.Add(new Move(actualTile, leftDiagonal, rightDiagonal.OccupiedBy));
