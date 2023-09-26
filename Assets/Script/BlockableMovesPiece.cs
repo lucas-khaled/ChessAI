@@ -8,7 +8,7 @@ public abstract class BlockableMovesPiece : Piece
     {
         List<Move> moves = new();
 
-        var verticals = GameManager.Board.GetVerticalTilesFrom(actualTile.TilePosition, pieceColor, range);
+        var verticals = GameManager.Board.GetVerticalsFrom(actualTile.TilePosition, pieceColor, range);
 
         var checkedFrontBlockingSquares = CheckForBlockingSquares(verticals.frontVerticals);
         var checkedBackBlockingSquares = CheckForBlockingSquares(verticals.backVerticals);
@@ -23,7 +23,7 @@ public abstract class BlockableMovesPiece : Piece
     {
         List<Move> moves = new();
 
-        var horizontals = GameManager.Board.GetHorizontalTilesFrom(actualTile.TilePosition, pieceColor, range);
+        var horizontals = GameManager.Board.GetHorizontalsFrom(actualTile.TilePosition, pieceColor, range);
 
         var checkedLeftBlockingSquares = CheckForBlockingSquares(horizontals.leftHorizontals);
         var checkedRightBlockingSquares = CheckForBlockingSquares(horizontals.rightHorizontals);

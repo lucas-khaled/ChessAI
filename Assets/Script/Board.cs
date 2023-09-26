@@ -171,7 +171,7 @@ public class Board : MonoBehaviour
         return diagonal;
     }
 
-    public Verticals GetVerticalTilesFrom(TileCoordinates origin, PieceColor pieceColor, int range = 8)
+    public Verticals GetVerticalsFrom(TileCoordinates origin, PieceColor pieceColor, int range = 8)
     {
         Verticals verticals = new();
 
@@ -211,7 +211,7 @@ public class Board : MonoBehaviour
         return verticals;
     }
 
-    public Horizontals GetHorizontalTilesFrom(TileCoordinates origin, PieceColor pieceColor, int range = 8)
+    public Horizontals GetHorizontalsFrom(TileCoordinates origin, PieceColor pieceColor, int range = 8)
     {
         Horizontals horizontals = new();
         
