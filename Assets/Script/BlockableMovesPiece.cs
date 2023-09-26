@@ -34,6 +34,25 @@ public abstract class BlockableMovesPiece : Piece
         return moves;
     }
 
+    protected List<Move> GetDiagonalMoves() 
+    {
+        List<Move> moves = new();
+
+        var diagonals = GameManager.Board.GetDiagonalsFrom(actualTile.TilePosition, pieceColor);
+
+        var checkedTopLeftBlockingSquares = CheckForBlockingSquares(diagonals.topLeftDiagonals);
+        var checkedTopRightBlockingSquares = CheckForBlockingSquares(diagonals.topRightDiagonals);
+        var checkedDownLeftBlockingSquares = CheckForBlockingSquares(diagonals.downLeftDiagonals);
+        var checkedDownRightBlockingSquares = CheckForBlockingSquares(diagonals.downRightDiagonals);
+
+        moves.AddRange(CreateMovesFromSegment(checkedTopLeftBlockingSquares));
+        moves.AddRange(CreateMovesFromSegment(checkedTopRightBlockingSquares));
+        moves.AddRange(CreateMovesFromSegment(checkedDownLeftBlockingSquares));
+        moves.AddRange(CreateMovesFromSegment(checkedDownRightBlockingSquares));
+
+        return moves;
+    }
+
     protected List<Tile> CheckForBlockingSquares(List<Tile> segment)
     {
         List<Tile> finalTiles = new();
