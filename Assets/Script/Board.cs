@@ -189,9 +189,38 @@ public class Board : MonoBehaviour
         return verticals;
     }
 
-    public Horizontals GetHorizontalTilesFrom(TileCoordinates origin)
+    public Horizontals GetHorizontalTilesFrom(TileCoordinates origin, PieceColor pieceColor)
     {
-        return null;
+        Horizontals horizontals = new();
+        
+        horizontals.rightHorizontals = (pieceColor == PieceColor.White) ?  GetRightHorizontals(origin) : GetLeftHorizontals(origin);
+        horizontals.leftHorizontals = (pieceColor == PieceColor.White) ? GetLeftHorizontals(origin) : GetRightHorizontals(origin);
+
+        return horizontals;
+    }
+
+    private List<Tile> GetLeftHorizontals(TileCoordinates origin) 
+    {
+        List<Tile> horizontals = new();
+
+        for (int column = origin.column - 1; column >= 0; column--)
+        {
+            horizontals.Add(tiles[origin.row, column]);
+        }
+
+        return horizontals;
+    }
+
+    private List<Tile> GetRightHorizontals(TileCoordinates origin)
+    {
+        List<Tile> horizontals = new();
+
+        for (int column = origin.column - 1; column < BoardColumnSize; column++)
+        {
+            horizontals.Add(tiles[origin.row, column]);
+        }
+
+        return horizontals;
     }
 
     public void Clear()
