@@ -4,11 +4,11 @@ using UnityEngine;
 
 public abstract class BlockableMovesPiece : Piece
 {
-    protected List<Move> GetVerticalMoves()
+    protected List<Move> GetVerticalMoves(int range = 8)
     {
         List<Move> moves = new();
 
-        var verticals = GameManager.Board.GetVerticalTilesFrom(actualTile.TilePosition, pieceColor);
+        var verticals = GameManager.Board.GetVerticalsFrom(actualTile.TilePosition, pieceColor, range);
 
         var checkedFrontBlockingSquares = CheckForBlockingSquares(verticals.frontVerticals);
         var checkedBackBlockingSquares = CheckForBlockingSquares(verticals.backVerticals);
@@ -19,11 +19,11 @@ public abstract class BlockableMovesPiece : Piece
         return moves;
     }
 
-    protected List<Move> GetHorizontalMoves()
+    protected List<Move> GetHorizontalMoves(int range = 8)
     {
         List<Move> moves = new();
 
-        var horizontals = GameManager.Board.GetHorizontalTilesFrom(actualTile.TilePosition, pieceColor);
+        var horizontals = GameManager.Board.GetHorizontalsFrom(actualTile.TilePosition, pieceColor, range);
 
         var checkedLeftBlockingSquares = CheckForBlockingSquares(horizontals.leftHorizontals);
         var checkedRightBlockingSquares = CheckForBlockingSquares(horizontals.rightHorizontals);
@@ -34,11 +34,11 @@ public abstract class BlockableMovesPiece : Piece
         return moves;
     }
 
-    protected List<Move> GetDiagonalMoves() 
+    protected List<Move> GetDiagonalMoves(int range = 8) 
     {
         List<Move> moves = new();
 
-        var diagonals = GameManager.Board.GetDiagonalsFrom(actualTile.TilePosition, pieceColor);
+        var diagonals = GameManager.Board.GetDiagonalsFrom(actualTile.TilePosition, pieceColor, range);
 
         var checkedTopLeftBlockingSquares = CheckForBlockingSquares(diagonals.topLeftDiagonals);
         var checkedTopRightBlockingSquares = CheckForBlockingSquares(diagonals.topRightDiagonals);
@@ -53,14 +53,14 @@ public abstract class BlockableMovesPiece : Piece
         return moves;
     }
 
-    protected List<Tile> CheckForBlockingSquares(List<Tile> segment)
+    protected List<Tile> CheckForBlockingSquares(List<Tile> segment, bool capturesIfEnemy = true)
     {
         List<Tile> finalTiles = new();
         foreach (var tile in segment)
         {
             if (tile.IsOccupied)
             {
-                if (IsEnemyPiece(tile.OccupiedBy))
+                if (IsEnemyPiece(tile.OccupiedBy) && capturesIfEnemy)
                     finalTiles.Add(tile);
 
                 break;
@@ -70,19 +70,5 @@ public abstract class BlockableMovesPiece : Piece
         }
 
         return finalTiles;
-    }
-
-    protected Move[] CreateMovesFromSegment(List<Tile> segments)
-    {
-        Move[] moves = new Move[segments.Count];
-
-        for (int i = 0; i < segments.Count; i++)
-        {
-            var capture = (IsEnemyPiece(segments[i].OccupiedBy)) ? segments[i].OccupiedBy : null;
-
-            moves[i] = new Move(actualTile, segments[i], capture);
-        }
-
-        return moves;
     }
 }

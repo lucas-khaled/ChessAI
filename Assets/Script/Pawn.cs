@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Pawn : Piece
+public class Pawn : BlockableMovesPiece
 {
     public override Move[] GetPossibleMoves()
     {
@@ -16,24 +16,12 @@ public class Pawn : Piece
 
     private Move[] GetMoves() 
     {
-        List<Move> moves = new List<Move>();
+        int range = (IsOnInitialRow()) ? 2 : 1;
 
-        if (Row >= GameManager.Board.BoardRowSize - 1) return moves.ToArray();
-
-        int iteration = (IsWhite) ? 1 : -1;
-        var firstTile = GameManager.Board.GetTiles()[Row + iteration][Column];
-
-        if (!firstTile.IsOccupied)
-            moves.Add(new Move(actualTile, firstTile));
-
-        if (IsOnInitialRow())
-        {
-            var secondTile = GameManager.Board.GetTiles()[Row + iteration * 2][Column];
-            if (!secondTile.IsOccupied)
-                moves.Add(new Move(actualTile, secondTile));
-        }
-
-        return moves.ToArray();
+        var verticals = GameManager.Board.GetVerticalsFrom(actualTile.TilePosition, pieceColor, range);
+        var checkingBlockVerticals = CheckForBlockingSquares(verticals.frontVerticals, false);
+        
+        return CreateMovesFromSegment(checkingBlockVerticals);
     }
 
     private bool IsOnInitialRow()
@@ -46,17 +34,19 @@ public class Pawn : Piece
     {
         List<Move> moves = new();
 
-        var diagonals = GameManager.Board.GetDiagonalsFrom(actualTile.TilePosition, pieceColor);
-        var leftDiagonal = (diagonals.topLeftDiagonals.Count > 0) ? diagonals.topLeftDiagonals[0] : null;
-        var rightDiagonal = (diagonals.topRightDiagonals.Count > 0) ? diagonals.topRightDiagonals[0] : null;
+        var diagonals = GameManager.Board.GetDiagonalsFrom(actualTile.TilePosition, pieceColor, 1);
 
-        if (leftDiagonal != null && IsEnemyPiece(leftDiagonal.OccupiedBy))
-            moves.Add(new Move(actualTile, leftDiagonal, rightDiagonal.OccupiedBy));
-        
-        if(rightDiagonal != null && IsEnemyPiece(rightDiagonal.OccupiedBy))
-            moves.Add(new Move(actualTile, rightDiagonal, rightDiagonal.OccupiedBy));
+        if(CanMoveToDiagonal(diagonals.topLeftDiagonals))
+            moves.AddRange(CreateMovesFromSegment(diagonals.topLeftDiagonals));
+
+        if (CanMoveToDiagonal(diagonals.topRightDiagonals))
+            moves.AddRange(CreateMovesFromSegment(diagonals.topRightDiagonals));
 
         return moves.ToArray();
+    }
 
+    private bool CanMoveToDiagonal(List<Tile> diagonal) 
+    {
+        return diagonal.Count > 0 && IsEnemyPiece(diagonal[0].OccupiedBy);
     }
 }

@@ -31,13 +31,13 @@ public class GameManager : MonoBehaviour
         if (board != null)
             board.StartBoard();
 
-        piece = new GameObject("Queen", typeof(Queen)).GetComponent<Piece>();
+        piece = new GameObject("King", typeof(King)).GetComponent<Piece>();
 
         var primitive = GameObject.CreatePrimitive(PrimitiveType.Cube);
         primitive.transform.SetParent(piece.transform, false);
 
         var pawn2 = new GameObject("EnemyPawn", typeof(Pawn)).GetComponent<Piece>();
-        pawn2.MoveTo(Board.GetTiles()[3][4]);
+        pawn2.MoveTo(Board.GetTiles()[2][2]);
         pawn2.pieceColor = PieceColor.Black;
 
         var primitive2 = GameObject.CreatePrimitive(PrimitiveType.Sphere);
