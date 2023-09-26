@@ -160,7 +160,7 @@ public class Board : MonoBehaviour
         Verticals verticals = new();
 
         verticals.frontVerticals = (pieceColor == PieceColor.White) ? GetFrontVerticals(origin) : GetBackVerticals(origin);
-        verticals.backVerticals = (pieceColor == PieceColor.Black) ? GetBackVerticals(origin) : GetFrontVerticals(origin);
+        verticals.backVerticals = (pieceColor == PieceColor.White) ? GetBackVerticals(origin) : GetFrontVerticals(origin);
 
         return verticals;
     }
@@ -215,7 +215,7 @@ public class Board : MonoBehaviour
     {
         List<Tile> horizontals = new();
 
-        for (int column = origin.column - 1; column < BoardColumnSize; column++)
+        for (int column = origin.column + 1; column < BoardColumnSize; column++)
         {
             horizontals.Add(tiles[origin.row, column]);
         }
