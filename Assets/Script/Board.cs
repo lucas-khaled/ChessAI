@@ -155,12 +155,41 @@ public class Board : MonoBehaviour
         return diagonal;
     }
 
-    public List<List<Tile>> GetVerticalTilesFrom(TileCoordinates origin)
+    public Verticals GetVerticalTilesFrom(TileCoordinates origin, PieceColor pieceColor)
     {
-        return null;
+        Verticals verticals = new();
+
+        verticals.frontVerticals = (pieceColor == PieceColor.White) ? GetFrontVerticals(origin) : GetBackVerticals(origin);
+        verticals.backVerticals = (pieceColor == PieceColor.Black) ? GetBackVerticals(origin) : GetFrontVerticals(origin);
+
+        return verticals;
     }
 
-    public List<List<Tile>> GetHorizontalTilesFrom(TileCoordinates origin)
+    private List<Tile> GetFrontVerticals(TileCoordinates origin)
+    {
+        List<Tile> verticals = new();
+
+        for (int row = origin.row + 1; row < BoardRowSize; row++)
+        {
+            verticals.Add(tiles[row, origin.column]);
+        }
+
+        return verticals;
+    }
+
+    private List<Tile> GetBackVerticals(TileCoordinates origin)
+    {
+        List<Tile> verticals = new();
+
+        for (int row = origin.row - 1; row >= 0; row--)
+        {
+            verticals.Add(tiles[row, origin.column]);
+        }
+
+        return verticals;
+    }
+
+    public Horizontals GetHorizontalTilesFrom(TileCoordinates origin)
     {
         return null;
     }
@@ -203,7 +232,7 @@ public struct Diagonals
     public List<Tile> downRightDiagonals;
 }
 
-public struct Vericals
+public struct Verticals
 {
     public List<Tile> frontVerticals;
     public List<Tile> backVerticals;
