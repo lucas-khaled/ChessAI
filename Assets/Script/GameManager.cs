@@ -31,7 +31,7 @@ public class GameManager : MonoBehaviour
         if (board != null)
             board.StartBoard();
 
-        piece = new GameObject("King", typeof(King)).GetComponent<Piece>();
+        piece = new GameObject("Knight", typeof(Knight)).GetComponent<Piece>();
 
         var primitive = GameObject.CreatePrimitive(PrimitiveType.Cube);
         primitive.transform.SetParent(piece.transform, false);
