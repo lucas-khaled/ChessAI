@@ -4,11 +4,11 @@ using UnityEngine;
 
 public abstract class BlockableMovesPiece : Piece
 {
-    protected List<Move> GetVerticalMoves()
+    protected List<Move> GetVerticalMoves(int range = 8)
     {
         List<Move> moves = new();
 
-        var verticals = GameManager.Board.GetVerticalTilesFrom(actualTile.TilePosition, pieceColor);
+        var verticals = GameManager.Board.GetVerticalTilesFrom(actualTile.TilePosition, pieceColor, range);
 
         var checkedFrontBlockingSquares = CheckForBlockingSquares(verticals.frontVerticals);
         var checkedBackBlockingSquares = CheckForBlockingSquares(verticals.backVerticals);
@@ -19,11 +19,11 @@ public abstract class BlockableMovesPiece : Piece
         return moves;
     }
 
-    protected List<Move> GetHorizontalMoves()
+    protected List<Move> GetHorizontalMoves(int range = 8)
     {
         List<Move> moves = new();
 
-        var horizontals = GameManager.Board.GetHorizontalTilesFrom(actualTile.TilePosition, pieceColor);
+        var horizontals = GameManager.Board.GetHorizontalTilesFrom(actualTile.TilePosition, pieceColor, range);
 
         var checkedLeftBlockingSquares = CheckForBlockingSquares(horizontals.leftHorizontals);
         var checkedRightBlockingSquares = CheckForBlockingSquares(horizontals.rightHorizontals);
@@ -34,11 +34,11 @@ public abstract class BlockableMovesPiece : Piece
         return moves;
     }
 
-    protected List<Move> GetDiagonalMoves() 
+    protected List<Move> GetDiagonalMoves(int range = 8) 
     {
         List<Move> moves = new();
 
-        var diagonals = GameManager.Board.GetDiagonalsFrom(actualTile.TilePosition, pieceColor);
+        var diagonals = GameManager.Board.GetDiagonalsFrom(actualTile.TilePosition, pieceColor, range);
 
         var checkedTopLeftBlockingSquares = CheckForBlockingSquares(diagonals.topLeftDiagonals);
         var checkedTopRightBlockingSquares = CheckForBlockingSquares(diagonals.topRightDiagonals);
