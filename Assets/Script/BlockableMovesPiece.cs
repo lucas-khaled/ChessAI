@@ -53,14 +53,14 @@ public abstract class BlockableMovesPiece : Piece
         return moves;
     }
 
-    protected List<Tile> CheckForBlockingSquares(List<Tile> segment)
+    protected List<Tile> CheckForBlockingSquares(List<Tile> segment, bool capturesIfEnemy = true)
     {
         List<Tile> finalTiles = new();
         foreach (var tile in segment)
         {
             if (tile.IsOccupied)
             {
-                if (IsEnemyPiece(tile.OccupiedBy))
+                if (IsEnemyPiece(tile.OccupiedBy) && capturesIfEnemy)
                     finalTiles.Add(tile);
 
                 break;
