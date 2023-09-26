@@ -13,7 +13,7 @@ public class GameManager : MonoBehaviour
 
     private List<Tile> tiles = new List<Tile>();
     private Tile selectedTile;
-    private Piece pawn;
+    private Piece piece;
 
     private void Awake()
     {
@@ -31,11 +31,25 @@ public class GameManager : MonoBehaviour
         if (board != null)
             board.StartBoard();
 
-        pawn = new GameObject("Pawn", typeof(Pawn)).GetComponent<Piece>();
+        piece = new GameObject("Rook", typeof(Rook)).GetComponent<Piece>();
+
+        var primitive = GameObject.CreatePrimitive(PrimitiveType.Cube);
+        primitive.transform.SetParent(piece.transform, false);
 
         var pawn2 = new GameObject("EnemyPawn", typeof(Pawn)).GetComponent<Piece>();
         pawn2.MoveTo(Board.GetTiles()[3][4]);
         pawn2.pieceColor = PieceColor.Black;
+
+        var primitive2 = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+        primitive2.transform.SetParent(pawn2.transform, false);
+        primitive2.GetComponent<Renderer>().material.color = Color.black;
+
+        var pawn3 = new GameObject("MyPawn", typeof(Pawn)).GetComponent<Piece>();
+        pawn3.MoveTo(Board.GetTiles()[3][5]);
+        pawn3.pieceColor = PieceColor.White;
+
+        var primitive3 = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+        primitive3.transform.SetParent(pawn3.transform, false);
     }
 
     private void Update()
@@ -54,9 +68,9 @@ public class GameManager : MonoBehaviour
             selectedTile = tile;
             tiles.Clear();
 
-            pawn.MoveTo(tile);
+            piece.MoveTo(tile);
 
-            var moves = pawn.GetPossibleMoves();
+            var moves = piece.GetPossibleMoves();
             PaintTiles(moves.Select(x => x.to).ToList());
 
             //List<List<Tile>> allTiles = board.GetDiagonalsFrom(tile.TilePosition, PieceColor.White);
