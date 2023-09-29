@@ -17,7 +17,6 @@ public class Board : MonoBehaviour
 
     private List<List<Tile>> tilesList = new List<List<Tile>>();
     private List<List<Tile>> tilesListTransposed = new List<List<Tile>>();
-    private List<List<Tile>> tilesDiagonals = new List<List<Tile>>();
 
     public void StartBoard()
     {
@@ -61,9 +60,6 @@ public class Board : MonoBehaviour
             }
 
             tilesList.Add(tileRow);
-
-            tilesDiagonals.Add(firstDiagonal);
-            tilesDiagonals.Add(secondDiagonal);
         }
     }
 
@@ -75,11 +71,6 @@ public class Board : MonoBehaviour
     public List<List<Tile>> GetTilesTransposed()
     {
         return tilesListTransposed;
-    }
-
-    public List<List<Tile>> GetDiagonals()
-    {
-        return tilesDiagonals;
     }
 
     /// <summary>
