@@ -6,12 +6,11 @@ using UnityEngine;
 public class GameManager : MonoBehaviour
 {
     [SerializeField] private Board board;
+    [SerializeField] private PiecesSetup setup;
 
     private static GameManager instance;
 
     public static Board Board => instance.board;
-
-    private PiecesSetup setup = new();
 
     private void Awake()
     {
