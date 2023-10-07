@@ -21,8 +21,12 @@ public abstract class Piece : MonoBehaviour
     public abstract Move[] GetPossibleMoves();
     public virtual void MoveTo(Tile tile) 
     {
+        if(actualTile != null)
+            actualTile.DeOccupy();
+
         actualTile = tile;
         actualTile.Occupy(this);
+
         transform.position = tile.transform.position;
         transform.SetParent(tile.transform);
     }
