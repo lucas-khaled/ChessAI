@@ -19,4 +19,9 @@ public struct Move
     {
         this.capture = capture;
     }
+
+    public void Do() 
+    {
+        from.OccupiedBy.MoveTo(to);
+    }
 }

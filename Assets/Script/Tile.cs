@@ -1,9 +1,14 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
-public class Tile : MonoBehaviour
+[RequireComponent(typeof(Collider))]
+public class Tile : MonoBehaviour, IPointerDownHandler
 {
+    public static Action<Tile> onTileSelected;
+
     [SerializeField]
     private Color darkColor;
     [SerializeField]
@@ -42,6 +47,11 @@ public class Tile : MonoBehaviour
     public void Paint(Color color) 
     {
         tileRenderer.material.color = color;
+    }
+
+    public void OnPointerDown(PointerEventData eventData)
+    {
+        onTileSelected?.Invoke(this);
     }
 }
 

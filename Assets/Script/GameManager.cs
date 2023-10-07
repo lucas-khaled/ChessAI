@@ -8,7 +8,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private Board board;
     [SerializeField] private PiecesSetup setup;
 
-    private static GameManager instance;
+    public static GameManager instance;
 
     public static Board Board => instance.board;
 
