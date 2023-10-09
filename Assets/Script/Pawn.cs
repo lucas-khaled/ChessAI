@@ -8,13 +8,13 @@ public class Pawn : BlockableMovesPiece
     {
         List<Move> possibleMoves = new List<Move>();
 
-        possibleMoves.AddRange(GetMoves());
+        possibleMoves.AddRange(GetFowardMoves());
         possibleMoves.AddRange(GetCaptures());
         
         return possibleMoves.ToArray();
     }
 
-    private Move[] GetMoves() 
+    private Move[] GetFowardMoves() 
     {
         int range = (IsOnInitialRow()) ? 2 : 1;
 
