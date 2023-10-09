@@ -14,8 +14,9 @@ public abstract class Piece : MonoBehaviour
 
     protected Tile actualTile;
     protected bool isCaptured;
-    protected int Row => actualTile.TilePosition.row;
-    protected int Column => actualTile.TilePosition.column;
+    public TileCoordinates Coordinates => actualTile.TilePosition;
+    protected int Row => Coordinates.row;
+    protected int Column => Coordinates.column;
     protected bool IsWhite => pieceColor == PieceColor.White;
 
     public abstract Move[] GetMoves();
@@ -24,11 +25,21 @@ public abstract class Piece : MonoBehaviour
         if(actualTile != null)
             actualTile.DeOccupy();
 
-        actualTile = tile;
+        SetTile(tile);
         actualTile.Occupy(this);
 
         transform.position = tile.transform.position;
         transform.SetParent(tile.transform);
+    }
+
+    public void SetTile(Tile tile) 
+    {
+        actualTile = tile;
+    }
+
+    public Tile GetTile() 
+    {
+        return actualTile;
     }
 
     public void Capture() 

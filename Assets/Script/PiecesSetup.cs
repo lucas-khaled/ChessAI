@@ -7,6 +7,14 @@ public class PiecesSetup : MonoBehaviour
 {
     [SerializeField]
     private PiecesConfig config;
+
+    private static List<Piece> pieces = new();
+
+    public static King GetKing(PieceColor color) 
+    {
+        return pieces.Find(p => p.pieceColor == color && p is King) as King;
+    }
+
     public void SetInitialPieces() 
     {
         SetKings();
@@ -69,5 +77,7 @@ public class PiecesSetup : MonoBehaviour
         piece.MoveTo(tile);
         piece.pieceColor = color;
         piece.GetComponent<Renderer>().material = (color == PieceColor.White) ? config.lightMaterial : config.darkMaterial;
+
+        pieces.Add(piece);
     }
 }
