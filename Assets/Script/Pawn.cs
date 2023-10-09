@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Pawn : BlockableMovesPiece
 {
-    public override Move[] GetPossibleMoves()
+    public override Move[] GetMoves()
     {
         List<Move> possibleMoves = new List<Move>();
 

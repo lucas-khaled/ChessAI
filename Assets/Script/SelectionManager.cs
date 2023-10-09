@@ -54,7 +54,8 @@ public static class SelectionManager
 
     private static void GetMoves() 
     {
-        actualPossibleMoves = selectedTile.OccupiedBy.GetPossibleMoves();
+        actualPossibleMoves = selectedTile.OccupiedBy.GetMoves();
+
         SetPossibleTilesMaterial(actualPossibleMoves);
     }
 

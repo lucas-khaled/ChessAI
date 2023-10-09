@@ -18,7 +18,7 @@ public abstract class Piece : MonoBehaviour
     protected int Column => actualTile.TilePosition.column;
     protected bool IsWhite => pieceColor == PieceColor.White;
 
-    public abstract Move[] GetPossibleMoves();
+    public abstract Move[] GetMoves();
     public virtual void MoveTo(Tile tile) 
     {
         if(actualTile != null)

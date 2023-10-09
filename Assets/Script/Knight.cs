@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Knight : Piece
 {
-    public override Move[] GetPossibleMoves()
+    public override Move[] GetMoves()
     {
         List<Move> moves = new List<Move>();
 

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Queen : BlockableMovesPiece
 {
-    public override Move[] GetPossibleMoves()
+    public override Move[] GetMoves()
     {
         List<Move> moves = new();
 
