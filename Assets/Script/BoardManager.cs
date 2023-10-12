@@ -10,22 +10,19 @@ public class BoardManager : MonoBehaviour
     [SerializeField]
     private Vector2 tilesOffset = new Vector2(10, 10);
 
-    public int BoardRowSize => tiles.GetLength(0);
-    public int BoardColumnSize => tiles.GetLength(1);
-
-    private Tile[,] tiles = new Tile[8, 8];
-
-    private List<List<Tile>> tilesList = new List<List<Tile>>();
-
-    public void StartBoard()
+    public Board StartNewBoard() 
     {
-        List<Tile> firstDiagonal = new();
-        List<Tile> secondDiagonal = new();
+        Board board = new Board(8,8);
+        StartBoard(board);
+        return board;
+    }
 
-        for (int row = 0; row < tiles.GetLength(0); row++)
+    public void StartBoard(Board board)
+    {
+        for (int row = 0; row < board.tiles.GetLength(0); row++)
         {
             List<Tile> tileRow = new();
-            for (int column = 0; column < tiles.GetLength(1); column++)
+            for (int column = 0; column < board.tiles.GetLength(1); column++)
             {
                 float x = transform.position.x + tilesOffset.x * column;
                 float y = transform.position.y;
@@ -34,7 +31,7 @@ public class BoardManager : MonoBehaviour
                 Tile tile = Instantiate(tileprefab, new Vector3(x, y, z), Quaternion.identity);
                 tile.TilePosition = new TileCoordinates(row, column);
                 tile.transform.SetParent(transform);
-                tiles[row, column] = tile;
+                board.tiles[row, column] = tile;
 
                 bool isLightSquare = (row + column) % 2 == 0;
                 if (isLightSquare)
@@ -45,21 +42,15 @@ public class BoardManager : MonoBehaviour
                 tile.name = $"Tile({row},{column})";
 
                 tileRow.Add(tile);
-
-                if (row == column)
-                    firstDiagonal.Add(tile);
-
-                if (column + row == tiles.GetLength(0) - 1)
-                    secondDiagonal.Add(tile);
             }
 
-            tilesList.Add(tileRow);
+            board.tilesList.Add(tileRow);
         }
     }
 
-    public List<List<Tile>> GetTiles()
+    public List<List<Tile>> GetTiles(Board board)
     {
-        return tilesList;
+        return board.tilesList;
     }
 
     /// <summary>
@@ -71,169 +62,169 @@ public class BoardManager : MonoBehaviour
     /// 1 - Upper Right Diagonal
     /// 2 - Lower Left Diagonal
     /// 3 - Lower Right Diagonal</returns>
-    public Diagonals GetDiagonalsFrom(TileCoordinates origin, PieceColor color, int range = 8) 
+    public Diagonals GetDiagonalsFrom(Board board,TileCoordinates origin, PieceColor color, int range = 8)
     {
         Diagonals diagonals = new();
 
-        diagonals.topLeftDiagonals = (color == PieceColor.White) ? GetTopLeftDiagonals(origin, range) : GetDownRightDiagonals(origin, range);
-        diagonals.topRightDiagonals = (color == PieceColor.White) ? GetTopRightDiagonals(origin, range) : GetDownLeftDiagonals(origin, range);
-        diagonals.downLeftDiagonals = (color == PieceColor.White) ? GetDownLeftDiagonals(origin, range) : GetTopRightDiagonals(origin, range);
-        diagonals.downRightDiagonals = (color == PieceColor.White) ? GetDownRightDiagonals(origin, range) : GetTopLeftDiagonals(origin, range);
+        diagonals.topLeftDiagonals = (color == PieceColor.White) ? GetTopLeftDiagonals(board, origin, range) : GetDownRightDiagonals(board, origin, range);
+        diagonals.topRightDiagonals = (color == PieceColor.White) ? GetTopRightDiagonals(board, origin, range) : GetDownLeftDiagonals(board, origin, range);
+        diagonals.downLeftDiagonals = (color == PieceColor.White) ? GetDownLeftDiagonals(board, origin, range) : GetTopRightDiagonals(board, origin, range);
+        diagonals.downRightDiagonals = (color == PieceColor.White) ? GetDownRightDiagonals(board, origin, range) : GetTopLeftDiagonals(board, origin, range);
 
         return diagonals;
     }
 
-    private List<Tile> GetDownRightDiagonals(TileCoordinates origin, int range = 8)
+    private List<Tile> GetDownRightDiagonals(Board board, TileCoordinates origin, int range = 8)
     {
         List<Tile> diagonal = new();
 
-        int clampedRange = Mathf.Clamp(range, 0, Mathf.Max(BoardRowSize, BoardColumnSize));
-        int columnLimit = Mathf.Min(BoardColumnSize, origin.column+ clampedRange + 1);
+        int clampedRange = Mathf.Clamp(range, 0, Mathf.Max(board.BoardRowSize, board.BoardColumnSize));
+        int columnLimit = Mathf.Min(board.BoardColumnSize, origin.column + clampedRange + 1);
         int rowLimit = Mathf.Max(0, origin.row - clampedRange);
 
-        for (int row = origin.row-1, column = origin.column+1;
+        for (int row = origin.row - 1, column = origin.column + 1;
             row >= rowLimit && column < columnLimit; row--, column++)
         {
-            diagonal.Add(tiles[row, column]);
+            diagonal.Add(board.tiles[row, column]);
         }
 
         return diagonal;
     }
 
-    private List<Tile> GetDownLeftDiagonals(TileCoordinates origin, int range = 8)
+    private List<Tile> GetDownLeftDiagonals(Board board, TileCoordinates origin, int range = 8)
     {
         List<Tile> diagonal = new();
 
-        int clampedRange = Mathf.Clamp(range, 0, Mathf.Max(BoardRowSize, BoardColumnSize));
+        int clampedRange = Mathf.Clamp(range, 0, Mathf.Max(board.BoardRowSize, board.BoardColumnSize));
         int columnLimit = Mathf.Max(0, origin.column - clampedRange - 1);
         int rowLimit = Mathf.Max(0, origin.row - clampedRange);
 
-        for (int row = origin.row-1, column = origin.column-1;
+        for (int row = origin.row - 1, column = origin.column - 1;
             row >= rowLimit && column >= columnLimit; row--, column--)
         {
-            diagonal.Add(tiles[row, column]);
+            diagonal.Add(board.tiles[row, column]);
         }
 
         return diagonal;
     }
 
-    private List<Tile> GetTopRightDiagonals(TileCoordinates origin, int range = 8)
+    private List<Tile> GetTopRightDiagonals(Board board, TileCoordinates origin, int range = 8)
     {
         List<Tile> diagonal = new();
 
-        int clampedRange = Mathf.Clamp(range, 0, Mathf.Max(BoardRowSize, BoardColumnSize));
-        int columnLimit = Mathf.Min(BoardColumnSize, origin.column + clampedRange + 1);
-        int rowLimit = Mathf.Min(BoardRowSize, origin.row + 1 + clampedRange);
+        int clampedRange = Mathf.Clamp(range, 0, Mathf.Max(board.BoardRowSize, board.BoardColumnSize));
+        int columnLimit = Mathf.Min(board.BoardColumnSize, origin.column + clampedRange + 1);
+        int rowLimit = Mathf.Min(board.BoardRowSize, origin.row + 1 + clampedRange);
 
         for (int row = origin.row + 1, column = origin.column + 1;
             row < rowLimit && column < columnLimit; row++, column++)
         {
-            diagonal.Add(tiles[row, column]);
+            diagonal.Add(board.tiles[row, column]);
         }
 
         return diagonal;
     }
 
-    private List<Tile> GetTopLeftDiagonals(TileCoordinates origin, int range = 8)
+    private List<Tile> GetTopLeftDiagonals(Board board, TileCoordinates origin, int range = 8)
     {
         List<Tile> diagonal = new();
 
-        int clampedRange = Mathf.Clamp(range, 0, Mathf.Max(BoardRowSize, BoardColumnSize));
+        int clampedRange = Mathf.Clamp(range, 0, Mathf.Max(board.BoardRowSize, board.BoardColumnSize));
         int columnLimit = Mathf.Max(0, origin.column - clampedRange);
-        int rowLimit = Mathf.Min(BoardRowSize, origin.row + 1 + clampedRange);
+        int rowLimit = Mathf.Min(board.BoardRowSize, origin.row + 1 + clampedRange);
 
         for (int row = origin.row + 1, column = origin.column - 1;
             row < rowLimit && column >= columnLimit; row++, column--)
         {
-            diagonal.Add(tiles[row, column]);
+            diagonal.Add(board.tiles[row, column]);
         }
 
         return diagonal;
     }
 
-    public Verticals GetVerticalsFrom(TileCoordinates origin, PieceColor pieceColor, int range = 8)
+    public Verticals GetVerticalsFrom(Board board, TileCoordinates origin, PieceColor pieceColor, int range = 8)
     {
         Verticals verticals = new();
 
-        verticals.frontVerticals = (pieceColor == PieceColor.White) ? GetFrontVerticals(origin, range) : GetBackVerticals(origin, range);
-        verticals.backVerticals = (pieceColor == PieceColor.White) ? GetBackVerticals(origin, range) : GetFrontVerticals(origin, range);
+        verticals.frontVerticals = (pieceColor == PieceColor.White) ? GetFrontVerticals(board, origin, range) : GetBackVerticals(board, origin, range);
+        verticals.backVerticals = (pieceColor == PieceColor.White) ? GetBackVerticals(board, origin, range) : GetFrontVerticals(board, origin, range);
 
         return verticals;
     }
 
-    private List<Tile> GetFrontVerticals(TileCoordinates origin, int range = 8)
+    private List<Tile> GetFrontVerticals(Board board, TileCoordinates origin, int range = 8)
     {
         List<Tile> verticals = new();
 
-        int clampedRange = Mathf.Clamp(range, 0, Mathf.Max(BoardRowSize));
-        int rowLimit = Mathf.Min(BoardRowSize, origin.row + 1 + clampedRange);
+        int clampedRange = Mathf.Clamp(range, 0, Mathf.Max(board.BoardRowSize));
+        int rowLimit = Mathf.Min(board.BoardRowSize, origin.row + 1 + clampedRange);
 
         for (int row = origin.row + 1; row < rowLimit; row++)
         {
-            verticals.Add(tiles[row, origin.column]);
+            verticals.Add(board.tiles[row, origin.column]);
         }
 
         return verticals;
     }
 
-    private List<Tile> GetBackVerticals(TileCoordinates origin, int range = 8)
+    private List<Tile> GetBackVerticals(Board board, TileCoordinates origin, int range = 8)
     {
         List<Tile> verticals = new();
 
-        int clampedRange = Mathf.Clamp(range, 0, Mathf.Max(BoardRowSize));
+        int clampedRange = Mathf.Clamp(range, 0, Mathf.Max(board.BoardRowSize));
         int rowLimit = Mathf.Max(0, origin.row - clampedRange);
 
         for (int row = origin.row - 1; row >= rowLimit; row--)
         {
-            verticals.Add(tiles[row, origin.column]);
+            verticals.Add(board.tiles[row, origin.column]);
         }
 
         return verticals;
     }
 
-    public Horizontals GetHorizontalsFrom(TileCoordinates origin, PieceColor pieceColor, int range = 8)
+    public Horizontals GetHorizontalsFrom(Board board, TileCoordinates origin, PieceColor pieceColor, int range = 8)
     {
         Horizontals horizontals = new();
-        
-        horizontals.rightHorizontals = (pieceColor == PieceColor.White) ?  GetRightHorizontals(origin, range) : GetLeftHorizontals(origin, range);
-        horizontals.leftHorizontals = (pieceColor == PieceColor.White) ? GetLeftHorizontals(origin, range) : GetRightHorizontals(origin, range);
+
+        horizontals.rightHorizontals = (pieceColor == PieceColor.White) ? GetRightHorizontals(board,origin, range) : GetLeftHorizontals(board,origin, range);
+        horizontals.leftHorizontals = (pieceColor == PieceColor.White) ? GetLeftHorizontals(board, origin, range) : GetRightHorizontals(board, origin, range);
 
         return horizontals;
     }
 
-    private List<Tile> GetLeftHorizontals(TileCoordinates origin, int range = 8) 
+    private List<Tile> GetLeftHorizontals(Board board, TileCoordinates origin, int range = 8)
     {
         List<Tile> horizontals = new();
 
-        int clampedRange = Mathf.Clamp(range, 0, Mathf.Max(BoardColumnSize));
+        int clampedRange = Mathf.Clamp(range, 0, Mathf.Max(board.BoardColumnSize));
         int columnLimit = Mathf.Max(0, origin.column - clampedRange);
 
         for (int column = origin.column - 1; column >= columnLimit; column--)
         {
-            horizontals.Add(tiles[origin.row, column]);
+            horizontals.Add(board.tiles[origin.row, column]);
         }
 
         return horizontals;
     }
 
-    private List<Tile> GetRightHorizontals(TileCoordinates origin, int range = 8)
+    private List<Tile> GetRightHorizontals(Board board, TileCoordinates origin, int range = 8)
     {
         List<Tile> horizontals = new();
 
-        int clampedRange = Mathf.Clamp(range, 0, Mathf.Max(BoardColumnSize));
-        int columnLimit = Mathf.Min(BoardColumnSize, origin.column + clampedRange+1);
+        int clampedRange = Mathf.Clamp(range, 0, Mathf.Max(board.BoardColumnSize));
+        int columnLimit = Mathf.Min(board.BoardColumnSize, origin.column + clampedRange + 1);
 
         for (int column = origin.column + 1; column < columnLimit; column++)
         {
-            horizontals.Add(tiles[origin.row, column]);
+            horizontals.Add(board.tiles[origin.row, column]);
         }
 
         return horizontals;
     }
 
-    public void Clear()
+    public void Clear(Board board)
     {
-        foreach (var row in tilesList)
+        foreach (var row in board.tilesList)
         {
             foreach (var tile in row)
             {
@@ -241,24 +232,22 @@ public class BoardManager : MonoBehaviour
             }
         }
     }
+}
 
-#if UNITY_EDITOR
-    public void DebugBoard()
+public struct Board 
+{
+    public int BoardRowSize => tiles.GetLength(0);
+    public int BoardColumnSize => tiles.GetLength(1);
+
+    public Tile[,] tiles;
+
+    public List<List<Tile>> tilesList;
+
+    public Board(int xSize, int ySize) 
     {
-        string board = string.Empty;
-        for (int row = tiles.GetLength(0) - 1; row >= 0; row--)
-        {
-            board += "[";
-            for (int column = 0; column < tiles.GetLength(1); column++)
-            {
-                board += " " + tiles[column, row].OccupiedBy;
-            }
-            board += "]\n";
-        }
-
-        Debug.Log("<color=red>" + board + "</color>");
+        tiles = new Tile[xSize, ySize];
+        tilesList = new List<List<Tile>>();
     }
-#endif
 }
 
 public struct Diagonals 
