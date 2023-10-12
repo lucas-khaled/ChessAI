@@ -62,11 +62,6 @@ public class BoardManager : MonoBehaviour
         return tilesList;
     }
 
-    public List<List<Tile>> GetTilesTransposed()
-    {
-        return tilesListTransposed;
-    }
-
     /// <summary>
     /// Returns Lists of tiles of the diagonals from the origin depending on piece color
     /// </summary>
