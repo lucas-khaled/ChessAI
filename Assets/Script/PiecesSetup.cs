@@ -74,10 +74,12 @@ public class PiecesSetup : MonoBehaviour
     {
         var piece = Instantiate(prefab);
         piece.name = name;
-        piece.MoveTo(tile);
+        
+        piece.SetTile(tile);
         piece.pieceColor = color;
         piece.GetComponent<Renderer>().material = (color == PieceColor.White) ? config.lightMaterial : config.darkMaterial;
-
         pieces.Add(piece);
+        
+        tile.Occupy(piece);
     }
 }

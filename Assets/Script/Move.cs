@@ -6,22 +6,24 @@ public struct Move
 {
     public Tile from;
     public Tile to;
-    public Piece capture;
 
     public Move(Tile from, Tile to)
     {
         this.from = from;
         this.to = to;
-        capture = null;
     }
 
-    public Move(Tile from, Tile to, Piece capture) : this(from, to)
+    public Move VirtualizeTo(Board board) 
     {
-        this.capture = capture;
-    }
+        var fromRow = from.TilePosition.row;
+        var fromColumn = from.TilePosition.column;
 
-    public void Do() 
-    {
-        from.OccupiedBy.MoveTo(to);
+        var toRow = to.TilePosition.row;
+        var toColumn = to.TilePosition.column;
+        return new Move()
+        {
+            from = board.GetTiles()[fromRow][fromColumn],
+            to = board.GetTiles()[toRow][toColumn]
+        };
     }
 }

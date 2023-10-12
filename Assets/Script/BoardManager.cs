@@ -6,7 +6,7 @@ using UnityEngine;
 public class BoardManager : MonoBehaviour
 {
     [SerializeField]
-    private Tile tileprefab;
+    private VisualTile tileprefab;
     [SerializeField]
     private Vector2 tilesOffset = new Vector2(10, 10);
 
@@ -28,19 +28,23 @@ public class BoardManager : MonoBehaviour
                 float y = transform.position.y;
                 float z = transform.position.z + tilesOffset.y * row;
 
-                Tile tile = Instantiate(tileprefab, new Vector3(x, y, z), Quaternion.identity);
-                tile.TilePosition = new TileCoordinates(row, column);
-                tile.transform.SetParent(transform);
-                board.tiles[row, column] = tile;
+                VisualTile visualTile = Instantiate(tileprefab, new Vector3(x, y, z), Quaternion.identity);
+                visualTile.transform.SetParent(transform);
 
                 bool isLightSquare = (row + column) % 2 == 0;
                 if (isLightSquare)
-                    tile.SetLightColor();
+                    visualTile.SetLightColor();
                 else
-                    tile.SetDarkColor();
+                    visualTile.SetDarkColor();
 
-                tile.name = $"Tile({row},{column})";
+                visualTile.name = $"Tile({row},{column})";
 
+
+                Tile tile = new();
+                tile.TilePosition = new TileCoordinates(row, column);
+                tile.SetVisual(visualTile);
+
+                board.tiles[row, column] = tile;
                 tileRow.Add(tile);
             }
 
@@ -248,6 +252,7 @@ public struct Board
     {
         return new Board
         {
+            tiles = this.tiles,
             tilesList = new List<List<Tile>>(this.tilesList)
         };
     }

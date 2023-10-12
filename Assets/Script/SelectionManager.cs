@@ -12,13 +12,13 @@ public static class SelectionManager
     [InitializeOnLoadMethod]
     public static void Init() 
     {
-        Tile.onTileSelected += OnSelectedTile;
+        VisualTile.onTileSelected += OnSelectedTile;
         Application.quitting += Close;
     }
 
     public static void Close() 
     {
-        Tile.onTileSelected -= OnSelectedTile;
+        VisualTile.onTileSelected -= OnSelectedTile;
     }
 
     private static void OnSelectedTile(Tile tile) 
@@ -55,7 +55,7 @@ public static class SelectionManager
     private static void GetMoves() 
     {
         actualPossibleMoves = selectedTile.OccupiedBy.GetMoves(GameManager.Board);
-        TurnManager.GetPossibleMoves(actualPossibleMoves);
+        actualPossibleMoves = TurnManager.GetLegalMoves(actualPossibleMoves);
 
         SetPossibleTilesMaterial(actualPossibleMoves);
     }
@@ -63,7 +63,7 @@ public static class SelectionManager
     private static void SetPossibleTilesMaterial(Move[] moves) 
     {
         foreach (Move move in moves)
-            move.to.Paint(Color.yellow);
+            move.to.visualTile.Paint(Color.yellow);
     }
 
     private static void DeselectTile() 
@@ -75,7 +75,7 @@ public static class SelectionManager
     private static void ResetPossibleTilesMaterial(Move[] moves)
     {
         foreach (Move move in moves)
-            move.to.Paint(move.to.ActualColor);
+            move.to.visualTile.Paint();
     }
 
     private static void DoMove(Move move) 

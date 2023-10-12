@@ -20,33 +20,20 @@ public abstract class Piece : MonoBehaviour
     protected bool IsWhite => pieceColor == PieceColor.White;
 
     public abstract Move[] GetMoves(Board board);
-    public virtual void MoveTo(Tile tile) 
-    {
-        if(actualTile != null)
-            actualTile.DeOccupy();
 
-        SetTile(tile);
-        actualTile.Occupy(this);
-
-        transform.position = tile.transform.position;
-        transform.SetParent(tile.transform);
-    }
-
-    public void SetTile(Tile tile) 
+    public void SetTile(Tile tile, bool isVirtual = false) 
     {
         actualTile = tile;
+
+        if (isVirtual) return;
+
+        transform.position = tile.visualTile.transform.position;
+        transform.SetParent(tile.visualTile.transform);
     }
 
     public Tile GetTile() 
     {
         return actualTile;
-    }
-
-    public void Capture() 
-    {
-        actualTile.DeOccupy();
-        actualTile = null;
-        isCaptured = true;
     }
 
     public bool IsEnemyPiece(Piece piece) 
@@ -59,11 +46,7 @@ public abstract class Piece : MonoBehaviour
         Move[] moves = new Move[segments.Count];
 
         for (int i = 0; i < segments.Count; i++)
-        {
-            var capture = (IsEnemyPiece(segments[i].OccupiedBy)) ? segments[i].OccupiedBy : null;
-
-            moves[i] = new Move(actualTile, segments[i], capture);
-        }
+            moves[i] = new Move(actualTile, segments[i]);
 
         return moves;
     }
