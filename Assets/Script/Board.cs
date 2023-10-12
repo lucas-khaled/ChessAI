@@ -16,7 +16,6 @@ public class Board : MonoBehaviour
     private Tile[,] tiles = new Tile[8, 8];
 
     private List<List<Tile>> tilesList = new List<List<Tile>>();
-    private List<List<Tile>> tilesListTransposed = new List<List<Tile>>();
 
     public void StartBoard()
     {
@@ -52,11 +51,6 @@ public class Board : MonoBehaviour
 
                 if (column + row == tiles.GetLength(0) - 1)
                     secondDiagonal.Add(tile);
-
-                if (tilesListTransposed.Count - 1 < column)
-                    tilesListTransposed.Add(new List<Tile>());
-
-                tilesListTransposed[column].Add(tile);
             }
 
             tilesList.Add(tileRow);
