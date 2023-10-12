@@ -11,14 +11,12 @@ public static class TurnManager
     private static List<Move> moves = new List<Move>();
 
     public static Action<PieceColor> onTurnMade;
-    public static Action<Piece> onPieceCaptured;
+
+    private static MoveMaker moveMaker = new();
 
     public static void SetMove(Move move) 
     {
-        move.Do();
-
-        if(move.capture != null)
-            onPieceCaptured?.Invoke(move.capture);
+        moveMaker.DoMove(move);
 
         onTurnMade?.Invoke(ActualTurn);
 
@@ -26,20 +24,33 @@ public static class TurnManager
         ActualTurn = (ActualTurn == PieceColor.White) ? PieceColor.Black : PieceColor.White;
     }
 
-    public static Move[] GetPossibleMoves(Move[] move) 
+    public static Move[] GetLegalMoves(Move[] moves) 
     {
-        if (IsCheck()) 
-        {
-            Debug.Log("There is a check");
-        }
+       var returningMoves = FilterCheckMoves(moves);
 
-        return move;
+        return returningMoves.ToArray();
     }
 
-    public static bool IsCheck() 
+    private static List<Move> FilterCheckMoves(Move[] moves)
+    {
+        List<Move> validMoves = new List<Move>();
+        foreach (var move in moves) 
+        {
+            Board virtualBoard = GameManager.Board.Copy();
+
+            var virtualMove = move.VirtualizeTo(virtualBoard);
+            moveMaker.DoMove(virtualMove, true);
+
+            if(IsCheck(virtualBoard) is false) 
+                validMoves.Add(move);
+        }
+
+        return validMoves;
+    }
+
+    public static bool IsCheck(Board board) 
     {
         var manager = GameManager.BoardManager;
-        var board = GameManager.Board;
 
         King king = PiecesSetup.GetKing(ActualTurn);
         Verticals vert = manager.GetVerticalsFrom(board, king.Coordinates, king.pieceColor);
@@ -164,10 +175,10 @@ public static class TurnManager
         }
 
         Knight knight = new();
-        knight.SetTile(king.GetTile());
+        knight.SetTile(king.GetTile(), true);
         knight.pieceColor = ActualTurn;
 
-        return knight.GetMoves(board).Any(m => m.capture is Knight);
+        return knight.GetMoves(board).Any(m => m.to.OccupiedBy is Knight);
     }
 
     struct MoveChecking

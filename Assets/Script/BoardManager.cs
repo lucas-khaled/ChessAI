@@ -19,10 +19,10 @@ public class BoardManager : MonoBehaviour
 
     public void StartBoard(Board board)
     {
-        for (int row = 0; row < board.tiles.GetLength(0); row++)
+        for (int row = 0; row < board.BoardRowSize; row++)
         {
             List<Tile> tileRow = new();
-            for (int column = 0; column < board.tiles.GetLength(1); column++)
+            for (int column = 0; column < board.BoardColumnSize; column++)
             {
                 float x = transform.position.x + tilesOffset.x * column;
                 float y = transform.position.y;
@@ -44,11 +44,10 @@ public class BoardManager : MonoBehaviour
                 tile.TilePosition = new TileCoordinates(row, column);
                 tile.SetVisual(visualTile);
 
-                board.tiles[row, column] = tile;
                 tileRow.Add(tile);
             }
 
-            board.tilesList.Add(tileRow);
+            board.tiles.Add(tileRow);
         }
     }
 
@@ -84,7 +83,7 @@ public class BoardManager : MonoBehaviour
         for (int row = origin.row - 1, column = origin.column + 1;
             row >= rowLimit && column < columnLimit; row--, column++)
         {
-            diagonal.Add(board.tiles[row, column]);
+            diagonal.Add(board.GetTiles()[row][column]);
         }
 
         return diagonal;
@@ -101,7 +100,7 @@ public class BoardManager : MonoBehaviour
         for (int row = origin.row - 1, column = origin.column - 1;
             row >= rowLimit && column >= columnLimit; row--, column--)
         {
-            diagonal.Add(board.tiles[row, column]);
+            diagonal.Add(board.GetTiles()[row][column]);
         }
 
         return diagonal;
@@ -118,7 +117,7 @@ public class BoardManager : MonoBehaviour
         for (int row = origin.row + 1, column = origin.column + 1;
             row < rowLimit && column < columnLimit; row++, column++)
         {
-            diagonal.Add(board.tiles[row, column]);
+            diagonal.Add(board.GetTiles()[row][column]);
         }
 
         return diagonal;
@@ -135,7 +134,7 @@ public class BoardManager : MonoBehaviour
         for (int row = origin.row + 1, column = origin.column - 1;
             row < rowLimit && column >= columnLimit; row++, column--)
         {
-            diagonal.Add(board.tiles[row, column]);
+            diagonal.Add(board.GetTiles()[row][column]);
         }
 
         return diagonal;
@@ -160,7 +159,7 @@ public class BoardManager : MonoBehaviour
 
         for (int row = origin.row + 1; row < rowLimit; row++)
         {
-            verticals.Add(board.tiles[row, origin.column]);
+            verticals.Add(board.GetTiles()[row][origin.column]);
         }
 
         return verticals;
@@ -175,7 +174,7 @@ public class BoardManager : MonoBehaviour
 
         for (int row = origin.row - 1; row >= rowLimit; row--)
         {
-            verticals.Add(board.tiles[row, origin.column]);
+            verticals.Add(board.GetTiles()[row][origin.column]);
         }
 
         return verticals;
@@ -200,7 +199,7 @@ public class BoardManager : MonoBehaviour
 
         for (int column = origin.column - 1; column >= columnLimit; column--)
         {
-            horizontals.Add(board.tiles[origin.row, column]);
+            horizontals.Add(board.GetTiles()[origin.row][column]);
         }
 
         return horizontals;
@@ -215,7 +214,7 @@ public class BoardManager : MonoBehaviour
 
         for (int column = origin.column + 1; column < columnLimit; column++)
         {
-            horizontals.Add(board.tiles[origin.row, column]);
+            horizontals.Add(board.GetTiles()[origin.row][column]);
         }
 
         return horizontals;
@@ -223,7 +222,7 @@ public class BoardManager : MonoBehaviour
 
     public void Clear(Board board)
     {
-        foreach (var row in board.tilesList)
+        foreach (var row in board.tiles)
         {
             foreach (var tile in row)
             {
@@ -235,31 +234,45 @@ public class BoardManager : MonoBehaviour
 
 public struct Board 
 {
-    public int BoardRowSize => tiles.GetLength(0);
-    public int BoardColumnSize => tiles.GetLength(1);
+    public int BoardRowSize;
+    public int BoardColumnSize;
 
-    public Tile[,] tiles;
+    public List<List<Tile>> tiles;
 
-    public List<List<Tile>> tilesList;
-
-    public Board(int xSize, int ySize) 
+    public Board(int row, int column) 
     {
-        tiles = new Tile[xSize, ySize];
-        tilesList = new List<List<Tile>>();
+        BoardRowSize = row;
+        BoardColumnSize = column;
+        tiles = new List<List<Tile>>();
     }
 
     public Board Copy() 
     {
+        List<List<Tile>> virtualTiles = new List<List<Tile>>();
+        
+        foreach(var list in tiles) 
+        {
+            List<Tile> virtualList = new();
+
+            foreach(var tile in list) 
+            {
+                virtualList.Add(tile.Copy());
+            }
+
+            virtualTiles.Add(virtualList);
+        }
+
         return new Board
         {
-            tiles = this.tiles,
-            tilesList = new List<List<Tile>>(this.tilesList)
+            tiles = virtualTiles,
+            BoardColumnSize = this.BoardColumnSize,
+            BoardRowSize = this.BoardRowSize
         };
     }
 
     public List<List<Tile>> GetTiles()
     {
-        return tilesList;
+        return tiles;
     }
 }
 

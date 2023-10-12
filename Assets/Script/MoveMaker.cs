@@ -18,9 +18,8 @@ public class MoveMaker
         Piece movingPiece = move.from.OccupiedBy;
         move.from.DeOccupy();
 
-        if (move.to.IsOccupied)
+        if (move.to.IsOccupied && isVirtual is false)
             onPieceCaptured?.Invoke(move.to.OccupiedBy);
-
 
         move.to.Occupy(movingPiece);
 

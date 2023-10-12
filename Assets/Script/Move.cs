@@ -22,8 +22,8 @@ public struct Move
         var toColumn = to.TilePosition.column;
         return new Move()
         {
-            from = board.GetTiles()[fromRow][fromColumn].Copy(),
-            to = board.GetTiles()[toRow][toColumn].Copy()
+            from = board.GetTiles()[fromRow][fromColumn],
+            to = board.GetTiles()[toRow][toColumn]
         };
     }
 }
