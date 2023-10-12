@@ -48,11 +48,6 @@ public class BoardManager : MonoBehaviour
         }
     }
 
-    public List<List<Tile>> GetTiles(Board board)
-    {
-        return board.tilesList;
-    }
-
     /// <summary>
     /// Returns Lists of tiles of the diagonals from the origin depending on piece color
     /// </summary>
@@ -247,6 +242,19 @@ public struct Board
     {
         tiles = new Tile[xSize, ySize];
         tilesList = new List<List<Tile>>();
+    }
+
+    public Board Copy() 
+    {
+        return new Board
+        {
+            tilesList = new List<List<Tile>>(this.tilesList)
+        };
+    }
+
+    public List<List<Tile>> GetTiles()
+    {
+        return tilesList;
     }
 }
 

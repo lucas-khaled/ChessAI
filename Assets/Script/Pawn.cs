@@ -4,21 +4,21 @@ using UnityEngine;
 
 public class Pawn : BlockableMovesPiece
 {
-    public override Move[] GetMoves()
+    public override Move[] GetMoves(Board board)
     {
         List<Move> possibleMoves = new List<Move>();
 
-        possibleMoves.AddRange(GetFowardMoves());
-        possibleMoves.AddRange(GetCaptures());
+        possibleMoves.AddRange(GetFowardMoves(board));
+        possibleMoves.AddRange(GetCaptures(board));
         
         return possibleMoves.ToArray();
     }
 
-    private Move[] GetFowardMoves() 
+    private Move[] GetFowardMoves(Board board) 
     {
         int range = (IsOnInitialRow()) ? 2 : 1;
 
-        var verticals = GameManager.Board.GetVerticalsFrom(actualTile.TilePosition, pieceColor, range);
+        var verticals = GameManager.BoardManager.GetVerticalsFrom(board, actualTile.TilePosition, pieceColor, range);
         var checkingBlockVerticals = CheckForBlockingSquares(verticals.frontVerticals, false);
         
         return CreateMovesFromSegment(checkingBlockVerticals);
@@ -30,11 +30,11 @@ public class Pawn : BlockableMovesPiece
             || (Row == 6 && !IsWhite);
     }
 
-    private Move[] GetCaptures() 
+    private Move[] GetCaptures(Board board) 
     {
         List<Move> moves = new();
 
-        var diagonals = GameManager.Board.GetDiagonalsFrom(actualTile.TilePosition, pieceColor, 1);
+        var diagonals = GameManager.BoardManager.GetDiagonalsFrom(board, actualTile.TilePosition, pieceColor, 1);
 
         if(CanMoveToDiagonal(diagonals.topLeftDiagonals))
             moves.AddRange(CreateMovesFromSegment(diagonals.topLeftDiagonals));

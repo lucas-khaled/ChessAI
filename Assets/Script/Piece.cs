@@ -19,7 +19,7 @@ public abstract class Piece : MonoBehaviour
     protected int Column => Coordinates.column;
     protected bool IsWhite => pieceColor == PieceColor.White;
 
-    public abstract Move[] GetMoves();
+    public abstract Move[] GetMoves(Board board);
     public virtual void MoveTo(Tile tile) 
     {
         if(actualTile != null)

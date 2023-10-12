@@ -12,6 +12,8 @@ public class GameManager : MonoBehaviour
 
     public static Board Board { get; private set; }
 
+    public static BoardManager BoardManager => instance.boardManager;
+
     private void Awake()
     {
         if(instance != null) 

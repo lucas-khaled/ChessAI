@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class Bishop : BlockableMovesPiece
 {
-    public override Move[] GetMoves()
+    public override Move[] GetMoves(Board board)
     {
-        return GetDiagonalMoves().ToArray();
+        return GetDiagonalMoves(board).ToArray();
     }
 }

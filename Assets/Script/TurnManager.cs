@@ -38,10 +38,13 @@ public static class TurnManager
 
     public static bool IsCheck() 
     {
+        var manager = GameManager.BoardManager;
+        var board = GameManager.Board;
+
         King king = PiecesSetup.GetKing(ActualTurn);
-        Verticals vert = GameManager.Board.GetVerticalsFrom(king.Coordinates, king.pieceColor);
-        Horizontals hor = GameManager.Board.GetHorizontalsFrom(king.Coordinates, king.pieceColor);
-        Diagonals diag = GameManager.Board.GetDiagonalsFrom(king.Coordinates, king.pieceColor);
+        Verticals vert = manager.GetVerticalsFrom(board, king.Coordinates, king.pieceColor);
+        Horizontals hor = manager.GetHorizontalsFrom(board, king.Coordinates, king.pieceColor);
+        Diagonals diag = manager.GetDiagonalsFrom(board, king.Coordinates, king.pieceColor);
 
         MoveChecking checkingBools = new();
 
@@ -164,7 +167,7 @@ public static class TurnManager
         knight.SetTile(king.GetTile());
         knight.pieceColor = ActualTurn;
 
-        return knight.GetMoves().Any(m => m.capture is Knight);
+        return knight.GetMoves(board).Any(m => m.capture is Knight);
     }
 
     struct MoveChecking

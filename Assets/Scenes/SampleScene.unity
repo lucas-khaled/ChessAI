@@ -498,7 +498,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc3f7eebdcef1de4bad93004748903e6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  board: {fileID: 1722630692}
+  boardManager: {fileID: 1722630692}
   setup: {fileID: 1722630695}
 --- !u!114 &1722630695
 MonoBehaviour:
