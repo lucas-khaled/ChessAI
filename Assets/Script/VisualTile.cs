@@ -79,6 +79,16 @@ public class Tile
     {
         return visualTile == null;
     }
+
+    public Tile Copy()
+    {
+        return new Tile()
+        {
+            TilePosition = this.TilePosition,
+            OccupiedBy = this.OccupiedBy,
+            visualTile = null
+        };
+    }
 }
 
 public struct TileCoordinates 
