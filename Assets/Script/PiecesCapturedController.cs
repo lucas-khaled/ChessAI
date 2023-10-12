@@ -7,7 +7,7 @@ public class PiecesCapturedController : MonoBehaviour
 {
     private void Awake()
     {
-        TurnManager.onPieceCaptured += PieceCaptured;
+        MoveMaker.onPieceCaptured += PieceCaptured;
     }
 
     private void PieceCaptured(Piece piece)
