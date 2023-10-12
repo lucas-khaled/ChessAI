@@ -41,21 +41,21 @@ public static class TurnManager
             var virtualMove = move.VirtualizeTo(virtualBoard);
             moveMaker.DoMove(virtualMove, true);
 
-            if(IsCheck(virtualBoard) is false) 
+            if(IsCheck(virtualBoard, ActualTurn) is false) 
                 validMoves.Add(move);
         }
 
         return validMoves;
     }
 
-    public static bool IsCheck(Board board) 
+    public static bool IsCheck(Board board, PieceColor colorTurn) 
     {
         var manager = GameManager.BoardManager;
 
-        King king = PiecesSetup.GetKing(ActualTurn);
-        Verticals vert = manager.GetVerticalsFrom(board, king.Coordinates, king.pieceColor);
-        Horizontals hor = manager.GetHorizontalsFrom(board, king.Coordinates, king.pieceColor);
-        Diagonals diag = manager.GetDiagonalsFrom(board, king.Coordinates, king.pieceColor);
+        Tile kingTile = board.GetKingTile(colorTurn);
+        Verticals vert = manager.GetVerticalsFrom(board, kingTile.TilePosition, colorTurn);
+        Horizontals hor = manager.GetHorizontalsFrom(board, kingTile.TilePosition, colorTurn);
+        Diagonals diag = manager.GetDiagonalsFrom(board, kingTile.TilePosition, colorTurn);
 
         MoveChecking checkingBools = new();
 
@@ -64,7 +64,7 @@ public static class TurnManager
             if(checkingBools.vertD is false && vert.backVerticals.Count>i && vert.backVerticals[i].IsOccupied)
             {
                 Piece piece = vert.backVerticals[i].OccupiedBy;
-                if (piece.pieceColor == ActualTurn) 
+                if (piece.pieceColor == colorTurn) 
                     checkingBools.vertD = true;
                 else 
                 {
@@ -78,7 +78,7 @@ public static class TurnManager
             if (checkingBools.vertU is false && vert.frontVerticals.Count > i && vert.frontVerticals[i].IsOccupied)
             {
                 Piece piece = vert.frontVerticals[i].OccupiedBy;
-                if (piece.pieceColor == ActualTurn)
+                if (piece.pieceColor == colorTurn)
                     checkingBools.vertU = true;
                 else
                 {
@@ -92,7 +92,7 @@ public static class TurnManager
             if (checkingBools.horL is false && hor.leftHorizontals.Count > i && hor.leftHorizontals[i].IsOccupied)
             {
                 Piece piece = hor.leftHorizontals[i].OccupiedBy;
-                if (piece.pieceColor == ActualTurn)
+                if (piece.pieceColor == colorTurn)
                     checkingBools.horL = true;
                 else
                 {
@@ -106,7 +106,7 @@ public static class TurnManager
             if (checkingBools.horR is false && hor.rightHorizontals.Count > i && hor.rightHorizontals[i].IsOccupied)
             {
                 Piece piece = hor.rightHorizontals[i].OccupiedBy;
-                if (piece.pieceColor == ActualTurn)
+                if (piece.pieceColor == colorTurn)
                     checkingBools.horR = true;
                 else
                 {
@@ -120,7 +120,7 @@ public static class TurnManager
             if (checkingBools.diagUL is false && diag.topLeftDiagonals.Count > i && diag.topLeftDiagonals[i].IsOccupied)
             {
                 Piece piece = diag.topLeftDiagonals[i].OccupiedBy;
-                if (piece.pieceColor == ActualTurn)
+                if (piece.pieceColor == colorTurn)
                     checkingBools.diagUL = true;
                 else
                 {
@@ -134,7 +134,7 @@ public static class TurnManager
             if (checkingBools.diagUR is false && diag.topRightDiagonals.Count > i && diag.topRightDiagonals[i].IsOccupied)
             {
                 Piece piece = diag.topRightDiagonals[i].OccupiedBy;
-                if (piece.pieceColor == ActualTurn)
+                if (piece.pieceColor == colorTurn)
                     checkingBools.diagUR = true;
                 else
                 {
@@ -148,7 +148,7 @@ public static class TurnManager
             if (checkingBools.diagDL is false && diag.downLeftDiagonals.Count > i && diag.downLeftDiagonals[i].IsOccupied)
             {
                 Piece piece = diag.downLeftDiagonals[i].OccupiedBy;
-                if (piece.pieceColor == ActualTurn)
+                if (piece.pieceColor == colorTurn)
                     checkingBools.diagDL = true;
                 else
                 {
@@ -162,7 +162,7 @@ public static class TurnManager
             if (checkingBools.diagDR is false && diag.downRightDiagonals.Count > i && diag.downRightDiagonals[i].IsOccupied)
             {
                 Piece piece = diag.downRightDiagonals[i].OccupiedBy;
-                if (piece.pieceColor == ActualTurn)
+                if (piece.pieceColor == colorTurn)
                     checkingBools.diagDR = true;
                 else
                 {
@@ -175,8 +175,8 @@ public static class TurnManager
         }
 
         Knight knight = new();
-        knight.SetTile(king.GetTile(), true);
-        knight.pieceColor = ActualTurn;
+        knight.SetTile(kingTile, true);
+        knight.pieceColor = colorTurn;
 
         return knight.GetMoves(board).Any(m => m.to.OccupiedBy is Knight);
     }

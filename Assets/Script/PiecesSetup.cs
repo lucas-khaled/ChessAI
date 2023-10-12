@@ -10,11 +10,6 @@ public class PiecesSetup : MonoBehaviour
 
     private static List<Piece> pieces = new();
 
-    public static King GetKing(PieceColor color) 
-    {
-        return pieces.Find(p => p.pieceColor == color && p is King) as King;
-    }
-
     public void SetInitialPieces() 
     {
         SetKings();
