@@ -5,12 +5,12 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    [SerializeField] private Board board;
+    [SerializeField] private BoardManager board;
     [SerializeField] private PiecesSetup setup;
 
     public static GameManager instance;
 
-    public static Board Board => instance.board;
+    public static BoardManager Board => instance.board;
 
     private void Awake()
     {
