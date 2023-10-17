@@ -1,6 +1,5 @@
-using System.Collections;
+using System;
 using System.Collections.Generic;
-using UnityEngine;
 
 public class Pawn : BlockableMovesPiece
 {
@@ -10,6 +9,10 @@ public class Pawn : BlockableMovesPiece
 
         possibleMoves.AddRange(GetFowardMoves(board));
         possibleMoves.AddRange(GetCaptures(board));
+
+        var enPassant = GetEnPassant();
+        if (enPassant != null)
+            possibleMoves.Add(enPassant);
         
         return possibleMoves.ToArray();
     }
@@ -48,5 +51,30 @@ public class Pawn : BlockableMovesPiece
     private bool CanMoveToDiagonal(List<Tile> diagonal) 
     {
         return diagonal.Count > 0 && IsEnemyPiece(diagonal[0].OccupiedBy);
+    }
+
+    private Move GetEnPassant()
+    {
+        if (IsInEnPassantRow() is false) return null;
+
+        var lastDestiny = MoveMaker.LastMove.to;
+        if (lastDestiny.OccupiedBy is not Pawn enemyPawn) return null;
+
+        bool isSameRow = lastDestiny.TilePosition.row == actualTile.TilePosition.row;
+        if (isSameRow is false) return null;
+
+        int columnDelta = lastDestiny.TilePosition.column - actualTile.TilePosition.column;
+        bool isAdjacentColumn = Math.Abs(columnDelta) == 1;
+        if (isAdjacentColumn is false) return null;
+
+        int rowForward = (pieceColor == PieceColor.White) ? 1 : -1;
+        var destinyTile = GameManager.Board.GetTiles()[actualTile.TilePosition.row + rowForward][lastDestiny.TilePosition.column];
+        return new Move(actualTile, destinyTile, enemyPawn);
+    }
+
+    private bool IsInEnPassantRow() 
+    {
+        return (actualTile.TilePosition.row == 4 && pieceColor == PieceColor.White)
+            || (actualTile.TilePosition.row == 3 && pieceColor == PieceColor.Black);
     }
 }
