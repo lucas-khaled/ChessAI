@@ -115,9 +115,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 3847840817626053429}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f06f332d0703f424398f2e2e0a5c7fac, type: 3}
+  m_Script: {fileID: 11500000, guid: 10f5b3dd5d47c914594e3b6cfc935b14, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  darkColor: {r: 0.3207547, g: 0.15342087, b: 0.040850837, a: 1}
-  lightColor: {r: 0.8113208, g: 0.5642453, b: 0.37121755, a: 1}
+  darkColor: {r: 0.3679245, g: 0.21031845, b: 0.06768423, a: 1}
+  lightColor: {r: 0.745283, g: 0.63139325, b: 0.4745906, a: 1}
   tileRenderer: {fileID: 1652222481098116986}

@@ -4,11 +4,11 @@ using UnityEngine;
 
 public abstract class BlockableMovesPiece : Piece
 {
-    protected List<Move> GetVerticalMoves(int range = 8)
+    protected List<Move> GetVerticalMoves(Board board, int range = 8)
     {
         List<Move> moves = new();
 
-        var verticals = GameManager.Board.GetVerticalsFrom(actualTile.TilePosition, pieceColor, range);
+        var verticals = GameManager.BoardManager.GetVerticalsFrom(board, actualTile.TilePosition, pieceColor, range);
 
         var checkedFrontBlockingSquares = CheckForBlockingSquares(verticals.frontVerticals);
         var checkedBackBlockingSquares = CheckForBlockingSquares(verticals.backVerticals);
@@ -19,11 +19,11 @@ public abstract class BlockableMovesPiece : Piece
         return moves;
     }
 
-    protected List<Move> GetHorizontalMoves(int range = 8)
+    protected List<Move> GetHorizontalMoves(Board board, int range = 8)
     {
         List<Move> moves = new();
 
-        var horizontals = GameManager.Board.GetHorizontalsFrom(actualTile.TilePosition, pieceColor, range);
+        var horizontals = GameManager.BoardManager.GetHorizontalsFrom(board, actualTile.TilePosition, pieceColor, range);
 
         var checkedLeftBlockingSquares = CheckForBlockingSquares(horizontals.leftHorizontals);
         var checkedRightBlockingSquares = CheckForBlockingSquares(horizontals.rightHorizontals);
@@ -34,11 +34,11 @@ public abstract class BlockableMovesPiece : Piece
         return moves;
     }
 
-    protected List<Move> GetDiagonalMoves(int range = 8) 
+    protected List<Move> GetDiagonalMoves(Board board, int range = 8) 
     {
         List<Move> moves = new();
 
-        var diagonals = GameManager.Board.GetDiagonalsFrom(actualTile.TilePosition, pieceColor, range);
+        var diagonals = GameManager.BoardManager.GetDiagonalsFrom(board, actualTile.TilePosition, pieceColor, range);
 
         var checkedTopLeftBlockingSquares = CheckForBlockingSquares(diagonals.topLeftDiagonals);
         var checkedTopRightBlockingSquares = CheckForBlockingSquares(diagonals.topRightDiagonals);

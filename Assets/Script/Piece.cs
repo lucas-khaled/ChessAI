@@ -14,28 +14,26 @@ public abstract class Piece : MonoBehaviour
 
     protected Tile actualTile;
     protected bool isCaptured;
-    protected int Row => actualTile.TilePosition.row;
-    protected int Column => actualTile.TilePosition.column;
+    public TileCoordinates Coordinates => actualTile.TilePosition;
+    protected int Row => Coordinates.row;
+    protected int Column => Coordinates.column;
     protected bool IsWhite => pieceColor == PieceColor.White;
 
-    public abstract Move[] GetPossibleMoves();
-    public virtual void MoveTo(Tile tile) 
+    public abstract Move[] GetMoves(Board board);
+
+    public void SetTile(Tile tile, bool isVirtual = false) 
     {
-        if(actualTile != null)
-            actualTile.DeOccupy();
-
         actualTile = tile;
-        actualTile.Occupy(this);
 
-        transform.position = tile.transform.position;
-        transform.SetParent(tile.transform);
+        if (isVirtual) return;
+
+        transform.position = tile.visualTile.transform.position;
+        transform.SetParent(tile.visualTile.transform);
     }
 
-    public void Capture() 
+    public Tile GetTile() 
     {
-        actualTile.DeOccupy();
-        actualTile = null;
-        isCaptured = true;
+        return actualTile;
     }
 
     public bool IsEnemyPiece(Piece piece) 
@@ -48,11 +46,7 @@ public abstract class Piece : MonoBehaviour
         Move[] moves = new Move[segments.Count];
 
         for (int i = 0; i < segments.Count; i++)
-        {
-            var capture = (IsEnemyPiece(segments[i].OccupiedBy)) ? segments[i].OccupiedBy : null;
-
-            moves[i] = new Move(actualTile, segments[i], capture);
-        }
+            moves[i] = new Move(actualTile, segments[i]);
 
         return moves;
     }
