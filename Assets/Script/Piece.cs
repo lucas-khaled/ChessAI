@@ -46,7 +46,7 @@ public abstract class Piece : MonoBehaviour
         Move[] moves = new Move[segments.Count];
 
         for (int i = 0; i < segments.Count; i++)
-            moves[i] = new Move(actualTile, segments[i]);
+            moves[i] = new Move(actualTile, segments[i], segments[i].OccupiedBy);
 
         return moves;
     }
