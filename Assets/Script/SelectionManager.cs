@@ -32,7 +32,7 @@ public static class SelectionManager
         if (selectedTile == tile) return;
 
         Move move = actualPossibleMoves.ToList().Find(m => m.to == tile);
-        if (move.from is null) 
+        if (move is null) 
         {
             DeselectTile();
             return;
