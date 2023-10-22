@@ -3,12 +3,16 @@ using System.Collections.Generic;
 
 public class Pawn : BlockableMovesPiece
 {
-    public override Move[] GetMoves(Board board)
+    public Pawn(Environment env) : base(env)
+    {
+    }
+
+    public override Move[] GetMoves()
     {
         List<Move> possibleMoves = new List<Move>();
 
-        possibleMoves.AddRange(GetFowardMoves(board));
-        possibleMoves.AddRange(GetCaptures(board));
+        possibleMoves.AddRange(GetFowardMoves());
+        possibleMoves.AddRange(GetCaptures());
 
         var enPassant = GetEnPassant();
         if (enPassant != null)
@@ -17,11 +21,11 @@ public class Pawn : BlockableMovesPiece
         return possibleMoves.ToArray();
     }
 
-    private Move[] GetFowardMoves(Board board) 
+    private Move[] GetFowardMoves() 
     {
         int range = (IsOnInitialRow()) ? 2 : 1;
 
-        var verticals = GameManager.BoardManager.GetVerticalsFrom(board, actualTile.TilePosition, pieceColor, range);
+        var verticals = GameManager.BoardManager.GetVerticalsFrom(actualTile.TilePosition, pieceColor, range);
         var checkingBlockVerticals = CheckForBlockingSquares(verticals.frontVerticals, false);
         
         return CreateMovesFromSegment(checkingBlockVerticals);
@@ -33,11 +37,11 @@ public class Pawn : BlockableMovesPiece
             || (Row == 6 && !IsWhite);
     }
 
-    private Move[] GetCaptures(Board board) 
+    private Move[] GetCaptures() 
     {
         List<Move> moves = new();
 
-        var diagonals = GameManager.BoardManager.GetDiagonalsFrom(board, actualTile.TilePosition, pieceColor, 1);
+        var diagonals = GameManager.BoardManager.GetDiagonalsFrom(actualTile.TilePosition, pieceColor, 1);
 
         if(CanMoveToDiagonal(diagonals.topLeftDiagonals))
             moves.AddRange(CreateMovesFromSegment(diagonals.topLeftDiagonals));
@@ -57,7 +61,7 @@ public class Pawn : BlockableMovesPiece
     {
         if (IsInEnPassantRow() is false) return null;
 
-        var lastDestiny = MoveMaker.LastMove.to;
+        var lastDestiny = Environment.turnManager.LastMove.to;
         if (lastDestiny.OccupiedBy is not Pawn enemyPawn) return null;
 
         int rowForward = (pieceColor == PieceColor.White) ? 1 : -1;

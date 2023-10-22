@@ -447,9 +447,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1722630693}
-  - component: {fileID: 1722630692}
   - component: {fileID: 1722630694}
   - component: {fileID: 1722630695}
+  - component: {fileID: 1722630696}
   m_Layer: 0
   m_Name: Board
   m_TagString: Untagged
@@ -457,20 +457,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1722630692
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1722630691}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d33189d009f4c524ca6d53b544d2fa48, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  tileprefab: {fileID: 4533753900456706172, guid: da3ef5a685826e84bb346d8d9e7863b3, type: 3}
-  tilesOffset: {x: 3, y: 3}
 --- !u!4 &1722630693
 Transform:
   m_ObjectHideFlags: 0
@@ -498,7 +484,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc3f7eebdcef1de4bad93004748903e6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  boardManager: {fileID: 1722630692}
+  boardStarter: {fileID: 1722630696}
   setup: {fileID: 1722630695}
 --- !u!114 &1722630695
 MonoBehaviour:
@@ -513,3 +499,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   config: {fileID: 11400000, guid: 979293963c97a2244b31c44e955c927d, type: 2}
+--- !u!114 &1722630696
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1722630691}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8a4fdba644487474cbb5a7bfd955ad3c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tileprefab: {fileID: 4533753900456706172, guid: da3ef5a685826e84bb346d8d9e7863b3, type: 3}
+  tilesOffset: {x: 3, y: 3}

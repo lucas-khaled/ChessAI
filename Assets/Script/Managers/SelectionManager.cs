@@ -45,7 +45,7 @@ public static class SelectionManager
     {
         if (tile.IsOccupied is false) return;
 
-        if (tile.OccupiedBy.pieceColor != TurnManager.ActualTurn) return;
+        if (tile.OccupiedBy.pieceColor != GameManager.TurnManager.ActualTurn) return;
 
         selectedTile = tile;
 
@@ -54,8 +54,7 @@ public static class SelectionManager
 
     private static void GetMoves() 
     {
-        actualPossibleMoves = selectedTile.OccupiedBy.GetMoves(GameManager.Board);
-        actualPossibleMoves = TurnManager.GetLegalMoves(actualPossibleMoves);
+        actualPossibleMoves = GameManager.MoveMaker.GetMoves(selectedTile.OccupiedBy);
 
         SetPossibleTilesMaterial(actualPossibleMoves);
     }
@@ -80,7 +79,7 @@ public static class SelectionManager
 
     private static void DoMove(Move move) 
     {
-        TurnManager.SetMove(move);
+        GameManager.TurnManager.SetMove(move);
         DeselectTile();
     }
 }

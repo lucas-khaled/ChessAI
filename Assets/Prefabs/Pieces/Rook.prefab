@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 1707589169855954943}
   - component: {fileID: 8144764082981298128}
   - component: {fileID: 5164582714774693785}
-  - component: {fileID: 578167114092996110}
+  - component: {fileID: 7902074353339679675}
   m_Layer: 0
   m_Name: Rook
   m_TagString: Untagged
@@ -32,7 +32,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &8144764082981298128
 MeshFilter:
@@ -84,7 +84,7 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &578167114092996110
+--- !u!114 &7902074353339679675
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -93,7 +93,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 3435905568662116545}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 66de4ca39998dd54c8b003bcbde47429, type: 3}
+  m_Script: {fileID: 11500000, guid: 467b6a24962ac5d4cae313a393049608, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pieceColor: 0

@@ -4,11 +4,15 @@ using UnityEngine;
 
 public class Rook : BlockableMovesPiece
 {
-    public override Move[] GetMoves(Board board)
+    public Rook(Environment env) : base(env)
+    {
+    }
+
+    public override Move[] GetMoves()
     {
         List<Move> moves = new();
-        moves.AddRange(GetVerticalMoves(board));
-        moves.AddRange(GetHorizontalMoves(board));
+        moves.AddRange(GetVerticalMoves());
+        moves.AddRange(GetHorizontalMoves());
 
         return moves.ToArray();
     }

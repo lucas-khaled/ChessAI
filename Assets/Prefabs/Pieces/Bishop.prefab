@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 7812391168572183210}
   - component: {fileID: 3034557459558023039}
   - component: {fileID: 5493019324902744525}
-  - component: {fileID: 71388434764809363}
+  - component: {fileID: 4032288519690130639}
   m_Layer: 0
   m_Name: Bishop
   m_TagString: Untagged
@@ -32,7 +32,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &3034557459558023039
 MeshFilter:
@@ -84,7 +84,7 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &71388434764809363
+--- !u!114 &4032288519690130639
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -93,7 +93,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 8545014393480739960}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8216dbc99f052e541af9539249eab867, type: 3}
+  m_Script: {fileID: 11500000, guid: 467b6a24962ac5d4cae313a393049608, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pieceColor: 0
