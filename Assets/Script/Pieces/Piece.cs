@@ -19,7 +19,7 @@ public abstract class Piece : IEnvironmentable
     protected int Column => Coordinates.column;
     protected bool IsWhite => pieceColor == PieceColor.White;
 
-    public abstract Move[] GetMoves(Board board);
+    public abstract Move[] GetMoves();
 
     public void SetTile(Tile tile) 
     {

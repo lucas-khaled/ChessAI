@@ -26,7 +26,7 @@ public class Environment
         isVirtual = false;
 
         this.board = board;
-        boardManager = new BoardManager();
+        boardManager = new BoardManager(this);
         moveMaker = new MoveMaker();
         turnManager = new TurnManager();
         moveChecker = new MoveChecker();

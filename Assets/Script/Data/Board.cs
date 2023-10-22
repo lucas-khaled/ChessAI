@@ -30,7 +30,7 @@ public class Board : IEnvironmentable
             virtualTiles.Add(virtualList);
         }
 
-        return new Board
+        return new Board(BoardRowSize, BoardColumnSize)
         {
             tiles = virtualTiles,
             BoardColumnSize = this.BoardColumnSize,

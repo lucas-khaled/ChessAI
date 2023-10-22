@@ -36,7 +36,7 @@ public class TurnManager
         List<Move> validMoves = new List<Move>();
         foreach (var move in moves) 
         {
-            Board virtualBoard = GameManager.Board.Copy();
+            Board virtualBoard = GameManager.Board.Copy() as Board;
 
             var virtualMove = move.VirtualizeTo(virtualBoard);
             moveMaker.DoMove(virtualMove, true);
@@ -53,9 +53,9 @@ public class TurnManager
         var manager = GameManager.BoardManager;
 
         Tile kingTile = board.GetKingTile(colorTurn);
-        Verticals vert = manager.GetVerticalsFrom(board, kingTile.TilePosition, colorTurn);
-        Horizontals hor = manager.GetHorizontalsFrom(board, kingTile.TilePosition, colorTurn);
-        Diagonals diag = manager.GetDiagonalsFrom(board, kingTile.TilePosition, colorTurn);
+        Verticals vert = manager.GetVerticalsFrom(kingTile.TilePosition, colorTurn);
+        Horizontals hor = manager.GetHorizontalsFrom(kingTile.TilePosition, colorTurn);
+        Diagonals diag = manager.GetDiagonalsFrom(kingTile.TilePosition, colorTurn);
 
         MoveChecking checkingBools = new();
 
@@ -178,7 +178,7 @@ public class TurnManager
         knight.SetTile(kingTile);
         knight.pieceColor = colorTurn;
 
-        return knight.GetMoves(board).Any(m => m.to.OccupiedBy is Knight);
+        return knight.GetMoves().Any(m => m.to.OccupiedBy is Knight);
     }
 
     struct MoveChecking
