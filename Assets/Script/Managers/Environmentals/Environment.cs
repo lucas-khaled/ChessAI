@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Environment : IEnvironmentable
+public class Environment
 {
     public Board board;
     public BoardManager boardManager;
@@ -12,11 +12,12 @@ public class Environment : IEnvironmentable
 
     public bool isVirtual;
 
-    public IEnvironmentable Copy()
+    public Environment Copy()
     {
         return new Environment()
         {
-            board = board.Copy()
+            board = board.Copy() as Board,
+
         };
     }
 

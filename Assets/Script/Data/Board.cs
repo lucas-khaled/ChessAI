@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-public struct Board
+public class Board : IEnvironmentable
 {
     public int BoardRowSize;
     public int BoardColumnSize;
@@ -14,7 +14,7 @@ public struct Board
         tiles = new List<List<Tile>>();
     }
 
-    public Board Copy()
+    public IEnvironmentable Copy()
     {
         List<List<Tile>> virtualTiles = new List<List<Tile>>();
 
