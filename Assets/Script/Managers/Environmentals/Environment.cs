@@ -14,11 +14,14 @@ public class Environment
 
     public Environment Copy()
     {
-        return new Environment()
+        var env = new Environment()
         {
             board = board.Copy() as Board,
-
         };
+
+        env.boardManager = boardManager.Virtualize(env) as BoardManager;
+
+        return env;
     }
 
     public void StartRealEnvironment(Board board) 
