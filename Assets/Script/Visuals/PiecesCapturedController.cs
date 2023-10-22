@@ -12,6 +12,6 @@ public class PiecesCapturedController : MonoBehaviour
 
     private void PieceCaptured(Piece piece)
     {
-        Destroy(piece.gameObject);
+        Destroy(piece.visualPiece.gameObject);
     }
 }

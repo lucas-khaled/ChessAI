@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 4154289393692178429}
   - component: {fileID: 7230714523514289955}
   - component: {fileID: 7737289935127391326}
-  - component: {fileID: 7138609497238615455}
+  - component: {fileID: 7581396543487051238}
   m_Layer: 0
   m_Name: Pawn
   m_TagString: Untagged
@@ -32,7 +32,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &7230714523514289955
 MeshFilter:
@@ -84,7 +84,7 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &7138609497238615455
+--- !u!114 &7581396543487051238
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -93,7 +93,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 2697304084840080883}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d77adf2f75c40994c883775d4c984112, type: 3}
+  m_Script: {fileID: 11500000, guid: 467b6a24962ac5d4cae313a393049608, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pieceColor: 0

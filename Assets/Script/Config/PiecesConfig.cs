@@ -10,11 +10,11 @@ public class PiecesConfig : ScriptableObject
     public Material darkMaterial;
 
     [Header("Prefabs")]
-    public King kingPrefab;
-    public Knight knightPrefab;
-    public Queen queenPrefab;
-    public Bishop bishopPrefab;
-    public Rook rookPrefab;
-    public Pawn pawnPrefab;
+    public VisualPiece kingPrefab;
+    public VisualPiece knightPrefab;
+    public VisualPiece queenPrefab;
+    public VisualPiece bishopPrefab;
+    public VisualPiece rookPrefab;
+    public VisualPiece pawnPrefab;
 
 }

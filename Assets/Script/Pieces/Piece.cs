@@ -1,6 +1,5 @@
-using System.Collections;
+using System;
 using System.Collections.Generic;
-using UnityEngine;
 
 public enum PieceColor
 {
@@ -8,12 +7,13 @@ public enum PieceColor
     Black
 }
 
-public abstract class Piece : MonoBehaviour
+public abstract class Piece : IEnvironmentable
 {
     public PieceColor pieceColor;
 
+    public VisualPiece visualPiece { get; set; }
+
     protected Tile actualTile;
-    protected bool isCaptured;
     public TileCoordinates Coordinates => actualTile.TilePosition;
     protected int Row => Coordinates.row;
     protected int Column => Coordinates.column;
@@ -21,14 +21,13 @@ public abstract class Piece : MonoBehaviour
 
     public abstract Move[] GetMoves(Board board);
 
-    public void SetTile(Tile tile, bool isVirtual = false) 
+    public void SetTile(Tile tile) 
     {
         actualTile = tile;
 
-        if (isVirtual) return;
+        if (visualPiece == null) return;
 
-        transform.position = tile.visualTile.transform.position;
-        transform.SetParent(tile.visualTile.transform);
+        visualPiece.SetTilePosition(tile);
     }
 
     public Tile GetTile() 
@@ -68,5 +67,17 @@ public abstract class Piece : MonoBehaviour
         }
 
         return finalTiles;
+    }
+
+    public IEnvironmentable Copy() 
+    {
+        var type = this.GetType();
+        Piece piece = Activator.CreateInstance(type) as Piece;
+
+        piece.SetTile(actualTile);
+        piece.pieceColor = pieceColor;
+        piece.visualPiece = null;
+
+        return piece;
     }
 }

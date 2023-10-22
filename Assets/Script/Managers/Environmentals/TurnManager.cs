@@ -175,7 +175,7 @@ public static class TurnManager
         }
 
         Knight knight = new();
-        knight.SetTile(kingTile, true);
+        knight.SetTile(kingTile);
         knight.pieceColor = colorTurn;
 
         return knight.GetMoves(board).Any(m => m.to.OccupiedBy is Knight);

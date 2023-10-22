@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public interface IEnvironmental
+public interface IEnvironmentable
 {
-    public IEnvironmental Copy();
+    public IEnvironmentable Copy();
 }
