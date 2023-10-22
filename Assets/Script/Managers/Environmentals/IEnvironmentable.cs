@@ -4,5 +4,6 @@ using UnityEngine;
 
 public interface IEnvironmentable
 {
-    public IEnvironmentable Copy();
+    public Environment Environment { get; }
+    public IEnvironmentable Copy(Environment env);
 }

@@ -3,9 +3,28 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MoveMaker
+public class MoveMaker : IEnvironmentable
 {
-    public static Action<Piece> onPieceCaptured;
+    public Environment Environment { get; }
+    public MoveMaker(Environment env) 
+    {
+        Environment = env;
+    }
+
+
+    public IEnvironmentable Copy(Environment environment)
+    {
+        return new MoveMaker(environment);
+    }
+
+    public Move[] GetMoves(Piece piece) 
+    {
+        var pieceMoves = piece.GetMoves();
+        
+        return Environment.moveChecker.GetLegalMoves(pieceMoves);
+    }
+
+    /*public static Action<Piece> onPieceCaptured;
 
     public static Move LastMove { get; private set; }
     List<Move> movesDone = new List<Move>();
@@ -32,5 +51,5 @@ public class MoveMaker
             movesDone.Add(move);
             LastMove = move;
         }
-    }
+    }*/
 }

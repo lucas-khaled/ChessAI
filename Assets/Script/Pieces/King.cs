@@ -4,6 +4,10 @@ using UnityEngine;
 
 public class King : BlockableMovesPiece
 {
+    public King(Environment env) : base(env)
+    {
+    }
+
     public override Move[] GetMoves()
     {
         List<Move> moves = new List<Move>();

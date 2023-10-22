@@ -4,6 +4,10 @@ using UnityEngine;
 
 public class Knight : Piece
 {
+    public Knight(Environment env) : base(env)
+    {
+    }
+
     public override Move[] GetMoves()
     {
         List<Move> moves = new List<Move>();

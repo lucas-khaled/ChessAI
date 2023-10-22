@@ -1,6 +1,6 @@
 using System;
 
-public class Tile
+public class Tile : IEnvironmentable
 {
     public VisualTile visualTile { get; private set; }
 
@@ -8,6 +8,13 @@ public class Tile
     public bool IsOccupied => OccupiedBy != null;
 
     public TileCoordinates TilePosition { get; set; }
+
+    public Environment Environment { get; }
+
+    public Tile(Environment env) 
+    {
+        Environment = env;
+    }
 
     public void SetVisual(VisualTile visualTile)
     {
@@ -30,12 +37,12 @@ public class Tile
         return visualTile == null;
     }
 
-    public Tile Copy()
+    public IEnvironmentable Copy(Environment env)
     {
-        return new Tile()
+        return new Tile(env)
         {
             TilePosition = this.TilePosition,
-            OccupiedBy = this.OccupiedBy.Copy() as Piece,
+            OccupiedBy = this.OccupiedBy.Copy(env) as Piece,
             visualTile = null
         };
     }

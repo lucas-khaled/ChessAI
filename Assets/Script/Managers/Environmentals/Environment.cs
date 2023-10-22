@@ -14,13 +14,11 @@ public class Environment
 
     public Environment Copy()
     {
-        var env = new Environment()
-        {
-            board = board.Copy() as Board,
-        };
+        var env = new Environment();
 
-        env.boardManager = boardManager.Virtualize(env) as BoardManager;
-
+        env.board = board.Copy(env) as Board;
+        env.boardManager = boardManager.Copy(env) as BoardManager;
+        env.moveMaker = moveMaker.Copy(env) as MoveMaker;
         return env;
     }
 
@@ -30,7 +28,7 @@ public class Environment
 
         this.board = board;
         boardManager = new BoardManager(this);
-        moveMaker = new MoveMaker();
+        moveMaker = new MoveMaker(this);
         turnManager = new TurnManager();
         moveChecker = new MoveChecker();
     }

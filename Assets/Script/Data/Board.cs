@@ -7,14 +7,17 @@ public class Board : IEnvironmentable
 
     public List<List<Tile>> tiles;
 
-    public Board(int row, int column)
+    public Environment Environment { get; }
+
+    public Board(int row, int column, Environment environment)
     {
         BoardRowSize = row;
         BoardColumnSize = column;
         tiles = new List<List<Tile>>();
+        Environment = environment;
     }
 
-    public IEnvironmentable Copy()
+    public IEnvironmentable Copy(Environment env)
     {
         List<List<Tile>> virtualTiles = new List<List<Tile>>();
 
@@ -24,13 +27,13 @@ public class Board : IEnvironmentable
 
             foreach (var tile in list)
             {
-                virtualList.Add(tile.Copy());
+                virtualList.Add(tile.Copy(env) as Tile);
             }
 
             virtualTiles.Add(virtualList);
         }
 
-        return new Board(BoardRowSize, BoardColumnSize)
+        return new Board(BoardRowSize, BoardColumnSize, env)
         {
             tiles = virtualTiles,
             BoardColumnSize = this.BoardColumnSize,

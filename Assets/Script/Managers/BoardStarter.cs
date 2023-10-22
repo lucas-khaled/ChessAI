@@ -11,7 +11,7 @@ public class BoardStarter : MonoBehaviour
 
     public Board StartNewBoard()
     {
-        Board board = new Board(8, 8);
+        Board board = new Board(8, 8, GameManager.environment);
         StartBoard(board);
         return board;
     }
@@ -39,7 +39,7 @@ public class BoardStarter : MonoBehaviour
                 visualTile.name = $"Tile({row},{column})";
 
 
-                Tile tile = new();
+                Tile tile = new(GameManager.environment);
                 tile.TilePosition = new TileCoordinates(row, column);
                 tile.SetVisual(visualTile);
 

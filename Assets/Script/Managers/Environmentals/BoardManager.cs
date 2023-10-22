@@ -3,13 +3,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BoardManager : IEnviromentableManager
+public class BoardManager : IEnvironmentable
 {
-    private Environment environment;
+    public Environment Environment { get; }
 
     public BoardManager(Environment environment) 
     {
-        this.environment = environment;
+        Environment = environment;
     }
 
     /// <summary>
@@ -37,14 +37,14 @@ public class BoardManager : IEnviromentableManager
     {
         List<Tile> diagonal = new();
 
-        int clampedRange = Mathf.Clamp(range, 0, Mathf.Max(environment.board.BoardRowSize, environment.board.BoardColumnSize));
-        int columnLimit = Mathf.Min(environment.board.BoardColumnSize, origin.column + clampedRange + 1);
+        int clampedRange = Mathf.Clamp(range, 0, Mathf.Max(Environment.board.BoardRowSize, Environment.board.BoardColumnSize));
+        int columnLimit = Mathf.Min(Environment.board.BoardColumnSize, origin.column + clampedRange + 1);
         int rowLimit = Mathf.Max(0, origin.row - clampedRange);
 
         for (int row = origin.row - 1, column = origin.column + 1;
             row >= rowLimit && column < columnLimit; row--, column++)
         {
-            diagonal.Add(environment.board.GetTiles()[row][column]);
+            diagonal.Add(Environment.board.GetTiles()[row][column]);
         }
 
         return diagonal;
@@ -54,14 +54,14 @@ public class BoardManager : IEnviromentableManager
     {
         List<Tile> diagonal = new();
 
-        int clampedRange = Mathf.Clamp(range, 0, Mathf.Max(environment.board.BoardRowSize, environment.board.BoardColumnSize));
+        int clampedRange = Mathf.Clamp(range, 0, Mathf.Max(Environment.board.BoardRowSize, Environment.board.BoardColumnSize));
         int columnLimit = Mathf.Max(0, origin.column - clampedRange - 1);
         int rowLimit = Mathf.Max(0, origin.row - clampedRange);
 
         for (int row = origin.row - 1, column = origin.column - 1;
             row >= rowLimit && column >= columnLimit; row--, column--)
         {
-            diagonal.Add(environment.board.GetTiles()[row][column]);
+            diagonal.Add(Environment.board.GetTiles()[row][column]);
         }
 
         return diagonal;
@@ -71,14 +71,14 @@ public class BoardManager : IEnviromentableManager
     {
         List<Tile> diagonal = new();
 
-        int clampedRange = Mathf.Clamp(range, 0, Mathf.Max(environment.board.BoardRowSize, environment.board.BoardColumnSize));
-        int columnLimit = Mathf.Min(environment.board.BoardColumnSize, origin.column + clampedRange + 1);
-        int rowLimit = Mathf.Min(environment.board.BoardRowSize, origin.row + 1 + clampedRange);
+        int clampedRange = Mathf.Clamp(range, 0, Mathf.Max(Environment.board.BoardRowSize, Environment.board.BoardColumnSize));
+        int columnLimit = Mathf.Min(Environment.board.BoardColumnSize, origin.column + clampedRange + 1);
+        int rowLimit = Mathf.Min(Environment.board.BoardRowSize, origin.row + 1 + clampedRange);
 
         for (int row = origin.row + 1, column = origin.column + 1;
             row < rowLimit && column < columnLimit; row++, column++)
         {
-            diagonal.Add(environment.board.GetTiles()[row][column]);
+            diagonal.Add(Environment.board.GetTiles()[row][column]);
         }
 
         return diagonal;
@@ -88,14 +88,14 @@ public class BoardManager : IEnviromentableManager
     {
         List<Tile> diagonal = new();
 
-        int clampedRange = Mathf.Clamp(range, 0, Mathf.Max(environment.board.BoardRowSize, environment.board.BoardColumnSize));
+        int clampedRange = Mathf.Clamp(range, 0, Mathf.Max(Environment.board.BoardRowSize, Environment.board.BoardColumnSize));
         int columnLimit = Mathf.Max(0, origin.column - clampedRange);
-        int rowLimit = Mathf.Min(environment.board.BoardRowSize, origin.row + 1 + clampedRange);
+        int rowLimit = Mathf.Min(Environment.board.BoardRowSize, origin.row + 1 + clampedRange);
 
         for (int row = origin.row + 1, column = origin.column - 1;
             row < rowLimit && column >= columnLimit; row++, column--)
         {
-            diagonal.Add(environment.board.GetTiles()[row][column]);
+            diagonal.Add(Environment.board.GetTiles()[row][column]);
         }
 
         return diagonal;
@@ -115,12 +115,12 @@ public class BoardManager : IEnviromentableManager
     {
         List<Tile> verticals = new();
 
-        int clampedRange = Mathf.Clamp(range, 0, Mathf.Max(environment.board.BoardRowSize));
-        int rowLimit = Mathf.Min(environment.board.BoardRowSize, origin.row + 1 + clampedRange);
+        int clampedRange = Mathf.Clamp(range, 0, Mathf.Max(Environment.board.BoardRowSize));
+        int rowLimit = Mathf.Min(Environment.board.BoardRowSize, origin.row + 1 + clampedRange);
 
         for (int row = origin.row + 1; row < rowLimit; row++)
         {
-            verticals.Add(environment.board.GetTiles()[row][origin.column]);
+            verticals.Add(Environment.board.GetTiles()[row][origin.column]);
         }
 
         return verticals;
@@ -130,12 +130,12 @@ public class BoardManager : IEnviromentableManager
     {
         List<Tile> verticals = new();
 
-        int clampedRange = Mathf.Clamp(range, 0, Mathf.Max(environment.board.BoardRowSize));
+        int clampedRange = Mathf.Clamp(range, 0, Mathf.Max(Environment.board.BoardRowSize));
         int rowLimit = Mathf.Max(0, origin.row - clampedRange);
 
         for (int row = origin.row - 1; row >= rowLimit; row--)
         {
-            verticals.Add(environment.board.GetTiles()[row][origin.column]);
+            verticals.Add(Environment.board.GetTiles()[row][origin.column]);
         }
 
         return verticals;
@@ -155,12 +155,12 @@ public class BoardManager : IEnviromentableManager
     {
         List<Tile> horizontals = new();
 
-        int clampedRange = Mathf.Clamp(range, 0, Mathf.Max(environment.board.BoardColumnSize));
+        int clampedRange = Mathf.Clamp(range, 0, Mathf.Max(Environment.board.BoardColumnSize));
         int columnLimit = Mathf.Max(0, origin.column - clampedRange);
 
         for (int column = origin.column - 1; column >= columnLimit; column--)
         {
-            horizontals.Add(environment.board.GetTiles()[origin.row][column]);
+            horizontals.Add(Environment.board.GetTiles()[origin.row][column]);
         }
 
         return horizontals;
@@ -170,12 +170,12 @@ public class BoardManager : IEnviromentableManager
     {
         List<Tile> horizontals = new();
 
-        int clampedRange = Mathf.Clamp(range, 0, Mathf.Max(environment.board.BoardColumnSize));
-        int columnLimit = Mathf.Min(environment.board.BoardColumnSize, origin.column + clampedRange + 1);
+        int clampedRange = Mathf.Clamp(range, 0, Mathf.Max(Environment.board.BoardColumnSize));
+        int columnLimit = Mathf.Min(Environment.board.BoardColumnSize, origin.column + clampedRange + 1);
 
         for (int column = origin.column + 1; column < columnLimit; column++)
         {
-            horizontals.Add(environment.board.GetTiles()[origin.row][column]);
+            horizontals.Add(Environment.board.GetTiles()[origin.row][column]);
         }
 
         return horizontals;
@@ -183,7 +183,7 @@ public class BoardManager : IEnviromentableManager
 
     public void Clear()
     {
-        foreach (var row in environment.board.tiles)
+        foreach (var row in Environment.board.tiles)
         {
             foreach (var tile in row)
             {
@@ -192,7 +192,7 @@ public class BoardManager : IEnviromentableManager
         }
     }
 
-    public IEnviromentableManager Virtualize(Environment environment)
+    public IEnvironmentable Copy(Environment environment)
     {
         return new BoardManager(environment);
     }

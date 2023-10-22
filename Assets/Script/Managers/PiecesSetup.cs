@@ -70,7 +70,7 @@ public class PiecesSetup : MonoBehaviour
         var visualPiece = Instantiate(prefab);
         visualPiece.name = name;
 
-        TPiece piece = Activator.CreateInstance(typeof(TPiece)) as TPiece;
+        TPiece piece = Activator.CreateInstance(typeof(TPiece), GameManager.environment) as TPiece;
         
         piece.visualPiece = visualPiece;
         piece.SetTile(tile);

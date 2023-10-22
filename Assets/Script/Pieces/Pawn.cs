@@ -3,6 +3,10 @@ using System.Collections.Generic;
 
 public class Pawn : BlockableMovesPiece
 {
+    public Pawn(Environment env) : base(env)
+    {
+    }
+
     public override Move[] GetMoves()
     {
         List<Move> possibleMoves = new List<Move>();
@@ -57,7 +61,7 @@ public class Pawn : BlockableMovesPiece
     {
         if (IsInEnPassantRow() is false) return null;
 
-        var lastDestiny = MoveMaker.LastMove.to;
+        var lastDestiny = Environment.turnManager.LastMove.to;
         if (lastDestiny.OccupiedBy is not Pawn enemyPawn) return null;
 
         int rowForward = (pieceColor == PieceColor.White) ? 1 : -1;

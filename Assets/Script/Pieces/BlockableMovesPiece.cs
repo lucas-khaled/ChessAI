@@ -4,6 +4,10 @@ using UnityEngine;
 
 public abstract class BlockableMovesPiece : Piece
 {
+    protected BlockableMovesPiece(Environment env) : base(env)
+    {
+    }
+
     protected List<Move> GetVerticalMoves(int range = 8)
     {
         List<Move> moves = new();

@@ -19,7 +19,14 @@ public abstract class Piece : IEnvironmentable
     protected int Column => Coordinates.column;
     protected bool IsWhite => pieceColor == PieceColor.White;
 
+    public Environment Environment { get; }
+
     public abstract Move[] GetMoves();
+
+    public Piece(Environment env) 
+    {
+        Environment = env;
+    }
 
     public void SetTile(Tile tile) 
     {
@@ -69,10 +76,10 @@ public abstract class Piece : IEnvironmentable
         return finalTiles;
     }
 
-    public IEnvironmentable Copy() 
+    public IEnvironmentable Copy(Environment env) 
     {
         var type = this.GetType();
-        Piece piece = Activator.CreateInstance(type) as Piece;
+        Piece piece = Activator.CreateInstance(type, env) as Piece;
 
         piece.SetTile(actualTile);
         piece.pieceColor = pieceColor;
