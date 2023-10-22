@@ -42,7 +42,7 @@ public class Tile : IEnvironmentable
         return new Tile(env)
         {
             TilePosition = this.TilePosition,
-            OccupiedBy = this.OccupiedBy.Copy(env) as Piece,
+            OccupiedBy = (IsOccupied) ? this.OccupiedBy.Copy(env) as Piece : null,
             visualTile = null
         };
     }

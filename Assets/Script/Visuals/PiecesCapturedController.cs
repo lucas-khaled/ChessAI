@@ -5,9 +5,9 @@ using UnityEngine;
 
 public class PiecesCapturedController : MonoBehaviour
 {
-    private void Awake()
+    private void Start()
     {
-        //MoveMaker.onPieceCaptured += PieceCaptured;
+        GameManager.Events.onPieceCaptured += PieceCaptured;
     }
 
     private void PieceCaptured(Piece piece)

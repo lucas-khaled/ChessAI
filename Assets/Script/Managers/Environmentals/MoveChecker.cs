@@ -3,8 +3,20 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class MoveChecker : MonoBehaviour
+public class MoveChecker : IEnvironmentable
 {
+    public Environment Environment { get; }
+
+    public MoveChecker(Environment env) 
+    {
+        Environment = env;
+    }
+
+    public IEnvironmentable Copy(Environment env)
+    {
+        return new MoveChecker(env);
+    }
+
     public Move[] GetLegalMoves(Move[] moves)
     {
         var returningMoves = FilterCheckMoves(moves);
@@ -15,23 +27,23 @@ public class MoveChecker : MonoBehaviour
     private List<Move> FilterCheckMoves(Move[] moves)
     {
         List<Move> validMoves = new List<Move>();
-        /*foreach (var move in moves)
+        PieceColor turn = Environment.turnManager.ActualTurn;
+        foreach (var move in moves)
         {
-            Board virtualBoard = GameManager.Board.Copy() as Board;
+            var env = Environment.Copy();
+            env.turnManager.SetMove(move);
 
-            var virtualMove = move.VirtualizeTo(virtualBoard);
-           
-
-            //if (IsCheck(virtualBoard, ActualTurn) is false)
-               // validMoves.Add(move);
-        }*/
+            if (IsCheck(env, turn) is false)
+                validMoves.Add(move);
+        }
 
         return validMoves;
     }
 
-    public bool IsCheck(Board board, PieceColor colorTurn)
+    public bool IsCheck(Environment env, PieceColor colorTurn)
     {
-        var manager = GameManager.BoardManager;
+        var manager = env.boardManager;
+        var board = env.board;
 
         Tile kingTile = board.GetKingTile(colorTurn);
         Verticals vert = manager.GetVerticalsFrom(kingTile.TilePosition, colorTurn);
@@ -155,12 +167,14 @@ public class MoveChecker : MonoBehaviour
             }
         }
 
-        Knight knight = new(board.Environment);
+        Knight knight = new(env);
         knight.SetTile(kingTile);
         knight.pieceColor = colorTurn;
 
         return knight.GetMoves().Any(m => m.to.OccupiedBy is Knight);
     }
+
+    
 
     struct MoveChecking
     {

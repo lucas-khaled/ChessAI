@@ -16,6 +16,7 @@ public class GameManager : MonoBehaviour
     public static BoardManager BoardManager => environment.boardManager;
     public static MoveMaker MoveMaker => environment.moveMaker;
     public static TurnManager TurnManager => environment.turnManager;
+    public static EnvironmentEvents Events => environment.events;
 
     private void Awake()
     {
@@ -26,9 +27,11 @@ public class GameManager : MonoBehaviour
         }
 
         instance = this;
+
+        InitLogics();
     }
 
-    private void Start()
+    private void InitLogics()
     {
         var board = boardStarter.StartNewBoard();
         environment.StartRealEnvironment(board);
