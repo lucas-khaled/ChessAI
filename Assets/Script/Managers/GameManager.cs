@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -5,14 +6,16 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    [SerializeField] private BoardManager boardManager;
+    [SerializeField] private BoardStarter boardStarter;
     [SerializeField] private PiecesSetup setup;
 
+
+    public static Environment environment = new();
     public static GameManager instance;
 
-    public static Board Board { get; private set; }
+    public static Board Board => environment.board;
 
-    public static BoardManager BoardManager => instance.boardManager;
+    public static BoardManager BoardManager => environment.boardManager;
 
     private void Awake()
     {
@@ -27,9 +30,8 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-        if (boardManager != null)
-            Board = boardManager.StartNewBoard();
-
+        var board = boardStarter.StartNewBoard();
+        environment.StartRealEnvironment(board);
         setup.SetInitialPieces();
     }
 }

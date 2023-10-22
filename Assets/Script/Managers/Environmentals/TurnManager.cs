@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public static class TurnManager
+public class TurnManager
 {
     public static PieceColor ActualTurn { get; private set; } = PieceColor.White;
 
