@@ -22,4 +22,9 @@ public class King : BlockableMovesPiece
 
         return moves.ToArray();
     }
+
+    private List<CastleMove> GetCastleMoves() 
+    {
+
+    }
 }

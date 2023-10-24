@@ -1,18 +1,16 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
 public class Move 
 {
     public Tile from;
     public Tile to;
     public Piece capture;
+    public Piece piece;
 
-    public Move(Tile from, Tile to, Piece capture = null)
+    public Move(Tile from, Tile to, Piece piece, Piece capture = null)
     {
         this.from = from;
         this.to = to;
         this.capture = capture;
+        this.piece = piece;
     }
 
     public Move VirtualizeTo(Board board) 
@@ -22,6 +20,15 @@ public class Move
 
         var toRow = to.TilePosition.row;
         var toColumn = to.TilePosition.column;
-        return new Move(board.GetTiles()[fromRow][fromColumn], board.GetTiles()[toRow][toColumn], capture);
+        return new Move(board.GetTiles()[fromRow][fromColumn], board.GetTiles()[toRow][toColumn], piece, capture);
+    }
+}
+
+public class CastleMove : Move
+{
+    public Move rookMove;
+    public CastleMove(Tile from, Tile to, King king, Move rookMove) : base(from, to, king)
+    {
+        this.rookMove = rookMove;
     }
 }

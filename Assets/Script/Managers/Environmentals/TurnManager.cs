@@ -58,7 +58,25 @@ public class TurnManager : IEnvironmentable
 
     private void ComputeMove(Move move) 
     {
-        Piece movingPiece = move.from.OccupiedBy;
+        if (move is CastleMove castleMove)
+            ComputeCastleMove(castleMove);
+        else
+            ComputeSimpleMove(move);
+
+        moves.Add(move);
+
+        this.Environment.events?.onMoveMade?.Invoke(move);
+    }
+
+    private void ComputeCastleMove(CastleMove move) 
+    {
+        ComputeSimpleMove(move);
+        ComputeSimpleMove(move.rookMove);
+    }
+
+    private void ComputeSimpleMove(Move move) 
+    {
+        Piece movingPiece = move.piece;
         move.from.DeOccupy();
 
         if (move.capture != null)
@@ -67,8 +85,5 @@ public class TurnManager : IEnvironmentable
         move.to.Occupy(movingPiece);
 
         movingPiece.SetTile(move.to);
-        moves.Add(move);
-
-        this.Environment.events?.onMoveMade?.Invoke(move);
     }
 }

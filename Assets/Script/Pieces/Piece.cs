@@ -52,7 +52,7 @@ public abstract class Piece : IEnvironmentable
         Move[] moves = new Move[segments.Count];
 
         for (int i = 0; i < segments.Count; i++)
-            moves[i] = new Move(actualTile, segments[i], segments[i].OccupiedBy);
+            moves[i] = new Move(actualTile, segments[i], this, segments[i].OccupiedBy);
 
         return moves;
     }
