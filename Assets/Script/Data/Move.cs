@@ -13,14 +13,22 @@ public class Move
         this.piece = piece;
     }
 
-    public Move VirtualizeTo(Board board) 
+    public virtual Move VirtualizeTo(Environment env) 
     {
-        var fromRow = from.TilePosition.row;
-        var fromColumn = from.TilePosition.column;
+        return new Move(VirtualizeTile(from, env), VirtualizeTile(to, env), VirtualizePiece(piece, env), VirtualizePiece(capture, env));
+    }
 
-        var toRow = to.TilePosition.row;
-        var toColumn = to.TilePosition.column;
-        return new Move(board.GetTiles()[fromRow][fromColumn], board.GetTiles()[toRow][toColumn], piece, capture);
+    protected Tile VirtualizeTile(Tile tile, Environment env) 
+    {
+        var row = tile.TilePosition.row;
+        var column = tile.TilePosition.column;
+
+        return env.board.GetTiles()[row][column];
+    }
+
+    protected Piece VirtualizePiece(Piece piece, Environment env) 
+    {
+        return (piece == null) ? null : piece.Copy(env) as Piece;
     }
 }
 
@@ -30,5 +38,10 @@ public class CastleMove : Move
     public CastleMove(Tile from, Tile to, King king, Move rookMove) : base(from, to, king)
     {
         this.rookMove = rookMove;
+    }
+
+    public override Move VirtualizeTo(Environment env)
+    {
+        return new CastleMove(VirtualizeTile(from, env), VirtualizeTile(to, env), VirtualizePiece(piece, env) as King, rookMove.VirtualizeTo(env));
     }
 }
