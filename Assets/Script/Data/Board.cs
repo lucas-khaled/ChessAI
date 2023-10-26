@@ -45,16 +45,4 @@ public class Board : IEnvironmentable
     {
         return tiles;
     }
-
-    public Tile GetKingTile(PieceColor color)
-    {
-        foreach (var row in tiles)
-        {
-            var kingTile = row.Find(t => t.OccupiedBy is King king && king.pieceColor == color);
-            if (kingTile != null)
-                return kingTile;
-        }
-
-        return null;
-    }
 }
