@@ -46,7 +46,7 @@ public class TurnManager : IEnvironmentable
     private Move ConvertMoveEnvironment(Move move)
     {
         if (move.from.Environment != this.Environment || move.to.Environment != this.Environment)
-            return move.VirtualizeTo(Environment.board);
+            return move.VirtualizeTo(Environment);
 
         return move;
     }
