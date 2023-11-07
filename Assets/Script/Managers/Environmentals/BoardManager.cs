@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class BoardManager : IEnvironmentable
@@ -33,7 +34,7 @@ public class BoardManager : IEnvironmentable
         return diagonals;
     }
 
-    private List<Tile> GetDownRightDiagonals(TileCoordinates origin, int range = 8)
+    public List<Tile> GetDownRightDiagonals(TileCoordinates origin, int range = 8)
     {
         List<Tile> diagonal = new();
 
@@ -50,7 +51,7 @@ public class BoardManager : IEnvironmentable
         return diagonal;
     }
 
-    private List<Tile> GetDownLeftDiagonals(TileCoordinates origin, int range = 8)
+    public List<Tile> GetDownLeftDiagonals(TileCoordinates origin, int range = 8)
     {
         List<Tile> diagonal = new();
 
@@ -67,7 +68,7 @@ public class BoardManager : IEnvironmentable
         return diagonal;
     }
 
-    private List<Tile> GetTopRightDiagonals(TileCoordinates origin, int range = 8)
+    public List<Tile> GetTopRightDiagonals(TileCoordinates origin, int range = 8)
     {
         List<Tile> diagonal = new();
 
@@ -84,7 +85,7 @@ public class BoardManager : IEnvironmentable
         return diagonal;
     }
 
-    private List<Tile> GetTopLeftDiagonals(TileCoordinates origin, int range = 8)
+    public List<Tile> GetTopLeftDiagonals(TileCoordinates origin, int range = 8)
     {
         List<Tile> diagonal = new();
 
@@ -111,7 +112,7 @@ public class BoardManager : IEnvironmentable
         return verticals;
     }
 
-    private List<Tile> GetFrontVerticals(TileCoordinates origin, int range = 8)
+    public List<Tile> GetFrontVerticals(TileCoordinates origin, int range = 8)
     {
         List<Tile> verticals = new();
 
@@ -126,7 +127,7 @@ public class BoardManager : IEnvironmentable
         return verticals;
     }
 
-    private List<Tile> GetBackVerticals(TileCoordinates origin, int range = 8)
+    public List<Tile> GetBackVerticals(TileCoordinates origin, int range = 8)
     {
         List<Tile> verticals = new();
 
@@ -151,7 +152,7 @@ public class BoardManager : IEnvironmentable
         return horizontals;
     }
 
-    private List<Tile> GetLeftHorizontals(TileCoordinates origin, int range = 8)
+    public List<Tile> GetLeftHorizontals(TileCoordinates origin, int range = 8)
     {
         List<Tile> horizontals = new();
 
@@ -166,7 +167,7 @@ public class BoardManager : IEnvironmentable
         return horizontals;
     }
 
-    private List<Tile> GetRightHorizontals(TileCoordinates origin, int range = 8)
+    public List<Tile> GetRightHorizontals(TileCoordinates origin, int range = 8)
     {
         List<Tile> horizontals = new();
 
@@ -179,6 +180,34 @@ public class BoardManager : IEnvironmentable
         }
 
         return horizontals;
+    }
+
+    public Tile GetKingTile(PieceColor color) 
+    {
+        foreach (var row in Environment.board.GetTiles())
+        {
+            var kingTile = row.Find(t => t.OccupiedBy is King king && king.pieceColor == color);
+            if (kingTile != null)
+                return kingTile;
+        }
+
+        return null;
+    }
+
+    public Tile[] GetRookTiles(PieceColor color) 
+    {
+        List<Tile> tiles = new();
+        foreach (var row in Environment.board.GetTiles())
+        {
+            var rookTile = row.Where(t => t.OccupiedBy is Rook rook && rook.pieceColor == color);
+            if (rookTile != null && rookTile.ToList().Count > 0)
+            {
+                tiles.AddRange(rookTile);
+                if (tiles.Count >= 2) break;
+            }
+        }
+
+        return tiles.ToArray();
     }
 
     public void Clear()

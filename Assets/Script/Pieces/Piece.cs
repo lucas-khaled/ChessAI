@@ -52,19 +52,19 @@ public abstract class Piece : IEnvironmentable
         Move[] moves = new Move[segments.Count];
 
         for (int i = 0; i < segments.Count; i++)
-            moves[i] = new Move(actualTile, segments[i], segments[i].OccupiedBy);
+            moves[i] = new Move(actualTile, segments[i], this, segments[i].OccupiedBy);
 
         return moves;
     }
 
-    protected List<Tile> CheckForBlockingSquares(List<Tile> segment, bool capturesIfEnemy = true)
+    protected List<Tile> CheckForBlockingSquares(List<Tile> segment, bool capturesIfEnemy = true, bool includeBlockingPieceSquare = false)
     {
         List<Tile> finalTiles = new();
         foreach (var tile in segment)
         {
             if (tile.IsOccupied)
             {
-                if (IsEnemyPiece(tile.OccupiedBy) && capturesIfEnemy)
+                if (IsEnemyPiece(tile.OccupiedBy) && capturesIfEnemy || includeBlockingPieceSquare)
                     finalTiles.Add(tile);
 
                 break;

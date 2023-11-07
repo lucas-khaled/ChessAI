@@ -76,7 +76,7 @@ public class Pawn : BlockableMovesPiece
 
         
         var destinyTile = GameManager.Board.GetTiles()[actualTile.TilePosition.row + rowForward][lastDestiny.TilePosition.column];
-        return new Move(actualTile, destinyTile, enemyPawn);
+        return new Move(actualTile, destinyTile, this, enemyPawn);
     }
 
     private bool IsInEnPassantRow() 

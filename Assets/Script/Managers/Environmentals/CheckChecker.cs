@@ -34,9 +34,8 @@ public class CheckChecker
     {
         environment = env;
         var manager = env.boardManager;
-        var board = env.board;
 
-        kingTile = board.GetKingTile(colorTurn);
+        kingTile = manager.GetKingTile(colorTurn);
         verticals = manager.GetVerticalsFrom(kingTile.TilePosition, colorTurn);
         horizontals = manager.GetHorizontalsFrom(kingTile.TilePosition, colorTurn);
         diagonals = manager.GetDiagonalsFrom(kingTile.TilePosition, colorTurn);
