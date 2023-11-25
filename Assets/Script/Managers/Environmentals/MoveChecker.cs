@@ -42,7 +42,7 @@ public class MoveChecker : IEnvironmentable
 
     public bool IsCheckMate() 
     {
-        return checkChecker.IsCheck(Environment, Environment.turnManager.ActualTurn) && HasAnyMove();
+        return checkChecker.IsCheck(Environment, Environment.turnManager.ActualTurn) && HasAnyMove() is false;
     }
 
     private bool HasAnyMove()
@@ -60,6 +60,6 @@ public class MoveChecker : IEnvironmentable
             moves.AddRange(legalMoves);
         }
 
-        return moves;
+        return moves.ToArray();
     }
 }
