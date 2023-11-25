@@ -1,13 +1,10 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
     [SerializeField] private BoardStarter boardStarter;
     [SerializeField] private PiecesSetup setup;
+    [SerializeField] private UIManager uiManager;
 
     public static Environment environment { get; private set; } = new();
     public static GameManager instance { get; private set; }
@@ -34,7 +31,24 @@ public class GameManager : MonoBehaviour
     private void InitLogics()
     {
         var board = boardStarter.StartNewBoard();
-        environment.StartRealEnvironment(board);
+        SetupEnvironment(board);
+
         setup.SetInitialPieces();
+    }
+
+    private void SetupEnvironment(Board board) 
+    {
+        environment.StartRealEnvironment(board);
+
+        environment.events.onTurnDone += CheckForCheckMate;
+    }
+
+    private void CheckForCheckMate(PieceColor lastTurnColor) 
+    {
+        if (environment.moveChecker.IsCheckMate())
+        {
+            uiManager.ShowCheckmateMessage(lastTurnColor);
+            SelectionManager.LockSelection();
+        }
     }
 }

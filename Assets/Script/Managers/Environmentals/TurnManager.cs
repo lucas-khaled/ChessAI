@@ -28,9 +28,9 @@ public class TurnManager : IEnvironmentable
         };
     }
 
-    public void SetMove(Move move) 
+    public void DoMove(Move move) 
     {
-        if(CheckValidMove(move) is false) 
+        if(IsValidMove(move) is false) 
         {
             Debug.LogError($"The move is not valid");
             return;
@@ -39,8 +39,10 @@ public class TurnManager : IEnvironmentable
         Move convertedMove = ConvertMoveEnvironment(move);
 
         ComputeMove(convertedMove);
-        
-        ActualTurn = (ActualTurn == PieceColor.White) ? PieceColor.Black : PieceColor.White;
+
+        var thisTurn = ActualTurn;
+        ActualTurn = (thisTurn == PieceColor.White) ? PieceColor.Black : PieceColor.White;
+        Environment.events?.onTurnDone?.Invoke(thisTurn);
     }
 
     private Move ConvertMoveEnvironment(Move move)
@@ -51,7 +53,7 @@ public class TurnManager : IEnvironmentable
         return move;
     }
 
-    private bool CheckValidMove(Move move) 
+    private bool IsValidMove(Move move) 
     {
         return move.from.IsOccupied;
     }

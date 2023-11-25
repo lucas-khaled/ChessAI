@@ -31,12 +31,35 @@ public class MoveChecker : IEnvironmentable
         foreach (var move in moves)
         {
             var env = Environment.Copy();
-            env.turnManager.SetMove(move);
+            env.turnManager.DoMove(move);
 
             if (checkChecker.IsCheck(env, turn) is false)
                 validMoves.Add(move);
         }
 
         return validMoves;
+    }
+
+    public bool IsCheckMate() 
+    {
+        return checkChecker.IsCheck(Environment, Environment.turnManager.ActualTurn) && HasAnyMove() is false;
+    }
+
+    private bool HasAnyMove()
+    {
+        return GetAllPossibleMoves().Length > 0;
+    }
+
+    public Move[] GetAllPossibleMoves() 
+    {
+        Piece[] pieces = Environment.boardManager.GetAllPieces(Environment.turnManager.ActualTurn);
+        List<Move> moves = new();
+        foreach (var piece in pieces)
+        {
+            var legalMoves = GetLegalMoves(piece.GetMoves());
+            moves.AddRange(legalMoves);
+        }
+
+        return moves.ToArray();
     }
 }

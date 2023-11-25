@@ -8,6 +8,7 @@ public static class SelectionManager
 {
     private static Tile selectedTile;
     private static Move[] actualPossibleMoves;
+    private static bool canSelect = true;
 
     [InitializeOnLoadMethod]
     public static void Init() 
@@ -23,6 +24,8 @@ public static class SelectionManager
 
     private static void OnSelectedTile(Tile tile) 
     {
+        if (canSelect is false) return;
+
         if(selectedTile == null) 
         {
             SelectTileIfPossible(tile);
@@ -79,7 +82,17 @@ public static class SelectionManager
 
     private static void DoMove(Move move) 
     {
-        GameManager.TurnManager.SetMove(move);
+        GameManager.TurnManager.DoMove(move);
         DeselectTile();
+    }
+
+    public static void LockSelection() 
+    {
+        canSelect = false;
+    }
+
+    public static void UnlockSelection() 
+    {
+        canSelect = true;
     }
 }

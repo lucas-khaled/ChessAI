@@ -210,6 +210,21 @@ public class BoardManager : IEnvironmentable
         return tiles.ToArray();
     }
 
+    public Piece[] GetAllPieces(PieceColor pieceColor) 
+    {
+        List<Piece> pieces = new();
+        foreach(var tileList in Environment.board.GetTiles()) 
+        {
+            foreach (var tile in tileList)
+            {
+                if (tile.IsOccupied && tile.OccupiedBy.pieceColor == pieceColor)
+                    pieces.Add(tile.OccupiedBy);
+            }
+        }
+
+        return pieces.ToArray();
+    }
+
     public void Clear()
     {
         foreach (var row in Environment.board.tiles)
