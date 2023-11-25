@@ -30,7 +30,7 @@ public class TurnManager : IEnvironmentable
 
     public void DoMove(Move move) 
     {
-        if(CheckValidMove(move) is false) 
+        if(IsValidMove(move) is false) 
         {
             Debug.LogError($"The move is not valid");
             return;
@@ -51,7 +51,7 @@ public class TurnManager : IEnvironmentable
         return move;
     }
 
-    private bool CheckValidMove(Move move) 
+    private bool IsValidMove(Move move) 
     {
         return move.from.IsOccupied;
     }
