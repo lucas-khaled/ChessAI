@@ -39,4 +39,27 @@ public class MoveChecker : IEnvironmentable
 
         return validMoves;
     }
+
+    public bool IsCheckMate() 
+    {
+        return checkChecker.IsCheck(Environment, Environment.turnManager.ActualTurn) && HasAnyMove();
+    }
+
+    private bool HasAnyMove()
+    {
+        return GetAllPossibleMoves().Length > 0;
+    }
+
+    public Move[] GetAllPossibleMoves() 
+    {
+        Piece[] pieces = Environment.boardManager.GetAllPieces(Environment.turnManager.ActualTurn);
+        List<Move> moves = new();
+        foreach (var piece in pieces)
+        {
+            var legalMoves = GetLegalMoves(piece.GetMoves());
+            moves.AddRange(legalMoves);
+        }
+
+        return moves;
+    }
 }
