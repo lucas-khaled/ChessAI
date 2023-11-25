@@ -1,12 +1,10 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
     [SerializeField] private BoardStarter boardStarter;
     [SerializeField] private PiecesSetup setup;
+    [SerializeField] private UIManager uiManager;
 
     public static Environment environment { get; private set; } = new();
     public static GameManager instance { get; private set; }
@@ -42,12 +40,15 @@ public class GameManager : MonoBehaviour
     {
         environment.StartRealEnvironment(board);
 
-        environment.events.onTurnDone += (_) => CheckForCheckMate();
+        environment.events.onTurnDone += CheckForCheckMate;
     }
 
-    private void CheckForCheckMate() 
+    private void CheckForCheckMate(PieceColor lastTurnColor) 
     {
         if (environment.moveChecker.IsCheckMate())
+        {
+            uiManager.ShowCheckmateMessage(lastTurnColor);
             SelectionManager.LockSelection();
+        }
     }
 }
