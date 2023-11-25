@@ -33,7 +33,21 @@ public class GameManager : MonoBehaviour
     private void InitLogics()
     {
         var board = boardStarter.StartNewBoard();
-        environment.StartRealEnvironment(board);
+        SetupEnvironment(board);
+
         setup.SetInitialPieces();
+    }
+
+    private void SetupEnvironment(Board board) 
+    {
+        environment.StartRealEnvironment(board);
+
+        environment.events.onTurnDone += (_) => CheckForCheckMate();
+    }
+
+    private void CheckForCheckMate() 
+    {
+        if (environment.moveChecker.IsCheckMate())
+            SelectionManager.LockSelection();
     }
 }
