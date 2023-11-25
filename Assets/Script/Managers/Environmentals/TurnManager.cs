@@ -39,8 +39,10 @@ public class TurnManager : IEnvironmentable
         Move convertedMove = ConvertMoveEnvironment(move);
 
         ComputeMove(convertedMove);
-        
-        ActualTurn = (ActualTurn == PieceColor.White) ? PieceColor.Black : PieceColor.White;
+
+        var thisTurn = ActualTurn;
+        ActualTurn = (thisTurn == PieceColor.White) ? PieceColor.Black : PieceColor.White;
+        Environment.events?.onTurnDone?.Invoke(thisTurn);
     }
 
     private Move ConvertMoveEnvironment(Move move)
