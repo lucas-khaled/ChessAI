@@ -79,7 +79,7 @@ public static class SelectionManager
 
     private static void DoMove(Move move) 
     {
-        GameManager.TurnManager.SetMove(move);
+        GameManager.TurnManager.DoMove(move);
         DeselectTile();
     }
 }

@@ -28,7 +28,7 @@ public class TurnManager : IEnvironmentable
         };
     }
 
-    public void SetMove(Move move) 
+    public void DoMove(Move move) 
     {
         if(CheckValidMove(move) is false) 
         {

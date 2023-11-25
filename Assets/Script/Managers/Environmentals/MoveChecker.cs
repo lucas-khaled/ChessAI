@@ -31,7 +31,7 @@ public class MoveChecker : IEnvironmentable
         foreach (var move in moves)
         {
             var env = Environment.Copy();
-            env.turnManager.SetMove(move);
+            env.turnManager.DoMove(move);
 
             if (checkChecker.IsCheck(env, turn) is false)
                 validMoves.Add(move);
