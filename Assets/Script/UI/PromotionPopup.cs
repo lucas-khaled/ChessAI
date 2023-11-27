@@ -28,7 +28,7 @@ public class PromotionPopup : MonoBehaviour
         for(int i = 0; i < size; i++) 
         {
             buttons[i] = Instantiate(buttonPrefab, content);
-            buttons[i].SetIcon((PromotionButton.PromotionPiece)i);
+            buttons[i].SetPiece((PromotionButton.PromotionPiece)i);
         }
 
         isPopulated = true;

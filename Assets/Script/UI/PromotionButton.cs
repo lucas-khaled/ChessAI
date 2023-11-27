@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -9,6 +10,7 @@ public class PromotionButton : MonoBehaviour
 {
     [SerializeField] private PieceIcon[] piecesMap;
     [SerializeField] private Image pieceImage;
+    [SerializeField] private TMP_Text pieceNameText;
     
     private Button button;
     private Action<PromotionMove> onClicked;
@@ -21,13 +23,14 @@ public class PromotionButton : MonoBehaviour
         button = GetComponent<Button>();
     }
 
-    public void SetIcon(PromotionPiece piece) 
+    public void SetPiece(PromotionPiece piece) 
     {
         var foundIcon = piecesMap.FirstOrDefault(x => piece == x.piece);
         if (foundIcon.icon == null) return;
         
         Piece = foundIcon.piece;
         pieceImage.sprite = foundIcon.icon;
+        pieceNameText.text = foundIcon.piece.ToString();
     }
 
     public void SetMove(PromotionMove move, Action<PromotionMove> onClicked) 
