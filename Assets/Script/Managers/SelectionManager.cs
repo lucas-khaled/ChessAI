@@ -34,14 +34,17 @@ public static class SelectionManager
 
         if (selectedTile == tile) return;
 
-        Move move = actualPossibleMoves.ToList().Find(m => m.to == tile);
-        if (move is null) 
+        List<Move> moves = actualPossibleMoves.Where(m => m.to == tile).ToList();
+        if (moves is null || moves.Count <= 0) 
         {
             DeselectTile();
             return;
         }
 
-        DoMove(move);
+        if (moves.Any(m => m is PromotionMove))
+            SelectPromotion(moves.Cast<PromotionMove>().ToList());
+        else
+            DoMove(moves[0]);
     }
 
     private static void SelectTileIfPossible(Tile tile) 
@@ -78,6 +81,11 @@ public static class SelectionManager
     {
         foreach (Move move in moves)
             move.to.visualTile.Paint();
+    }
+
+    private static void SelectPromotion(List<PromotionMove> moves) 
+    {
+        GameManager.UIManager.ShowPromotionPopup(moves, DoMove);
     }
 
     private static void DoMove(Move move) 

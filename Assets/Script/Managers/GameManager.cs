@@ -15,6 +15,8 @@ public class GameManager : MonoBehaviour
     public static TurnManager TurnManager => environment.turnManager;
     public static EnvironmentEvents Events => environment.events;
 
+    public static UIManager UIManager => instance.uiManager;
+
     private void Awake()
     {
         if(instance != null) 
