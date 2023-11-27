@@ -20,7 +20,13 @@ public class PromotionButton : MonoBehaviour
 
     private void Awake()
     {
-        button = GetComponent<Button>();
+        GetButton();
+    }
+
+    private void GetButton() 
+    {
+        if(button == null)
+            button = GetComponent<Button>();
     }
 
     public void SetPiece(PromotionPiece piece) 
@@ -38,6 +44,7 @@ public class PromotionButton : MonoBehaviour
 
     public void SetMove(PromotionMove move, Action<PromotionMove> onClicked) 
     {
+        GetButton();
         this.move = move;
         this.onClicked = onClicked;
         button.onClick.AddListener(OnClicked);

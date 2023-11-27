@@ -16,7 +16,8 @@ public class PromotionPopup : MonoBehaviour
 
     private void Awake()
     {
-        Populate();    
+        if(isPopulated is false)
+            Populate();    
     }
 
     private void Populate() 
@@ -48,14 +49,14 @@ public class PromotionPopup : MonoBehaviour
     {
         onPromotionCallback = onPromotionChoosen;
 
+        if (isPopulated is false)
+            Populate();
+
         foreach (var move in moves) 
         {
-            if (isPopulated is false)
-                Populate();
-
-            var button = GetCorrespondingButton(move.piece);
+            var button = GetCorrespondingButton(move.promoteTo);
             if (button != null)
-                button.SetMove(move, onPromotionChoosen);
+                button.SetMove(move, OnPromotionChoosen);
         }
 
         gameObject.SetActive(true);
