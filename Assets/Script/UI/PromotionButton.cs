@@ -29,7 +29,10 @@ public class PromotionButton : MonoBehaviour
         if (foundIcon.icon == null) return;
         
         Piece = foundIcon.piece;
+
         pieceImage.sprite = foundIcon.icon;
+        pieceImage.preserveAspect = true;
+
         pieceNameText.text = foundIcon.piece.ToString();
     }
 
@@ -46,6 +49,7 @@ public class PromotionButton : MonoBehaviour
         onClicked = null;
     }
 
+    [Serializable]
     public struct PieceIcon 
     {
         public Sprite icon;

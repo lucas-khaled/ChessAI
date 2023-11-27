@@ -36,7 +36,7 @@ public class PromotionPopup : MonoBehaviour
 
     private void Clear() 
     {
-        if (buttons.Length <= 0) return;
+        if (buttons == null || buttons.Length <= 0) return;
 
         foreach (var button in buttons)
             Destroy(button);
