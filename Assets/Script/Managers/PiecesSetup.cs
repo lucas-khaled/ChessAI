@@ -22,64 +22,70 @@ public class PiecesSetup : MonoBehaviour
 
     private void SetKings()
     {
-        InstantiatePiece<King>(GameManager.Board.GetTiles()[0][4], config.kingPrefab, "WKing", PieceColor.White);
-        InstantiatePiece<King>(GameManager.Board.GetTiles()[7][4], config.kingPrefab, "BKing", PieceColor.Black);
+        InstantiatePiece<King>(GameManager.Board.GetTiles()[0][4], "WKing", PieceColor.White);
+        InstantiatePiece<King>(GameManager.Board.GetTiles()[7][4], "BKing", PieceColor.Black);
     }
 
     private void SetQueens()
     {
-        InstantiatePiece<Queen>(GameManager.Board.GetTiles()[0][3], config.queenPrefab, "WQueen", PieceColor.White);
-        InstantiatePiece<Queen>(GameManager.Board.GetTiles()[7][3], config.queenPrefab, "BQueen", PieceColor.Black);
+        InstantiatePiece<Queen>(GameManager.Board.GetTiles()[0][3], "WQueen", PieceColor.White);
+        InstantiatePiece<Queen>(GameManager.Board.GetTiles()[7][3], "BQueen", PieceColor.Black);
     }
 
     private void SetRooks()
     {
-        InstantiatePiece<Rook>(GameManager.Board.GetTiles()[0][7], config.rookPrefab, "WRookR", PieceColor.White);
-        InstantiatePiece<Rook>(GameManager.Board.GetTiles()[0][0], config.rookPrefab, "WRookL", PieceColor.White);
-        InstantiatePiece<Rook>(GameManager.Board.GetTiles()[7][0], config.rookPrefab, "BRookR", PieceColor.Black);
-        InstantiatePiece<Rook>(GameManager.Board.GetTiles()[7][7], config.rookPrefab, "BRookL", PieceColor.Black);
+        InstantiatePiece<Rook>(GameManager.Board.GetTiles()[0][7], "WRookR", PieceColor.White);
+        InstantiatePiece<Rook>(GameManager.Board.GetTiles()[0][0], "WRookL", PieceColor.White);
+        InstantiatePiece<Rook>(GameManager.Board.GetTiles()[7][0], "BRookR", PieceColor.Black);
+        InstantiatePiece<Rook>(GameManager.Board.GetTiles()[7][7], "BRookL", PieceColor.Black);
     }
 
     private void SetBishops()
     {
-        InstantiatePiece<Bishop>(GameManager.Board.GetTiles()[0][5], config.bishopPrefab, "WBishopR", PieceColor.White);
-        InstantiatePiece<Bishop>(GameManager.Board.GetTiles()[0][2], config.bishopPrefab, "WBishopL", PieceColor.White);
-        InstantiatePiece<Bishop>(GameManager.Board.GetTiles()[7][5], config.bishopPrefab, "BBishopR", PieceColor.Black);
-        InstantiatePiece<Bishop>(GameManager.Board.GetTiles()[7][2], config.bishopPrefab, "BBishopL", PieceColor.Black);
+        InstantiatePiece<Bishop>(GameManager.Board.GetTiles()[0][5], "WBishopR", PieceColor.White);
+        InstantiatePiece<Bishop>(GameManager.Board.GetTiles()[0][2], "WBishopL", PieceColor.White);
+        InstantiatePiece<Bishop>(GameManager.Board.GetTiles()[7][5], "BBishopR", PieceColor.Black);
+        InstantiatePiece<Bishop>(GameManager.Board.GetTiles()[7][2], "BBishopL", PieceColor.Black);
     }
 
     private void SetKnights()
     {
-        InstantiatePiece<Knight>(GameManager.Board.GetTiles()[0][6], config.knightPrefab, "WKnightR", PieceColor.White);
-        InstantiatePiece<Knight>(GameManager.Board.GetTiles()[0][1], config.knightPrefab, "WKnightL", PieceColor.White);
-        InstantiatePiece<Knight>(GameManager.Board.GetTiles()[7][6], config.knightPrefab, "BKnightR", PieceColor.Black);
-        InstantiatePiece<Knight>(GameManager.Board.GetTiles()[7][1], config.knightPrefab, "BKnightL", PieceColor.Black);
+        InstantiatePiece<Knight>(GameManager.Board.GetTiles()[0][6], "WKnightR", PieceColor.White);
+        InstantiatePiece<Knight>(GameManager.Board.GetTiles()[0][1], "WKnightL", PieceColor.White);
+        InstantiatePiece<Knight>(GameManager.Board.GetTiles()[7][6], "BKnightR", PieceColor.Black);
+        InstantiatePiece<Knight>(GameManager.Board.GetTiles()[7][1], "BKnightL", PieceColor.Black);
     }
 
     private void SetPawns()
     {
-        for(int i = 0; i<8; i++) 
+        for (int i = 0; i<8; i++) 
         {
-            InstantiatePiece<Pawn>(GameManager.Board.GetTiles()[1][i], config.pawnPrefab, "WPawn" + (i + 1), PieceColor.White);
-            InstantiatePiece<Pawn>(GameManager.Board.GetTiles()[6][i], config.pawnPrefab, "BPawn" + (i + 1), PieceColor.Black);
+            InstantiatePiece<Pawn>(GameManager.Board.GetTiles()[1][i],"WPawn" + (i + 1), PieceColor.White);
+            InstantiatePiece<Pawn>(GameManager.Board.GetTiles()[6][i], "BPawn" + (i + 1), PieceColor.Black);
         }
     }
 
-    private void InstantiatePiece<TPiece>(Tile tile, VisualPiece prefab, string name, PieceColor color) where TPiece : Piece
+    public void InstantiatePiece<TPiece>(Tile tile, string name, PieceColor color) where TPiece : Piece
     {
-        var visualPiece = Instantiate(prefab);
-        visualPiece.name = name;
-
         TPiece piece = Activator.CreateInstance(typeof(TPiece), GameManager.environment) as TPiece;
-        
-        piece.visualPiece = visualPiece;
+      
         piece.SetTile(tile);
         piece.pieceColor = color;  
-
         pieces.Add(piece);
-
-
-        visualPiece.SetPiece(piece, config);
         tile.Occupy(piece);
+
+        AddVisual(piece, name);
+    }
+
+    public void AddVisual(Piece piece, string name)
+    {
+        var prefab = config.GetPrefabFromPiece(piece);
+
+        var visualPiece = Instantiate(prefab);
+        visualPiece.name = name;
+        visualPiece.SetPiece(piece, config);
+
+        piece.visualPiece = visualPiece;
+        visualPiece.SetTilePosition(piece.GetTile());
     }
 }

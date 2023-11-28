@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -5,14 +6,16 @@ using UnityEngine;
 
 public class UIManager : MonoBehaviour
 {
-    [SerializeField] private TMP_Text checkmateText;
-    [SerializeField] private GameObject checkmatePanel;
+    [SerializeField] private CheckmatePopup checkmatePopup;
+    [SerializeField] private PromotionPopup promotionPopup;
 
-    public void ShowCheckmateMessage(PieceColor winingColor) 
+    public void ShowCheckmateMessage(PieceColor winingColor)
     {
-        checkmatePanel.SetActive(true);
+        checkmatePopup.Show(winingColor);
+    }
 
-        var text = string.Format(checkmateText.text, winingColor.ToString());
-        checkmateText.SetText(text);
+    public void ShowPromotionPopup(List<PromotionMove> promotions, Action<PromotionMove> onPromotionChoose = null) 
+    {
+        promotionPopup.Show(promotions, onPromotionChoose);
     }
 }

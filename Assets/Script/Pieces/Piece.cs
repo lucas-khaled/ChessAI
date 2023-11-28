@@ -32,7 +32,7 @@ public abstract class Piece : IEnvironmentable
     {
         actualTile = tile;
 
-        if (visualPiece == null) return;
+        if (visualPiece == null || tile == null) return;
 
         visualPiece.SetTilePosition(tile);
     }
