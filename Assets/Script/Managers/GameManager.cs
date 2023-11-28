@@ -43,6 +43,7 @@ public class GameManager : MonoBehaviour
         environment.StartRealEnvironment(board);
 
         environment.events.onTurnDone += CheckForCheckMate;
+        environment.events.onPromotionMade += HandlePromotionMove;
     }
 
     private void CheckForCheckMate(PieceColor lastTurnColor) 
@@ -52,5 +53,13 @@ public class GameManager : MonoBehaviour
             uiManager.ShowCheckmateMessage(lastTurnColor);
             SelectionManager.LockSelection();
         }
+    }
+
+    private void HandlePromotionMove(PromotionMove move)
+    {
+        Debug.Log("Promotiooooon");
+        setup.AddVisual(move.promoteTo, move.piece.visualPiece.name);
+
+        Destroy(move.piece.visualPiece.gameObject);
     }
 }

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -17,4 +18,26 @@ public class PiecesConfig : ScriptableObject
     public VisualPiece rookPrefab;
     public VisualPiece pawnPrefab;
 
+    public VisualPiece GetPrefabFromPiece(Piece piece)
+    {
+        if (piece is Queen)
+            return queenPrefab;
+
+        if (piece is King)
+            return kingPrefab;
+
+        if (piece is Rook)
+            return rookPrefab;
+
+        if (piece is Bishop)
+            return bishopPrefab;
+
+        if (piece is Knight)
+            return knightPrefab;
+
+        if (piece is Pawn)
+            return pawnPrefab;
+
+        return null;
+    }
 }
