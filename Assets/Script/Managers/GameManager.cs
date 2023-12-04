@@ -57,7 +57,6 @@ public class GameManager : MonoBehaviour
 
     private void HandlePromotionMove(PromotionMove move)
     {
-        Debug.Log("Promotiooooon");
         setup.AddVisual(move.promoteTo, move.piece.visualPiece.name);
 
         Destroy(move.piece.visualPiece.gameObject);
