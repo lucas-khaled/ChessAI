@@ -22,7 +22,7 @@ public class Knight : Piece
     {
         List<Move> moves = new List<Move>();
 
-        var horizontals = GameManager.BoardManager.GetHorizontalsFrom(actualTile.TilePosition, pieceColor, 2);
+        var horizontals = Environment.boardManager.GetHorizontalsFrom(actualTile.TilePosition, pieceColor, 2);
 
         moves.AddRange(GetMovesFromHorizontal(horizontals.rightHorizontals));
         moves.AddRange(GetMovesFromHorizontal(horizontals.leftHorizontals));
@@ -37,7 +37,7 @@ public class Knight : Piece
         if (horizontal.Count == 2)
         {
             var edge = horizontal[1];
-            var edgeVerticals = GameManager.BoardManager.GetVerticalsFrom(edge.TilePosition, pieceColor, 1);
+            var edgeVerticals = Environment.boardManager.GetVerticalsFrom(edge.TilePosition, pieceColor, 1);
 
             var checkedFront = CheckForBlockingSquares(edgeVerticals.frontVerticals);
             var checkedBack = CheckForBlockingSquares(edgeVerticals.backVerticals);
@@ -53,7 +53,7 @@ public class Knight : Piece
     {
         List<Move> moves = new List<Move>();
 
-        var verticals = GameManager.BoardManager.GetVerticalsFrom(actualTile.TilePosition, pieceColor, 2);
+        var verticals = Environment.boardManager.GetVerticalsFrom(actualTile.TilePosition, pieceColor, 2);
 
         moves.AddRange(GetMovesFromVertical(verticals.frontVerticals));
         moves.AddRange(GetMovesFromVertical(verticals.backVerticals));
@@ -68,7 +68,7 @@ public class Knight : Piece
         if (vertical.Count == 2)
         {
             var edge = vertical[1];
-            var edgeHorizontals = GameManager.BoardManager.GetHorizontalsFrom(edge.TilePosition, pieceColor, 1);
+            var edgeHorizontals = Environment.boardManager.GetHorizontalsFrom(edge.TilePosition, pieceColor, 1);
 
             var checkedLeft = CheckForBlockingSquares(edgeHorizontals.leftHorizontals);
             var checkedRight = CheckForBlockingSquares(edgeHorizontals.rightHorizontals);

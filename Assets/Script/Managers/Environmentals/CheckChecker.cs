@@ -63,7 +63,7 @@ public class CheckChecker
                 checkmark = true;
             else
             {
-                if (piece is Rook || piece is Queen)
+                if (piece is Rook || piece is Queen || (piece is King && index == 0))
                     return true;
 
                 checkmark = true;
@@ -88,7 +88,7 @@ public class CheckChecker
                 checkmark = true;
             else
             {
-                if (piece is Bishop || piece is Queen || (piece is Pawn && index == 0))
+                if (piece is Bishop || piece is Queen || (piece is Pawn && index == 0) || (piece is King && index == 0))
                     return true;
 
                 checkmark = true;
