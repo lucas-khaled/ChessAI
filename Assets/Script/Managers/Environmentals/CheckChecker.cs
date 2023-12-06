@@ -75,11 +75,13 @@ public class CheckChecker
 
     private bool ThereIsCheckOnDiagonals(int i) 
     {
-        return ThereIsBishopCheck(i, diagonals.topLeftDiagonals, ref checkMarkBools.diagUL) || ThereIsBishopCheck(i, diagonals.topRightDiagonals, ref checkMarkBools.diagUR) ||
-            ThereIsBishopCheck(i, diagonals.downLeftDiagonals, ref checkMarkBools.diagDL) || ThereIsBishopCheck(i, diagonals.downRightDiagonals, ref checkMarkBools.diagDR);
+        return ThereIsBishopCheck(i, diagonals.topLeftDiagonals, ref checkMarkBools.diagUL, true) || 
+            ThereIsBishopCheck(i, diagonals.topRightDiagonals, ref checkMarkBools.diagUR, true) ||
+            ThereIsBishopCheck(i, diagonals.downLeftDiagonals, ref checkMarkBools.diagDL) || 
+            ThereIsBishopCheck(i, diagonals.downRightDiagonals, ref checkMarkBools.diagDR);
     }
 
-    private bool ThereIsBishopCheck(int index, List<Tile> segment, ref bool checkmark)
+    private bool ThereIsBishopCheck(int index, List<Tile> segment, ref bool checkmark, bool isTopDiagonal = false)
     {
         if (checkmark is false && segment.Count > index && segment[index].IsOccupied)
         {
@@ -88,7 +90,7 @@ public class CheckChecker
                 checkmark = true;
             else
             {
-                if (piece is Bishop || piece is Queen || (piece is Pawn && index == 0) || (piece is King && index == 0))
+                if ((isTopDiagonal && piece is Pawn && index == 0) || piece is Bishop || piece is Queen || (piece is King && index == 0))
                     return true;
 
                 checkmark = true;
