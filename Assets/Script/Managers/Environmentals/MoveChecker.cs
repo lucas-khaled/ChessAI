@@ -45,7 +45,7 @@ public class MoveChecker : IEnvironmentable
         return checkChecker.IsCheck(Environment, Environment.turnManager.ActualTurn) && HasAnyMove() is false;
     }
 
-    private bool HasAnyMove()
+    public bool HasAnyMove()
     {
         return GetAllPossibleMoves().Length > 0;
     }
