@@ -17,6 +17,8 @@ public class GameManager : MonoBehaviour
 
     public static UIManager UIManager => instance.uiManager;
 
+    private EndGameChecker endGameChecker = new();
+
     private void Awake()
     {
         if(instance != null) 
@@ -42,17 +44,8 @@ public class GameManager : MonoBehaviour
     {
         environment.StartRealEnvironment(board);
 
-        environment.events.onTurnDone += CheckForCheckMate;
+        environment.events.onTurnDone += endGameChecker.DoCheck;
         environment.events.onPromotionMade += HandlePromotionMove;
-    }
-
-    private void CheckForCheckMate(PieceColor lastTurnColor) 
-    {
-        if (environment.moveChecker.IsCheckMate())
-        {
-            uiManager.ShowCheckmateMessage(lastTurnColor);
-            SelectionManager.LockSelection();
-        }
     }
 
     private void HandlePromotionMove(PromotionMove move)
