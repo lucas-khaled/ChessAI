@@ -49,13 +49,3 @@ public class EndGameChecker
         return GameManager.environment.moveChecker.HasAnyMove() is false;
     }
 }
-
-public enum DrawType 
-{
-    None,
-    Stalemate,
-    Deadposition,
-    Repetition,
-    Agreement,
-    RuleOf50Moves
-}
