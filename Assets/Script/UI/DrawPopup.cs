@@ -10,6 +10,6 @@ public class DrawPopup : MonoBehaviour
     public void Show(DrawType type) 
     {
         gameObject.SetActive(true);
-        drawText.text = "The match was draw by " + type.ToString();
+        drawText.text = "The match was draw by " + type.ToDescriptionString();
     }
 }
