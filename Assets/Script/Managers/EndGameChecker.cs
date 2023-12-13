@@ -1,3 +1,6 @@
+using System;
+using UnityEngine;
+
 public class EndGameChecker
 {
     public void DoCheck(PieceColor lastTurnColor) 
@@ -22,9 +25,23 @@ public class EndGameChecker
             drawType = DrawType.Stalemate;
             return true;
         }
+        if (Is50MoveDraw()) 
+        {
+            drawType = DrawType.RuleOf50Moves;
+            return true;
+        }
 
         drawType = DrawType.None;
         return false;
+    }
+
+    private bool Is50MoveDraw()
+    {
+        var lastSignificantMove = GameManager.environment.turnManager.moves.FindLastIndex(m => m.capture != null || m.piece is Pawn) + 1;
+        var totalMoves = GameManager.environment.turnManager.moves.Count;
+
+        var diff = totalMoves - lastSignificantMove;
+        return diff >= 50;
     }
 
     private bool IsStaleMateDraw()
@@ -40,5 +57,5 @@ public enum DrawType
     Deadposition,
     Repetition,
     Agreement,
-    Move50
+    RuleOf50Moves
 }
