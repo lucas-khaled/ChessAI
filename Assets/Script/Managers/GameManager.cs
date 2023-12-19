@@ -5,6 +5,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private BoardStarter boardStarter;
     [SerializeField] private PiecesSetup setup;
     [SerializeField] private UIManager uiManager;
+    [SerializeField] private string FEN;
 
     public static Environment environment { get; private set; } = new();
     public static GameManager instance { get; private set; }
@@ -37,7 +38,7 @@ public class GameManager : MonoBehaviour
         var board = boardStarter.StartNewBoard();
         SetupEnvironment(board);
 
-        setup.SetInitialPieces();
+        ChooseSetup();
     }
 
     private void SetupEnvironment(Board board) 
@@ -53,5 +54,13 @@ public class GameManager : MonoBehaviour
         setup.AddVisual(move.promoteTo, move.piece.visualPiece.name);
 
         Destroy(move.piece.visualPiece.gameObject);
+    }
+
+    private void ChooseSetup() 
+    {
+        if (string.IsNullOrEmpty(FEN))
+            setup.SetInitialPieces();
+        else
+            setup.SetupByFEN(FEN);
     }
 }

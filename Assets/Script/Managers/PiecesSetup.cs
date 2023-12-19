@@ -10,6 +10,61 @@ public class PiecesSetup : MonoBehaviour
 
     private static List<Piece> pieces = new();
 
+    public void SetupByFEN(string FEN) 
+    {
+        Debug.Log("Setting up by FEN");
+        string[] piecesSplited = FEN.Split('/');
+
+        int row = 7;
+        int column = 0;
+
+        foreach(var rowString in piecesSplited) 
+        {
+            foreach(var entry in rowString) 
+            {
+                if (char.IsNumber(entry)) 
+                {
+                    column += entry - '0';
+                    continue;
+                }
+
+                PieceColor color = char.IsUpper(entry) ? PieceColor.White : PieceColor.Black;
+                var tile = GameManager.Board.GetTiles()[row][column];
+                CreatePieceFromEntry(entry, tile, color);
+
+                column++;
+            }
+
+            column = 0;
+            row--;
+        }
+    }
+
+    private void CreatePieceFromEntry(char entry, Tile tile, PieceColor color) 
+    {
+        switch (char.ToLower(entry))
+        {
+            case 'p':
+                InstantiatePiece<Pawn>(tile, color);
+                break;
+            case 'k':
+                InstantiatePiece<King>(tile, color);
+                break;
+            case 'n':
+                InstantiatePiece<Knight>(tile, color);
+                break;
+            case 'q':
+                InstantiatePiece<Queen>(tile, color);
+                break;
+            case 'r':
+                InstantiatePiece<Rook>(tile, color);
+                break;
+            case 'b':
+                InstantiatePiece<Bishop>(tile, color);
+                break;
+        }
+    }
+
     public void SetInitialPieces() 
     {
         SetKings();
@@ -22,50 +77,50 @@ public class PiecesSetup : MonoBehaviour
 
     private void SetKings()
     {
-        InstantiatePiece<King>(GameManager.Board.GetTiles()[0][4], "WKing", PieceColor.White);
-        InstantiatePiece<King>(GameManager.Board.GetTiles()[7][4], "BKing", PieceColor.Black);
+        InstantiatePiece<King>(GameManager.Board.GetTiles()[0][4], PieceColor.White);
+        InstantiatePiece<King>(GameManager.Board.GetTiles()[7][4], PieceColor.Black);
     }
 
     private void SetQueens()
     {
-        InstantiatePiece<Queen>(GameManager.Board.GetTiles()[0][3], "WQueen", PieceColor.White);
-        InstantiatePiece<Queen>(GameManager.Board.GetTiles()[7][3], "BQueen", PieceColor.Black);
+        InstantiatePiece<Queen>(GameManager.Board.GetTiles()[0][3], PieceColor.White);
+        InstantiatePiece<Queen>(GameManager.Board.GetTiles()[7][3], PieceColor.Black);
     }
 
     private void SetRooks()
     {
-        InstantiatePiece<Rook>(GameManager.Board.GetTiles()[0][7], "WRookR", PieceColor.White);
-        InstantiatePiece<Rook>(GameManager.Board.GetTiles()[0][0], "WRookL", PieceColor.White);
-        InstantiatePiece<Rook>(GameManager.Board.GetTiles()[7][0], "BRookR", PieceColor.Black);
-        InstantiatePiece<Rook>(GameManager.Board.GetTiles()[7][7], "BRookL", PieceColor.Black);
+        InstantiatePiece<Rook>(GameManager.Board.GetTiles()[0][7], PieceColor.White);
+        InstantiatePiece<Rook>(GameManager.Board.GetTiles()[0][0], PieceColor.White);
+        InstantiatePiece<Rook>(GameManager.Board.GetTiles()[7][0], PieceColor.Black);
+        InstantiatePiece<Rook>(GameManager.Board.GetTiles()[7][7], PieceColor.Black);
     }
 
     private void SetBishops()
     {
-        InstantiatePiece<Bishop>(GameManager.Board.GetTiles()[0][5], "WBishopR", PieceColor.White);
-        InstantiatePiece<Bishop>(GameManager.Board.GetTiles()[0][2], "WBishopL", PieceColor.White);
-        InstantiatePiece<Bishop>(GameManager.Board.GetTiles()[7][5], "BBishopR", PieceColor.Black);
-        InstantiatePiece<Bishop>(GameManager.Board.GetTiles()[7][2], "BBishopL", PieceColor.Black);
+        InstantiatePiece<Bishop>(GameManager.Board.GetTiles()[0][5], PieceColor.White);
+        InstantiatePiece<Bishop>(GameManager.Board.GetTiles()[0][2], PieceColor.White);
+        InstantiatePiece<Bishop>(GameManager.Board.GetTiles()[7][5], PieceColor.Black);
+        InstantiatePiece<Bishop>(GameManager.Board.GetTiles()[7][2], PieceColor.Black);
     }
 
     private void SetKnights()
     {
-        InstantiatePiece<Knight>(GameManager.Board.GetTiles()[0][6], "WKnightR", PieceColor.White);
-        InstantiatePiece<Knight>(GameManager.Board.GetTiles()[0][1], "WKnightL", PieceColor.White);
-        InstantiatePiece<Knight>(GameManager.Board.GetTiles()[7][6], "BKnightR", PieceColor.Black);
-        InstantiatePiece<Knight>(GameManager.Board.GetTiles()[7][1], "BKnightL", PieceColor.Black);
+        InstantiatePiece<Knight>(GameManager.Board.GetTiles()[0][6], PieceColor.White);
+        InstantiatePiece<Knight>(GameManager.Board.GetTiles()[0][1], PieceColor.White);
+        InstantiatePiece<Knight>(GameManager.Board.GetTiles()[7][6], PieceColor.Black);
+        InstantiatePiece<Knight>(GameManager.Board.GetTiles()[7][1], PieceColor.Black);
     }
 
     private void SetPawns()
     {
         for (int i = 0; i<8; i++) 
         {
-            InstantiatePiece<Pawn>(GameManager.Board.GetTiles()[1][i],"WPawn" + (i + 1), PieceColor.White);
-            InstantiatePiece<Pawn>(GameManager.Board.GetTiles()[6][i], "BPawn" + (i + 1), PieceColor.Black);
+            InstantiatePiece<Pawn>(GameManager.Board.GetTiles()[1][i], PieceColor.White);
+            InstantiatePiece<Pawn>(GameManager.Board.GetTiles()[6][i], PieceColor.Black);
         }
     }
 
-    public void InstantiatePiece<TPiece>(Tile tile, string name, PieceColor color) where TPiece : Piece
+    public void InstantiatePiece<TPiece>(Tile tile, PieceColor color) where TPiece : Piece
     {
         TPiece piece = Activator.CreateInstance(typeof(TPiece), GameManager.environment) as TPiece;
       
