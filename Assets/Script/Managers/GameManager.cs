@@ -16,6 +16,7 @@ public class GameManager : MonoBehaviour
     public static MoveMaker MoveMaker => environment.moveMaker;
     public static TurnManager TurnManager => environment.turnManager;
     public static EnvironmentEvents Events => environment.events;
+    public static EspecialRules Rules => environment.rules;
 
     public static UIManager UIManager => instance.uiManager;
 

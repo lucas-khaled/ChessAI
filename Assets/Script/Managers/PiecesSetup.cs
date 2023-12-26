@@ -15,6 +15,9 @@ public class PiecesSetup : MonoBehaviour
         string[] fieldsSplited = FEN.Split(' ');
         SetPiecesPosition(fieldsSplited[0]);
         SetInitialColor(fieldsSplited[1]);
+
+        if(fieldsSplited.Length > 2)
+            SetCaslling(fieldsSplited[2]);
     }
 
     private void SetPiecesPosition(string piecesField) 
@@ -74,6 +77,28 @@ public class PiecesSetup : MonoBehaviour
     {
         PieceColor color = (colorField == "w") ? PieceColor.White : PieceColor.Black;
         GameManager.TurnManager.ActualTurn = color;
+    }
+
+    private void SetCaslling(string castlingString) 
+    {
+        if (castlingString == "-")
+        {
+            GameManager.Rules.SetCastle(PieceColor.White);
+            GameManager.Rules.SetCastle(PieceColor.Black);
+            return;
+        }
+
+        if (castlingString.Contains("K") is false)
+            GameManager.Rules.SetCastleKingSide(PieceColor.White);
+
+        if (castlingString.Contains("Q") is false)
+            GameManager.Rules.SetCastleQueenSide(PieceColor.White);
+
+        if (castlingString.Contains("k") is false)
+            GameManager.Rules.SetCastleKingSide(PieceColor.Black);
+
+        if (castlingString.Contains("q") is false)
+            GameManager.Rules.SetCastleQueenSide(PieceColor.Black);
     }
 
     public void SetInitialPieces() 
