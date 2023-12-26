@@ -33,6 +33,21 @@ public class PiecesSetup : MonoBehaviour
         if (fieldsSplited.Length > 3)
             SetEnPassant(fieldsSplited[3]);
 
+        if (fieldsSplited.Length > 4)
+            SetHalfMoves(fieldsSplited[4]);
+
+        if (fieldsSplited.Length > 5)
+            SetFullMoves(fieldsSplited[5]);
+    }
+
+    private void SetFullMoves(string fullMovesString)
+    {
+        GameManager.TurnManager.fullMoves = Convert.ToInt32(fullMovesString);
+     }
+
+    private void SetHalfMoves(string halfMovesString)
+    {
+        GameManager.TurnManager.halfMoves = Convert.ToInt32(halfMovesString);
     }
 
     private void SetPiecesPosition(string piecesField) 

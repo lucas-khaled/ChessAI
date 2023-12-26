@@ -37,11 +37,7 @@ public class EndGameChecker
 
     private bool Is50MoveDraw()
     {
-        var lastSignificantMove = GameManager.environment.turnManager.moves.FindLastIndex(m => m.capture != null || m.piece is Pawn) + 1;
-        var totalMoves = GameManager.environment.turnManager.moves.Count;
-
-        var diff = totalMoves - lastSignificantMove;
-        return diff >= 50;
+        return GameManager.environment.turnManager.halfMoves >= 50;
     }
 
     private bool IsStaleMateDraw()
