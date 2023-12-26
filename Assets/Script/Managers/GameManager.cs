@@ -6,6 +6,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private PiecesSetup setup;
     [SerializeField] private UIManager uiManager;
     [SerializeField] private string FEN;
+    [SerializeField] private bool startWithFen;
 
     public static Environment environment { get; private set; } = new();
     public static GameManager instance { get; private set; }
@@ -58,7 +59,7 @@ public class GameManager : MonoBehaviour
 
     private void ChooseSetup() 
     {
-        if (string.IsNullOrEmpty(FEN))
+        if (string.IsNullOrEmpty(FEN) || startWithFen is false)
             setup.SetInitialPieces();
         else
             setup.SetupByFEN(FEN);

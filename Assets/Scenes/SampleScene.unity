@@ -1125,6 +1125,7 @@ MonoBehaviour:
   boardStarter: {fileID: 1722630696}
   setup: {fileID: 1722630695}
   uiManager: {fileID: 63526791}
+  FEN: r4b1r/2pbkp1p/p7/4p3/1pB1Pp2/5P2/PPP3PP/R2QR1K1 b
 --- !u!114 &1722630695
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -1,12 +1,9 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 public class TurnManager : IEnvironmentable
 {
-    public PieceColor ActualTurn { get; private set; } = PieceColor.White;
+    public PieceColor ActualTurn { get; set; } = PieceColor.White;
 
     public List<Move> moves  { get; private set; } = new List<Move>();
 

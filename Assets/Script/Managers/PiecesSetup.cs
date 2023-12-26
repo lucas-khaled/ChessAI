@@ -12,17 +12,22 @@ public class PiecesSetup : MonoBehaviour
 
     public void SetupByFEN(string FEN) 
     {
-        Debug.Log("Setting up by FEN");
-        string[] piecesSplited = FEN.Split('/');
+        string[] fieldsSplited = FEN.Split(' ');
+        SetPiecesPosition(fieldsSplited[0]);
+        SetInitialColor(fieldsSplited[1]);
+    }
 
+    private void SetPiecesPosition(string piecesField) 
+    {
+        string[] piecesSplited = piecesField.Split('/');
         int row = 7;
         int column = 0;
 
-        foreach(var rowString in piecesSplited) 
+        foreach (var rowString in piecesSplited)
         {
-            foreach(var entry in rowString) 
+            foreach (var entry in rowString)
             {
-                if (char.IsNumber(entry)) 
+                if (char.IsNumber(entry))
                 {
                     column += entry - '0';
                     continue;
@@ -63,6 +68,12 @@ public class PiecesSetup : MonoBehaviour
                 InstantiatePiece<Bishop>(tile, color);
                 break;
         }
+    }
+
+    private void SetInitialColor(string colorField)
+    {
+        PieceColor color = (colorField == "w") ? PieceColor.White : PieceColor.Black;
+        GameManager.TurnManager.ActualTurn = color;
     }
 
     public void SetInitialPieces() 
