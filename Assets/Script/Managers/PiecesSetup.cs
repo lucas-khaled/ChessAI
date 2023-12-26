@@ -9,6 +9,17 @@ public class PiecesSetup : MonoBehaviour
     private PiecesConfig config;
 
     private static List<Piece> pieces = new();
+    private Dictionary<char, int> letterColumnToIndex = new Dictionary<char, int>()
+    {
+        { 'a', 0 },
+        { 'b', 1 },
+        { 'c', 2 },
+        { 'd', 3 },
+        { 'e', 4 },
+        { 'f', 5 },
+        { 'g', 6 },
+        { 'h', 7 },
+    };
 
     public void SetupByFEN(string FEN) 
     {
@@ -18,6 +29,10 @@ public class PiecesSetup : MonoBehaviour
 
         if(fieldsSplited.Length > 2)
             SetCaslling(fieldsSplited[2]);
+
+        if (fieldsSplited.Length > 3)
+            SetEnPassant(fieldsSplited[3]);
+
     }
 
     private void SetPiecesPosition(string piecesField) 
@@ -99,6 +114,23 @@ public class PiecesSetup : MonoBehaviour
 
         if (castlingString.Contains("q") is false)
             GameManager.Rules.SetCastleQueenSide(PieceColor.Black);
+    }
+
+    private void SetEnPassant(string enPassantString) 
+    {
+        if (enPassantString == "-") return;
+
+        var column = enPassantString[0];
+        var row = enPassantString[1];
+
+        int columnIndex = letterColumnToIndex[column];
+        int rowIndex = Convert.ToInt32(row.ToString()) - 1;
+
+        var tile = GameManager.Board.GetTiles()[rowIndex][columnIndex];
+        var offset = (GameManager.TurnManager.ActualTurn == PieceColor.White) ? -1 : 1;
+        var pawn = GameManager.Board.GetTiles()[rowIndex + offset][columnIndex].OccupiedBy as Pawn;
+
+        GameManager.Rules.SetEnPassant(tile, pawn);
     }
 
     public void SetInitialPieces() 

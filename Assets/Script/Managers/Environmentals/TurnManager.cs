@@ -103,6 +103,9 @@ public class TurnManager : IEnvironmentable
     private void HandleCapture(Move move) 
     {
         if (move.capture != null)
+        {
+            move.capture.GetTile().DeOccupy();
             this.Environment.events?.onPieceCaptured?.Invoke(move.capture);
+        }
     }
 }

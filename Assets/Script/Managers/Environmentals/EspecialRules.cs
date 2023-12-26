@@ -97,6 +97,7 @@ public class EspecialRules : IEnvironmentable
             RookMoved(move);
 
         enPassantTile = null;
+        enPassantPawn = null;
     }
 
     private void CheckEnPassant(Move move)
@@ -106,9 +107,13 @@ public class EspecialRules : IEnvironmentable
         if (moveRange < 2) return;
 
         var row = (move.piece.pieceColor == PieceColor.White) ? toCoord.row - 1 : toCoord.row + 1;
+        SetEnPassant(Environment.board.GetTiles()[row][toCoord.column], move.piece as Pawn);
+    }
 
-        enPassantTile = Environment.board.GetTiles()[row][toCoord.column];
-        enPassantPawn = move.piece as Pawn;
+    public void SetEnPassant(Tile tile, Pawn pawn) 
+    {
+        enPassantTile = tile;
+        enPassantPawn = pawn;
     }
 
     private void RookMoved(Move rookMove)
