@@ -19,10 +19,6 @@ public class Pawn : BlockableMovesPiece
 
         possibleMoves.AddRange(GetFowardMoves());
         possibleMoves.AddRange(GetCaptures());
-
-        var enPassant = GetEnPassant();
-        if (enPassant != null)
-            possibleMoves.Add(enPassant);
         
         return possibleMoves.ToArray();
     }
@@ -104,46 +100,27 @@ public class Pawn : BlockableMovesPiece
 
         var diagonals = Environment.boardManager.GetDiagonalsFrom(actualTile.TilePosition, pieceColor, 1);
 
-        if(CanMoveToDiagonal(diagonals.topLeftDiagonals))
-            moves.AddRange(CreateMovesFromSegment(diagonals.topLeftDiagonals));
+        if (CanMoveToDiagonal(diagonals.topLeftDiagonals)) 
+            moves.Add(CreateDiagonalMove(diagonals.topLeftDiagonals[0]));
 
         if (CanMoveToDiagonal(diagonals.topRightDiagonals))
-            moves.AddRange(CreateMovesFromSegment(diagonals.topRightDiagonals));
+            moves.Add(CreateDiagonalMove(diagonals.topRightDiagonals[0]));
 
         return moves.ToArray();
     }
 
     private bool CanMoveToDiagonal(List<Tile> diagonal) 
     {
-        return diagonal.Count > 0 && IsEnemyPiece(diagonal[0].OccupiedBy);
+        if (diagonal.Count <= 0) return false;
+
+        return IsEnemyPiece(diagonal[0].OccupiedBy)
+            || (Environment.rules.enPassantTile != null && diagonal[0].TilePosition.Equals(Environment.rules.enPassantTile.TilePosition));
     }
 
-    private Move GetEnPassant()
+    private Move CreateDiagonalMove(Tile diagonalTile) 
     {
-        if (IsInEnPassantRow() is false) return null;
-
-        var lastDestiny = Environment.turnManager.LastMove.to;
-        if (lastDestiny.OccupiedBy is not Pawn enemyPawn) return null;
-
-        int rowForward = (pieceColor == PieceColor.White) ? 1 : -1;
-
-        bool isSameRow = lastDestiny.TilePosition.row == actualTile.TilePosition.row;
-        bool isPassedRow = lastDestiny.TilePosition.row == actualTile.TilePosition.row - rowForward;
-        if (isSameRow is false && isPassedRow is false) return null;
-
-        int columnDelta = lastDestiny.TilePosition.column - actualTile.TilePosition.column;
-        bool isAdjacentColumn = Math.Abs(columnDelta) == 1;
-        if (isAdjacentColumn is false) return null;
-
-        
-        var destinyTile = Environment.board.GetTiles()[actualTile.TilePosition.row + rowForward][lastDestiny.TilePosition.column];
-        return new Move(actualTile, destinyTile, this, enemyPawn);
-    }
-
-    private bool IsInEnPassantRow() 
-    {
-        var row = actualTile.TilePosition.row;
-        return (row == 4 || row == 5 && pieceColor == PieceColor.White)
-            || (row == 3 || row == 2 && pieceColor == PieceColor.Black);
+        return diagonalTile.IsOccupied ?
+            new Move(actualTile, diagonalTile, this, diagonalTile.OccupiedBy) :
+            new Move(actualTile, diagonalTile, this, Environment.rules.enPassantPawn);
     }
 }

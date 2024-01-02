@@ -8,6 +8,9 @@ public class CastleMove : Move
 
     public override Move VirtualizeTo(Environment env)
     {
-        return new CastleMove(VirtualizeTile(from, env), VirtualizeTile(to, env), VirtualizePiece(piece, env) as King, rookMove.VirtualizeTo(env));
+        var toTile = VirtualizeTile(to, env);
+        var fromTile = VirtualizeTile(from, env);
+
+        return new CastleMove(fromTile, toTile, VirtualizePiece(piece, env, toTile) as King, rookMove.VirtualizeTo(env));
     }
 }

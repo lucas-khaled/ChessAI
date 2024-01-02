@@ -15,7 +15,11 @@ public class Move
 
     public virtual Move VirtualizeTo(Environment env) 
     {
-        return new Move(VirtualizeTile(from, env), VirtualizeTile(to, env), VirtualizePiece(piece, env), VirtualizePiece(capture, env));
+        var toTile = VirtualizeTile(to, env);
+        var fromTile = VirtualizeTile(from, env);
+        var captureTile = (capture == null) ? null : VirtualizeTile(capture.GetTile(), env);
+
+        return new Move(fromTile, toTile, VirtualizePiece(piece, env, toTile), VirtualizePiece(capture, env, captureTile));
     }
 
     protected Tile VirtualizeTile(Tile tile, Environment env) 
@@ -26,8 +30,8 @@ public class Move
         return env.board.GetTiles()[row][column];
     }
 
-    protected Piece VirtualizePiece(Piece piece, Environment env) 
+    protected Piece VirtualizePiece(Piece piece, Environment env, Tile tile) 
     {
-        return (piece == null) ? null : piece.Copy(env) as Piece;
+        return (piece == null) ? null : piece.Copy(env, tile) as Piece;
     }
 }

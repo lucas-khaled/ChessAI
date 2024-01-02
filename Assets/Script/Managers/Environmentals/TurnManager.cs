@@ -1,16 +1,13 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 public class TurnManager : IEnvironmentable
 {
-    public PieceColor ActualTurn { get; private set; } = PieceColor.White;
+    public PieceColor ActualTurn { get; set; } = PieceColor.White;
 
-    public List<Move> moves  { get; private set; } = new List<Move>();
-
-    public Move LastMove => (moves.Count > 0) ? moves[moves.Count - 1] : null;
+    public List<Move> moves { get; private set; } = new List<Move>();
+    public int halfMoves = 0;
+    public int fullMoves = 0;
 
     public Environment Environment { get; }
 
@@ -38,11 +35,20 @@ public class TurnManager : IEnvironmentable
 
         Move convertedMove = ConvertMoveEnvironment(move);
 
+        IncrementNumberOfMoves();
         ComputeMove(convertedMove);
 
         var thisTurn = ActualTurn;
+
         ActualTurn = (thisTurn == PieceColor.White) ? PieceColor.Black : PieceColor.White;
         Environment.events?.onTurnDone?.Invoke(thisTurn);
+    }
+
+    private void IncrementNumberOfMoves()
+    {
+        halfMoves++;
+        if (ActualTurn == PieceColor.Black)
+            fullMoves++;
     }
 
     private Move ConvertMoveEnvironment(Move move)
@@ -106,6 +112,10 @@ public class TurnManager : IEnvironmentable
     private void HandleCapture(Move move) 
     {
         if (move.capture != null)
+        {
+            move.capture.GetTile().DeOccupy();
+            halfMoves = 0;
             this.Environment.events?.onPieceCaptured?.Invoke(move.capture);
+        }
     }
 }

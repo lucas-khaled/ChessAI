@@ -35,8 +35,6 @@ public class King : BlockableMovesPiece
         List<CastleMove> moves = new List<CastleMove>();
 
         if (checkChecker.IsCheck(Environment, pieceColor)) return moves;
-
-        if (KingHasMoved()) return moves;
         
         var tiles = Environment.boardManager.GetRookTiles(pieceColor);
 
@@ -46,14 +44,9 @@ public class King : BlockableMovesPiece
         return moves;
     }
 
-    private bool KingHasMoved() 
-    {
-        return Environment.turnManager.moves.Any(x => x.piece == this);
-    }
-
     private void CheckRook(Tile tile, ref List<CastleMove> moves) 
     {
-        if (Environment.turnManager.moves.Any(x => x.piece == tile.OccupiedBy)) return;
+        if (Environment.rules.CanCastle(pieceColor, tile.OccupiedBy as Rook) is false) return;
 
         var range = tile.TilePosition.column - Column;
 

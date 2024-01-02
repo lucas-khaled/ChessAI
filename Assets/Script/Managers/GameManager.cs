@@ -5,6 +5,8 @@ public class GameManager : MonoBehaviour
     [SerializeField] private BoardStarter boardStarter;
     [SerializeField] private PiecesSetup setup;
     [SerializeField] private UIManager uiManager;
+    [SerializeField] private string FEN;
+    [SerializeField] private bool startWithFen;
 
     public static Environment environment { get; private set; } = new();
     public static GameManager instance { get; private set; }
@@ -14,6 +16,7 @@ public class GameManager : MonoBehaviour
     public static MoveMaker MoveMaker => environment.moveMaker;
     public static TurnManager TurnManager => environment.turnManager;
     public static EnvironmentEvents Events => environment.events;
+    public static EspecialRules Rules => environment.rules;
 
     public static UIManager UIManager => instance.uiManager;
 
@@ -37,7 +40,7 @@ public class GameManager : MonoBehaviour
         var board = boardStarter.StartNewBoard();
         SetupEnvironment(board);
 
-        setup.SetInitialPieces();
+        ChooseSetup();
     }
 
     private void SetupEnvironment(Board board) 
@@ -53,5 +56,13 @@ public class GameManager : MonoBehaviour
         setup.AddVisual(move.promoteTo, move.piece.visualPiece.name);
 
         Destroy(move.piece.visualPiece.gameObject);
+    }
+
+    private void ChooseSetup() 
+    {
+        if (string.IsNullOrEmpty(FEN) || startWithFen is false)
+            setup.SetInitialPieces();
+        else
+            setup.SetupByFEN(FEN);
     }
 }

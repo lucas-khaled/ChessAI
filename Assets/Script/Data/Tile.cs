@@ -39,11 +39,14 @@ public class Tile : IEnvironmentable
 
     public IEnvironmentable Copy(Environment env)
     {
-        return new Tile(env)
+        var tile = new Tile(env)
         {
             TilePosition = this.TilePosition,
-            OccupiedBy = (IsOccupied) ? this.OccupiedBy.Copy(env) as Piece : null,
             visualTile = null
         };
+
+        tile.OccupiedBy = (IsOccupied) ? this.OccupiedBy.Copy(env, tile) as Piece : null;
+
+        return tile;
     }
 }

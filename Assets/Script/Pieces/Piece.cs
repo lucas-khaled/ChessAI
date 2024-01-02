@@ -76,15 +76,20 @@ public abstract class Piece : IEnvironmentable
         return finalTiles;
     }
 
-    public IEnvironmentable Copy(Environment env) 
+    public IEnvironmentable Copy(Environment env, Tile tile) 
     {
         var type = this.GetType();
         Piece piece = Activator.CreateInstance(type, env) as Piece;
 
-        piece.SetTile(actualTile);
+        piece.SetTile(tile);
         piece.pieceColor = pieceColor;
         piece.visualPiece = null;
 
         return piece;
+    }
+
+    public IEnvironmentable Copy(Environment env)
+    {
+        return Copy(env, null);
     }
 }
