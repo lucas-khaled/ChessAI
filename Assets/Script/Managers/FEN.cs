@@ -198,7 +198,7 @@ public class FEN
     private string GetFENCastlingRights(EspecialRules rules)
     {
         string returnString = string.Empty;
-        if (rules.whiteCanCastleKingSide)
+        if (rules.whiteCanCastleKingSide) 
             returnString += "K";
 
         if (rules.whiteCanCastleQueenSide)
@@ -209,6 +209,9 @@ public class FEN
 
         if (rules.blackCanCastleQueenSide)
             returnString += "q";
+
+        if (returnString == string.Empty)
+            returnString = "-";
 
         return returnString;
     }
