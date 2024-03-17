@@ -8,7 +8,6 @@ public class PiecesSetup : MonoBehaviour
     private PiecesConfig config;
 
     private static List<Piece> pieces = new();
-    
 
     public void SetInitialPieces() 
     {
@@ -67,7 +66,7 @@ public class PiecesSetup : MonoBehaviour
 
     public void InstantiatePiece(Tile tile, PieceColor color, Type type)
     {
-        Piece piece = Activator.CreateInstance(type., GameManager.environment) as TPiece;
+        Piece piece = Activator.CreateInstance(type, GameManager.environment) as Piece;
 
         piece.SetTile(tile);
         piece.pieceColor = color;

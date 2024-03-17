@@ -1,12 +1,12 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class FEN
 {
     public delegate void InstantiateCallback(Tile tile, PieceColor color, Type pieceType);
-
 
     private Dictionary<char, int> letterColumnToIndex = new Dictionary<char, int>()
     {
@@ -17,7 +17,17 @@ public class FEN
         { 'e', 4 },
         { 'f', 5 },
         { 'g', 6 },
-        { 'h', 7 },
+        { 'h', 7 }
+    };
+
+    private Dictionary<char, Type> letterPieceToType = new Dictionary<char, Type>()
+    {
+        { 'k', typeof(King) },
+        { 'n', typeof(Knight) },
+        { 'r', typeof(Rook) },
+        { 'b', typeof(Bishop) },
+        { 'p', typeof(Pawn) },
+        { 'q', typeof(Queen) }
     };
 
     public void SetupByFEN(string FEN, InstantiateCallback instantiateCallback)
@@ -79,27 +89,7 @@ public class FEN
 
     private void CreatePieceFromEntry(char entry, Tile tile, PieceColor color, InstantiateCallback instantiateCallback)
     {
-        switch (char.ToLower(entry))
-        {
-            case 'p':
-                instantiateCallback.Invoke(tile, color, typeof(Pawn));
-                break;
-            case 'k':
-                instantiateCallback(tile, color, typeof(King));
-                break;
-            case 'n':
-                instantiateCallback(tile, color, typeof(Knight));
-                break;
-            case 'q':
-                instantiateCallback(tile, color, typeof(Queen));
-                break;
-            case 'r':
-                instantiateCallback(tile, color, typeof(Rook));
-                break;
-            case 'b':
-                instantiateCallback(tile, color, typeof(Bishop));
-                break;
-        }
+        instantiateCallback.Invoke(tile, color, letterPieceToType[char.ToLower(entry)]);
     }
 
     private void SetInitialColor(string colorField)
@@ -145,5 +135,56 @@ public class FEN
         var pawn = GameManager.Board.GetTiles()[rowIndex + offset][columnIndex].OccupiedBy as Pawn;
 
         GameManager.Rules.SetEnPassant(tile, pawn);
+    }
+
+    public string GetFENFrom(Board board) 
+    {
+        return GetFENPositions(board);
+    }
+
+    private string GetFENPositions(Board board) 
+    {
+        var postionsString = "";
+        var tiles = board.GetTiles();
+
+        for (int i = tiles.Count - 1; i >= 0; i--)
+        {
+            int emptyColumnCount = 0;
+
+            for (int j = 0; j < tiles[i].Count; j++)
+            {
+                var tile = tiles[i][j];
+
+                if (tile.IsOccupied is false) 
+                {
+                    emptyColumnCount++;
+                    continue;
+                }
+
+                if(emptyColumnCount > 0)
+                    postionsString += emptyColumnCount;
+                
+                emptyColumnCount = 0;
+
+                postionsString += GetPieceChar(tile.OccupiedBy);
+            }
+
+            if (emptyColumnCount > 0)
+                postionsString += emptyColumnCount;
+
+            if(i > 0)
+                postionsString += "/";
+        }
+
+        return postionsString;
+    }
+
+    private char GetPieceChar(Piece piece) 
+    {
+        var pieceChar = letterPieceToType.FirstOrDefault(x => x.Value == piece.GetType()).Key;
+
+        return (piece.pieceColor == PieceColor.White) ?
+             char.ToUpper(pieceChar) :
+             char.ToLower(pieceChar);
     }
 }
