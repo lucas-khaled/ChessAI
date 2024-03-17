@@ -104,7 +104,12 @@ public class EspecialRules : IEnvironmentable
     {
         TileCoordinates toCoord = move.to.TilePosition;
         var moveRange = Mathf.Abs(move.from.TilePosition.row - move.to.TilePosition.row);
-        if (moveRange < 2) return;
+        if (moveRange < 2)
+        {
+            enPassantTile = null;
+            enPassantPawn = null;
+            return;
+        }
 
         var row = (move.piece.pieceColor == PieceColor.White) ? toCoord.row - 1 : toCoord.row + 1;
         SetEnPassant(Environment.board.GetTiles()[row][toCoord.column], move.piece as Pawn);
