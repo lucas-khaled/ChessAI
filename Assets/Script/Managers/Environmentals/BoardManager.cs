@@ -225,6 +225,11 @@ public class BoardManager : IEnvironmentable
         return pieces.ToArray();
     }
 
+    public string GetFEN() 
+    {
+        return new FEN().GetFENFrom(Environment);
+    }
+
     public void Clear()
     {
         foreach (var row in Environment.board.tiles)

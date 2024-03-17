@@ -63,6 +63,18 @@ public class GameManager : MonoBehaviour
         if (string.IsNullOrEmpty(FEN) || startWithFen is false)
             setup.SetInitialPieces();
         else
-            setup.SetupByFEN(FEN);
+        {
+            var fenSetup = new FEN();
+            fenSetup.SetupByFEN(FEN, setup.InstantiatePiece);
+        }
+    }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.F)) 
+        {
+            string fen = BoardManager.GetFEN();
+            Debug.Log("FEN  -  " + fen);
+        }
     }
 }
