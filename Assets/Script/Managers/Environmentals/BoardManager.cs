@@ -227,7 +227,7 @@ public class BoardManager : IEnvironmentable
 
     public string GetFEN() 
     {
-        return new FEN().GetFENFrom(Environment.board);
+        return new FEN().GetFENFrom(Environment);
     }
 
     public void Clear()

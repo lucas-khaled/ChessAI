@@ -137,9 +137,9 @@ public class FEN
         GameManager.Rules.SetEnPassant(tile, pawn);
     }
 
-    public string GetFENFrom(Board board) 
+    public string GetFENFrom(Environment enviroment) 
     {
-        return GetFENPositions(board);
+        return GetFENPositions(enviroment.board) + " " + GetFENActiveColor(enviroment.turnManager);
     }
 
     private string GetFENPositions(Board board) 
@@ -186,5 +186,10 @@ public class FEN
         return (piece.pieceColor == PieceColor.White) ?
              char.ToUpper(pieceChar) :
              char.ToLower(pieceChar);
+    }
+
+    private string GetFENActiveColor(TurnManager turnManager)
+    {
+        return turnManager.ActualTurn == PieceColor.White ? "w" : "b";
     }
 }
