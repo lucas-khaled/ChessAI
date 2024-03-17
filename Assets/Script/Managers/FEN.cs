@@ -52,7 +52,7 @@ public class FEN
 
     private void SetFullMoves(string fullMovesString)
     {
-        GameManager.TurnManager.fullMoves = Convert.ToInt32(fullMovesString);
+        GameManager.TurnManager.fullMoves = Convert.ToInt32(fullMovesString) - 1;
     }
 
     private void SetHalfMoves(string halfMovesString)
@@ -143,7 +143,9 @@ public class FEN
         return GetFENPositions(enviroment.board) 
             + " " + GetFENActiveColor(enviroment.turnManager) 
             + " " + GetFENCastlingRights(enviroment.rules)
-            + " " + GetFENEnPassant(enviroment.rules);
+            + " " + GetFENEnPassant(enviroment.rules)
+            + " " + enviroment.turnManager.halfMoves
+            + " " + (enviroment.turnManager.fullMoves + 1);
     }
 
     private string GetFENPositions(Board board) 
