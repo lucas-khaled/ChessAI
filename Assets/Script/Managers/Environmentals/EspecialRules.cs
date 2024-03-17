@@ -4,10 +4,10 @@ public class EspecialRules : IEnvironmentable
 {
     public Environment Environment { get; }
 
-    private bool whiteCanCastleKingSide = true;
-    private bool whiteCanCastleQueenSide = true;
-    private bool blackCanCastleQueenSide = true;
-    private bool blackCanCastleKingSide = true;
+    public bool whiteCanCastleKingSide { get; private set; } = true;
+    public bool whiteCanCastleQueenSide { get; private set; } = true;
+    public bool blackCanCastleQueenSide { get; private set; } = true;
+    public bool blackCanCastleKingSide { get; private set; } = true;
 
     public Tile enPassantTile { get; private set; }
     public Pawn enPassantPawn { get; private set; }
@@ -63,9 +63,9 @@ public class EspecialRules : IEnvironmentable
         bool isWhite = pieceColor == PieceColor.White;
 
         if(isQueenSide)
-            return isWhite ? new TileCoordinates(0, 0) : new TileCoordinates(7, 7);
+            return isWhite ? new TileCoordinates(0, 0) : new TileCoordinates(7, 0);
         else
-            return isWhite ? new TileCoordinates(0, 7) : new TileCoordinates(7, 0);
+            return isWhite ? new TileCoordinates(0, 7) : new TileCoordinates(7, 7);
     }
 
     public void SetCastle(PieceColor pieceColor)

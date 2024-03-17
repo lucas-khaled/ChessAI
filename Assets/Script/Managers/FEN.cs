@@ -139,7 +139,9 @@ public class FEN
 
     public string GetFENFrom(Environment enviroment) 
     {
-        return GetFENPositions(enviroment.board) + " " + GetFENActiveColor(enviroment.turnManager);
+        return GetFENPositions(enviroment.board) 
+            + " " + GetFENActiveColor(enviroment.turnManager) 
+            + " " + GetFENCastlingRights(enviroment.rules);
     }
 
     private string GetFENPositions(Board board) 
@@ -191,5 +193,23 @@ public class FEN
     private string GetFENActiveColor(TurnManager turnManager)
     {
         return turnManager.ActualTurn == PieceColor.White ? "w" : "b";
+    }
+
+    private string GetFENCastlingRights(EspecialRules rules)
+    {
+        string returnString = string.Empty;
+        if (rules.whiteCanCastleKingSide)
+            returnString += "K";
+
+        if (rules.whiteCanCastleQueenSide)
+            returnString += "Q";
+
+        if (rules.blackCanCastleKingSide)
+            returnString += "k";
+
+        if (rules.blackCanCastleQueenSide)
+            returnString += "q";
+
+        return returnString;
     }
 }
