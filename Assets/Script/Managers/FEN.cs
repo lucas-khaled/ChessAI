@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using UnityEngine;
 
@@ -141,7 +142,8 @@ public class FEN
     {
         return GetFENPositions(enviroment.board) 
             + " " + GetFENActiveColor(enviroment.turnManager) 
-            + " " + GetFENCastlingRights(enviroment.rules);
+            + " " + GetFENCastlingRights(enviroment.rules)
+            + " " + GetFENEnPassant(enviroment.rules);
     }
 
     private string GetFENPositions(Board board) 
@@ -214,5 +216,21 @@ public class FEN
             returnString = "-";
 
         return returnString;
+    }
+
+    private string GetFENEnPassant(EspecialRules rules)
+    {
+        if(rules.enPassantTile == null) return "-";
+
+        var pos = rules.enPassantTile.TilePosition;
+        return GetTileStringPosition(pos);
+    }
+
+    private string GetTileStringPosition(TileCoordinates coord) 
+    {
+        var column = letterColumnToIndex.FirstOrDefault(x => x.Value == coord.column).Key;
+        var row = coord.row + 1;
+
+        return column + row.ToString();
     }
 }
