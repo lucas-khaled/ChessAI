@@ -5,7 +5,7 @@ public class TurnManager : IEnvironmentable
 {
     public PieceColor ActualTurn { get; set; } = PieceColor.White;
 
-    public List<Move> moves { get; private set; } = new List<Move>();
+    public List<Turn> moves { get; private set; } = new List<Turn>();
     public int halfMoves = 0;
     public int fullMoves = 0;
 
@@ -20,7 +20,7 @@ public class TurnManager : IEnvironmentable
     {
         return new TurnManager(env)
         {
-            moves = new List<Move>(moves),
+            moves = new List<Turn>(moves),
             ActualTurn = ActualTurn
         };
     }
@@ -73,7 +73,7 @@ public class TurnManager : IEnvironmentable
         else
             ComputeSimpleMove(move);
 
-        moves.Add(move);
+        moves.Add(new Turn(move, new FEN().GetFENFrom(Environment)));
 
         this.Environment.events?.onMoveMade?.Invoke(move);
     }
@@ -117,5 +117,32 @@ public class TurnManager : IEnvironmentable
             halfMoves = 0;
             this.Environment.events?.onPieceCaptured?.Invoke(move.capture);
         }
+    }
+
+    public void DebugAllTurns() 
+    {
+        int count = 0;
+        foreach (var turn in moves)
+        {
+            count++;
+            Debug.Log($"Turn {count}:\n{turn}");
+        }
+    }
+}
+
+public struct Turn 
+{
+    public Move move;
+    public string FEN;
+
+    public Turn(Move move, string fen) 
+    {
+        this.move = move;
+        FEN = fen;
+    }
+
+    public override string ToString()
+    {
+        return $"{move};\n\nFEN: {FEN}";
     }
 }

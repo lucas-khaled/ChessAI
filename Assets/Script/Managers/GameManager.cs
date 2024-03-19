@@ -76,5 +76,10 @@ public class GameManager : MonoBehaviour
             string fen = BoardManager.GetFEN();
             Debug.Log("FEN  -  " + fen);
         }
+
+        if (Input.GetKeyDown(KeyCode.T)) 
+        {
+            TurnManager.DebugAllTurns();
+        }
     }
 }
