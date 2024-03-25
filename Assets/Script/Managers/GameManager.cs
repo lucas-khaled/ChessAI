@@ -5,7 +5,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private BoardStarter boardStarter;
     [SerializeField] private PiecesSetup setup;
     [SerializeField] private UIManager uiManager;
-    [SerializeField] private string FEN;
+    [SerializeField] private string fen;
     [SerializeField] private bool startWithFen;
 
     public static Environment environment { get; private set; } = new();
@@ -21,6 +21,7 @@ public class GameManager : MonoBehaviour
     public static UIManager UIManager => instance.uiManager;
 
     private EndGameChecker endGameChecker = new();
+    private FENManager FENManager = new FENManager();
 
     private void Awake()
     {
@@ -60,12 +61,11 @@ public class GameManager : MonoBehaviour
 
     private void ChooseSetup() 
     {
-        if (string.IsNullOrEmpty(FEN) || startWithFen is false)
+        if (string.IsNullOrEmpty(fen) || startWithFen is false)
             setup.SetInitialPieces();
         else
         {
-            var fenSetup = new FEN();
-            fenSetup.SetupByFEN(FEN, setup.InstantiatePiece);
+            FENManager.SetupByFEN(new FEN(fen), setup.InstantiatePiece);
         }
     }
 
@@ -73,7 +73,7 @@ public class GameManager : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.F)) 
         {
-            string fen = BoardManager.GetFEN();
+            FEN fen = FENManager.GetFENFrom(environment);
             Debug.Log("FEN  -  " + fen);
         }
 

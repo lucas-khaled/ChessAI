@@ -73,7 +73,7 @@ public class TurnManager : IEnvironmentable
         else
             ComputeSimpleMove(move);
 
-        moves.Add(new Turn(move, new FEN().GetFENFrom(Environment)));
+        moves.Add(new Turn(move, new FENManager().GetFENFrom(Environment)));
 
         this.Environment.events?.onMoveMade?.Invoke(move);
     }
@@ -133,16 +133,16 @@ public class TurnManager : IEnvironmentable
 public struct Turn 
 {
     public Move move;
-    public string FEN;
+    public FEN fen;
 
-    public Turn(Move move, string fen) 
+    public Turn(Move move, FEN fen) 
     {
         this.move = move;
-        FEN = fen;
+        this.fen = fen;
     }
 
     public override string ToString()
     {
-        return $"{move};\n\nFEN: {FEN}";
+        return $"{move};\n\nFEN: {fen}";
     }
 }

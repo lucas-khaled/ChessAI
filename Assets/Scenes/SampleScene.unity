@@ -1125,7 +1125,7 @@ MonoBehaviour:
   boardStarter: {fileID: 1722630696}
   setup: {fileID: 1722630695}
   uiManager: {fileID: 63526791}
-  FEN: 4r3/5k2/6pp/8/5P1P/8/R4K2/8 b - - 47 54
+  FEN: 4r3/5k2/6pp/8/5P1P/8/R4K2/8 b - - 9 54
   startWithFen: 1
 --- !u!114 &1722630695
 MonoBehaviour:
