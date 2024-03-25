@@ -8,7 +8,7 @@ public enum DrawType
     [Description("dead position")]
     Deadposition,
     [Description("repetition")]
-    Repetition,
+    ThreefoldDraw,
     [Description("mutual agreement")]
     Agreement,
     [Description("the rule of 50 moves")]
