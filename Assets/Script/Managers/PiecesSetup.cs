@@ -74,6 +74,8 @@ public class PiecesSetup : MonoBehaviour
         tile.Occupy(piece);
 
         AddVisual(piece, name);
+
+        GameManager.Board.pieces.Add(piece);
     }
 
     public void InstantiatePiece<TPiece>(Tile tile, PieceColor color) where TPiece : Piece
@@ -86,6 +88,8 @@ public class PiecesSetup : MonoBehaviour
         tile.Occupy(piece);
 
         AddVisual(piece, name);
+
+        GameManager.Board.pieces.Add(piece);
     }
 
     public void AddVisual(Piece piece, string name)

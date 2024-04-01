@@ -6,6 +6,7 @@ public class Board : IEnvironmentable
     public int BoardColumnSize;
 
     public List<List<Tile>> tiles;
+    public List<Piece> pieces;
 
     public Environment Environment { get; }
 
@@ -13,7 +14,8 @@ public class Board : IEnvironmentable
     {
         BoardRowSize = row;
         BoardColumnSize = column;
-        tiles = new List<List<Tile>>();
+        tiles = new();
+        pieces = new();
         Environment = environment;
     }
 
@@ -36,6 +38,7 @@ public class Board : IEnvironmentable
         return new Board(BoardRowSize, BoardColumnSize, env)
         {
             tiles = virtualTiles,
+            pieces = new(pieces),
             BoardColumnSize = this.BoardColumnSize,
             BoardRowSize = this.BoardRowSize
         };
