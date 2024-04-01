@@ -37,6 +37,11 @@ public class EndGameChecker
             drawType = DrawType.ThreefoldDraw;
             return true;
         }
+        if (IsInsuficcientMaterialDraw()) 
+        {
+            drawType = DrawType.Deadposition;
+            return true;
+        }
 
         drawType = DrawType.None;
         return false;
@@ -58,7 +63,22 @@ public class EndGameChecker
         FEN fen = moves[moves.Count-1].fen;
         int count = GameManager.environment.turnManager.moves.Count(x => x.fen.fullPositionsString == fen.fullPositionsString);
 
-        Debug.Log("Count: "+count);
         return count >= 3;
+    }
+
+    private bool IsInsuficcientMaterialDraw() 
+    {
+        var pieces = GameManager.environment.board.pieces;
+
+        if (pieces.Count == 2) return true;
+
+        var notKingPieces = pieces.Where(x => x is not King);
+
+        if (notKingPieces.Any(x => x is Pawn || x is Queen || x is Rook)) return false;
+
+        var notKingWhitePieces = notKingPieces.Where(x => x.pieceColor == PieceColor.White);
+        var notKingBlackPieces = notKingPieces.Where(x => x.pieceColor == PieceColor.Black);
+
+        return notKingWhitePieces.Count() < 2 && notKingBlackPieces.Count() < 2;
     }
 }

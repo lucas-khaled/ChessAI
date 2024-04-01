@@ -5,7 +5,7 @@ public enum DrawType
     None,
     [Description("stalemate")]
     Stalemate,
-    [Description("dead position")]
+    [Description("insufficient material")]
     Deadposition,
     [Description("repetition")]
     ThreefoldDraw,
