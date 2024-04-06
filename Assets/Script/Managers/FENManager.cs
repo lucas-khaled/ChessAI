@@ -28,7 +28,11 @@ public class FENManager
         { 'q', typeof(Queen) }
     };
 
-    public Environment Environment => throw new NotImplementedException();
+    private Environment environment;
+    public FENManager(Environment environment) 
+    {
+        this.environment = environment;
+    }
 
     public void SetupByFEN(FEN fen, InstantiateCallback instantiateCallback)
     {
@@ -42,12 +46,12 @@ public class FENManager
 
     private void SetFullMoves(string fullMovesString)
     {
-        GameManager.TurnManager.fullMoves = Convert.ToInt32(fullMovesString) - 1;
+        environment.turnManager.fullMoves = Convert.ToInt32(fullMovesString) - 1;
     }
 
     private void SetHalfMoves(string halfMovesString)
     {
-        GameManager.TurnManager.halfMoves = Convert.ToInt32(halfMovesString);
+        environment.turnManager.halfMoves = Convert.ToInt32(halfMovesString);
     }
 
     private void SetPiecesPosition(string[] piecesSplitted, InstantiateCallback instantiateCallback)
@@ -66,7 +70,7 @@ public class FENManager
                 }
 
                 PieceColor color = char.IsUpper(entry) ? PieceColor.White : PieceColor.Black;
-                var tile = GameManager.Board.GetTiles()[row][column];
+                var tile = environment.board.GetTiles()[row][column];
                 CreatePieceFromEntry(entry, tile, color, instantiateCallback);
 
                 column++;
@@ -84,29 +88,29 @@ public class FENManager
 
     private void SetInitialColor(PieceColor color)
     {
-        GameManager.TurnManager.ActualTurn = color;
+        environment.turnManager.ActualTurn = color;
     }
 
     private void SetCaslling(string castlingString)
     {
         if (castlingString == "-")
         {
-            GameManager.Rules.SetCastle(PieceColor.White);
-            GameManager.Rules.SetCastle(PieceColor.Black);
+            environment.rules.SetCastle(PieceColor.White);
+            environment.rules.SetCastle(PieceColor.Black);
             return;
         }
 
         if (castlingString.Contains("K") is false)
-            GameManager.Rules.SetCastleKingSide(PieceColor.White);
+            environment.rules.SetCastleKingSide(PieceColor.White);
 
         if (castlingString.Contains("Q") is false)
-            GameManager.Rules.SetCastleQueenSide(PieceColor.White);
+            environment.rules.SetCastleQueenSide(PieceColor.White);
 
         if (castlingString.Contains("k") is false)
-            GameManager.Rules.SetCastleKingSide(PieceColor.Black);
+            environment.rules.SetCastleKingSide(PieceColor.Black);
 
         if (castlingString.Contains("q") is false)
-            GameManager.Rules.SetCastleQueenSide(PieceColor.Black);
+            environment.rules.SetCastleQueenSide(PieceColor.Black);
     }
 
     private void SetEnPassant(string enPassantString)
@@ -119,21 +123,21 @@ public class FENManager
         int columnIndex = letterColumnToIndex[column];
         int rowIndex = Convert.ToInt32(row.ToString()) - 1;
 
-        var tile = GameManager.Board.GetTiles()[rowIndex][columnIndex];
-        var offset = (GameManager.TurnManager.ActualTurn == PieceColor.White) ? -1 : 1;
-        var pawn = GameManager.Board.GetTiles()[rowIndex + offset][columnIndex].OccupiedBy as Pawn;
+        var tile = environment.board.GetTiles()[rowIndex][columnIndex];
+        var offset = (environment.turnManager.ActualTurn == PieceColor.White) ? -1 : 1;
+        var pawn = environment.board.GetTiles()[rowIndex + offset][columnIndex].OccupiedBy as Pawn;
 
-        GameManager.Rules.SetEnPassant(tile, pawn);
+        environment.rules.SetEnPassant(tile, pawn);
     }
 
-    public FEN GetFENFrom(Environment enviroment) 
+    public FEN GetFEN() 
     {
-        string fullString = GetFENPositions(enviroment.board) 
-            + " " + GetFENActiveColor(enviroment.turnManager) 
-            + " " + GetFENCastlingRights(enviroment.rules)
-            + " " + GetFENEnPassant(enviroment.rules)
-            + " " + enviroment.turnManager.halfMoves
-            + " " + (enviroment.turnManager.fullMoves + 1);
+        string fullString = GetFENPositions(environment.board) 
+            + " " + GetFENActiveColor(environment.turnManager) 
+            + " " + GetFENCastlingRights(environment.rules)
+            + " " + GetFENEnPassant(environment.rules)
+            + " " + environment.turnManager.halfMoves
+            + " " + (environment.turnManager.fullMoves + 1);
 
         return new FEN(fullString);
     }

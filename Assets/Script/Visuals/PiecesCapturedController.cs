@@ -3,14 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PiecesCapturedController : MonoBehaviour
+public class PiecesCapturedController : ManagerHelper
 {
-    private void Start()
-    {
-        GameManager.Events.onPieceCaptured += PieceCaptured;
-    }
-
-    private void PieceCaptured(Piece piece)
+    public void PieceCaptured(Piece piece)
     {
         Destroy(piece.visualPiece.gameObject);
     }

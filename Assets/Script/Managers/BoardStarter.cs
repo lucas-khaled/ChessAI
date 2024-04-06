@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BoardStarter : MonoBehaviour
+public class BoardStarter : ManagerHelper
 {
     [SerializeField]
     private VisualTile tileprefab;
@@ -11,7 +11,7 @@ public class BoardStarter : MonoBehaviour
 
     public Board StartNewBoard()
     {
-        Board board = new Board(8, 8, GameManager.environment);
+        Board board = new Board(8, 8, manager.environment);
         StartBoard(board);
         return board;
     }
@@ -39,7 +39,7 @@ public class BoardStarter : MonoBehaviour
                 visualTile.name = $"Tile({row},{column})";
 
 
-                Tile tile = new(GameManager.environment);
+                Tile tile = new(manager.environment);
                 tile.TilePosition = new TileCoordinates(row, column);
                 tile.SetVisual(visualTile);
 

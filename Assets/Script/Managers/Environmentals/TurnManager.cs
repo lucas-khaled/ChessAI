@@ -10,10 +10,12 @@ public class TurnManager : IEnvironmentable
     public int fullMoves = 0;
 
     public Environment Environment { get; }
+    private FENManager FENManager;
 
     public TurnManager(Environment env) 
     {
         Environment = env;
+        FENManager = new FENManager(env);
     }
 
     public IEnvironmentable Copy(Environment env)
@@ -73,7 +75,7 @@ public class TurnManager : IEnvironmentable
         else
             ComputeSimpleMove(move);
 
-        moves.Add(new Turn(move, new FENManager().GetFENFrom(Environment)));
+        moves.Add(new Turn(move, FENManager.GetFEN()));
 
         this.Environment.events?.onMoveMade?.Invoke(move);
     }
