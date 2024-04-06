@@ -1,6 +1,8 @@
+using System.Drawing;
 using UnityEngine;
 
 [RequireComponent(typeof(PiecesSetup), typeof(PiecesCapturedController), typeof(BoardStarter))]
+[RequireComponent(typeof(PlayTurnManager))]
 public class GameManager : MonoBehaviour
 {
     [SerializeField] private UIManager uiManager;
@@ -12,6 +14,7 @@ public class GameManager : MonoBehaviour
     private PiecesSetup setup;
     private PiecesCapturedController captureController;
     private BoardStarter boardStarter;
+    private PlayTurnManager playTurnManager;
 
     public UIManager UIManager => uiManager;
 
@@ -34,6 +37,9 @@ public class GameManager : MonoBehaviour
 
         boardStarter = GetComponent<BoardStarter>();
         boardStarter.SetManager(this);
+
+        playTurnManager = GetComponent<PlayTurnManager>();
+        playTurnManager.SetManager(this);
     }
 
     private void InitLogics()
@@ -45,6 +51,9 @@ public class GameManager : MonoBehaviour
         endGameChecker = new EndGameChecker(environment);
 
         ChooseSetup();
+
+        playTurnManager.SetPlayers(new HumanPlayer(this), new HumanPlayer(this));
+        playTurnManager.PlayerMove(environment.turnManager.ActualTurn);
     }
 
     private void SetupEnvironment(Board board) 
@@ -60,7 +69,11 @@ public class GameManager : MonoBehaviour
     {
         var endInfo = endGameChecker.CheckEnd();
 
-        if (endInfo.hasEnded is false) return;
+        if (endInfo.hasEnded is false)
+        {
+            playTurnManager.PlayerMove(environment.turnManager.ActualTurn);
+            return;
+        }
 
         if (endInfo.isCheckMate)
         {
