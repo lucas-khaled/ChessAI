@@ -3,25 +3,19 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class HumanPlayer : IPlayer
+public class HumanPlayer : Player
 {
     private Tile selectedTile;
     private Move[] actualPossibleMoves;
-    private bool canSelect = false;
-    private Action<Move> onMove;
-    private PieceColor actualColor;
-    private GameManager manager;
 
-    public void Init(PieceColor pieceColor)
+    public override void Init(PieceColor pieceColor)
     {
-        actualColor = pieceColor;
+        base.Init(pieceColor);
         VisualTile.onTileSelected += OnSelectedTile;
     }
 
-    public HumanPlayer(GameManager manager) 
+    public HumanPlayer(GameManager manager) : base(manager)
     {
-        Debug.Log("Setting human player");
-        this.manager = manager;
     }
 
     ~HumanPlayer() 
@@ -29,15 +23,9 @@ public class HumanPlayer : IPlayer
         VisualTile.onTileSelected -= OnSelectedTile;
     }
 
-    public void StartTurn(Action<Move> moveCallback)
-    {
-        canSelect = true;
-        onMove = moveCallback;
-    }
-
     private void OnSelectedTile(Tile tile) 
     {
-        if (canSelect is false) return;
+        if (canPlay is false) return;
 
         if(selectedTile == null) 
         {
@@ -103,13 +91,8 @@ public class HumanPlayer : IPlayer
 
     private void DoMove(Move move) 
     {
-        onMove?.Invoke(move);
-        canSelect = false;
+        canPlay = false;
         DeselectTile();
-    }
-
-    public void EndGame()
-    {
-        canSelect = false;
+        onMove?.Invoke(move);
     }
 }
