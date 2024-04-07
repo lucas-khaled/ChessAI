@@ -37,7 +37,6 @@ public class HumanPlayer : IPlayer
 
     private void OnSelectedTile(Tile tile) 
     {
-        Debug.Log("Selecting...");
         if (canSelect is false) return;
 
         if(selectedTile == null) 
