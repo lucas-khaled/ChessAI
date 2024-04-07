@@ -52,7 +52,7 @@ public class GameManager : MonoBehaviour
 
         ChooseSetup();
 
-        playTurnManager.SetPlayers(new HumanPlayer(this), new HumanPlayer(this));
+        playTurnManager.SetPlayers(new HumanPlayer(this), new AIPlayer(this));
         playTurnManager.PlayerMove(environment.turnManager.ActualTurn);
     }
 
