@@ -1,18 +1,18 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using UnityEngine;
 using Random = UnityEngine.Random;
 
-public class AIPlayer : Player
+public abstract class AIPlayer : Player
 {
-    private List<Piece> pieces;
-    private object pieceLock = new();
+    protected List<Piece> pieces;
+    protected object pieceLock = new();
+    protected float minimumWaitTime = 0;
 
-    public AIPlayer(GameManager manager) : base(manager)
+    public AIPlayer(GameManager manager, float minimumWaitTime = 0) : base(manager)
     {
+        this.minimumWaitTime = minimumWaitTime;
     }
 
     public override async void StartTurn(Action<Move> moveCallback)
@@ -27,6 +27,7 @@ public class AIPlayer : Player
         base.Init(pieceColor);
 
         pieces = manager.environment.board.pieces.Where(x => x.pieceColor == actualColor).ToList();
+        manager.environment.events.onPromotionMade += PromotedMove;
         manager.environment.events.onPieceCaptured += CapturedPiece;
     }
 
@@ -40,28 +41,16 @@ public class AIPlayer : Player
         }
     }
 
-    private async Task<Move> CalculateMove() 
+    private void PromotedMove(PromotionMove promotion) 
     {
-        await Task.Yield();
-        var allMoves = GetAllMoves();
-        int index = Random.Range(0, allMoves.Count);
+        if (promotion.piece.pieceColor != actualColor) return;
 
-        var move = allMoves[index];
-        return move;
-    }
-
-    private List<Move> GetAllMoves() 
-    {
-        List<Move> possibleMoves = new List<Move>();
         lock (pieceLock)
         {
-            foreach (var piece in pieces)
-            {
-                var moves = manager.environment.moveMaker.GetMoves(piece);
-                possibleMoves.AddRange(moves);
-            }
+            pieces.Remove(promotion.piece);
+            pieces.Add(promotion.promoteTo);
         }
-
-        return possibleMoves;
     }
+
+    protected abstract Task<Move> CalculateMove();
 }
