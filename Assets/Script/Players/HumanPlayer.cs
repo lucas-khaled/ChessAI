@@ -1,30 +1,31 @@
-using System.Collections;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEditor;
 using UnityEngine;
 
-public static class SelectionManager
+public class HumanPlayer : Player
 {
-    private static Tile selectedTile;
-    private static Move[] actualPossibleMoves;
-    private static bool canSelect = true;
+    private Tile selectedTile;
+    private Move[] actualPossibleMoves;
 
-    [InitializeOnLoadMethod]
-    public static void Init() 
+    public override void Init(PieceColor pieceColor)
     {
+        base.Init(pieceColor);
         VisualTile.onTileSelected += OnSelectedTile;
-        Application.quitting += Close;
     }
 
-    public static void Close() 
+    public HumanPlayer(GameManager manager) : base(manager)
+    {
+    }
+
+    ~HumanPlayer() 
     {
         VisualTile.onTileSelected -= OnSelectedTile;
     }
 
-    private static void OnSelectedTile(Tile tile) 
+    private void OnSelectedTile(Tile tile) 
     {
-        if (canSelect is false) return;
+        if (canPlay is false) return;
 
         if(selectedTile == null) 
         {
@@ -47,60 +48,51 @@ public static class SelectionManager
             DoMove(moves[0]);
     }
 
-    private static void SelectTileIfPossible(Tile tile) 
+    private void SelectTileIfPossible(Tile tile) 
     {
         if (tile.IsOccupied is false) return;
 
-        if (tile.OccupiedBy.pieceColor != GameManager.TurnManager.ActualTurn) return;
+        if (tile.OccupiedBy.pieceColor != actualColor) return;
 
         selectedTile = tile;
 
         GetMoves();
     }
 
-    private static void GetMoves() 
+    private void GetMoves() 
     {
-        actualPossibleMoves = GameManager.MoveMaker.GetMoves(selectedTile.OccupiedBy);
+        actualPossibleMoves = manager.environment.moveMaker.GetMoves(selectedTile.OccupiedBy);
 
         SetPossibleTilesMaterial(actualPossibleMoves);
     }
 
-    private static void SetPossibleTilesMaterial(Move[] moves) 
+    private void SetPossibleTilesMaterial(Move[] moves) 
     {
         foreach (Move move in moves)
             move.to.visualTile.Paint(Color.yellow);
     }
 
-    private static void DeselectTile() 
+    private void DeselectTile() 
     {
         ResetPossibleTilesMaterial(actualPossibleMoves);
         selectedTile = null;
         actualPossibleMoves = null;
     }
-    private static void ResetPossibleTilesMaterial(Move[] moves)
+    private void ResetPossibleTilesMaterial(Move[] moves)
     {
         foreach (Move move in moves)
             move.to.visualTile.Paint();
     }
 
-    private static void SelectPromotion(List<PromotionMove> moves) 
+    private void SelectPromotion(List<PromotionMove> moves) 
     {
-        GameManager.UIManager.ShowPromotionPopup(moves, DoMove);
+        manager.UIManager.ShowPromotionPopup(moves, DoMove);
     }
 
-    private static void DoMove(Move move) 
+    private void DoMove(Move move) 
     {
-        GameManager.TurnManager.DoMove(move);
+        canPlay = false;
         DeselectTile();
-    }
-
-    public static void LockSelection() 
-    {
-        canSelect = false;
-    }
-
-    public static void UnlockSelection() 
-    {
-        canSelect = true;
+        onMove?.Invoke(move);
     }
 }

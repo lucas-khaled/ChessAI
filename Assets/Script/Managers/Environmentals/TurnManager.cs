@@ -10,10 +10,12 @@ public class TurnManager : IEnvironmentable
     public int fullMoves = 0;
 
     public Environment Environment { get; }
+    private FENManager FENManager;
 
     public TurnManager(Environment env) 
     {
         Environment = env;
+        FENManager = new FENManager(env);
     }
 
     public IEnvironmentable Copy(Environment env)
@@ -73,7 +75,7 @@ public class TurnManager : IEnvironmentable
         else
             ComputeSimpleMove(move);
 
-        moves.Add(new Turn(move, new FENManager().GetFENFrom(Environment)));
+        moves.Add(new Turn(move, FENManager.GetFEN()));
 
         this.Environment.events?.onMoveMade?.Invoke(move);
     }
@@ -86,13 +88,14 @@ public class TurnManager : IEnvironmentable
 
     private void ComputePromotionMove(PromotionMove move)
     {
+        HandleCapture(move);
+        
         move.promoteTo.pieceColor = move.piece.pieceColor;
         move.promoteTo.SetTile(move.to);
         move.to.Occupy(move.promoteTo);
 
         move.from.DeOccupy();
 
-        HandleCapture(move);
 
         Environment.events?.onPromotionMade?.Invoke(move);
     }

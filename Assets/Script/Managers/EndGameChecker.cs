@@ -1,23 +1,32 @@
-using System;
 using System.Linq;
-using UnityEngine;
+
+public struct EndGameInfo
+{
+    public bool hasEnded;
+    public bool isCheckMate;
+    public DrawType drawType;
+}
 
 public class EndGameChecker
 {
-    FENManager FENManager = new FENManager();
-    public void DoCheck(PieceColor lastTurnColor) 
+    private Environment environment;
+
+    public EndGameChecker(Environment environment) 
     {
-        DrawType drawType;
-        if (GameManager.environment.moveChecker.IsCheckMate())
-        {
-            GameManager.UIManager.ShowCheckmateMessage(lastTurnColor);
-            SelectionManager.LockSelection();
-        }
-        else if (HasDraw(out drawType)) 
-        {
-            GameManager.UIManager.ShowDrawMessage(drawType);
-            SelectionManager.LockSelection();
-        }
+        this.environment = environment;
+    }
+
+    public EndGameInfo CheckEnd()
+    {
+        EndGameInfo info = new EndGameInfo();
+        if (environment.moveChecker.IsCheckMate())
+            //GameManager.UIManager.ShowCheckmateMessage(lastTurnColor);
+            info.hasEnded = info.isCheckMate = true;
+        else if (HasDraw(out info.drawType)) 
+            info.hasEnded = true;
+            //GameManager.UIManager.ShowDrawMessage(drawType);
+
+        return info;
     }
 
     public bool HasDraw(out DrawType drawType) 
@@ -49,26 +58,26 @@ public class EndGameChecker
 
     private bool Is50MoveDraw()
     {
-        return GameManager.environment.turnManager.halfMoves >= 50;
+        return environment.turnManager.halfMoves >= 50;
     }
 
     private bool IsStaleMateDraw()
     {
-        return GameManager.environment.moveChecker.HasAnyMove() is false;
+        return environment.moveChecker.HasAnyMove() is false;
     }
 
     private bool IsThreefoldDraw()
     {
-        var moves = GameManager.environment.turnManager.moves;
+        var moves = environment.turnManager.moves;
         FEN fen = moves[moves.Count-1].fen;
-        int count = GameManager.environment.turnManager.moves.Count(x => x.fen.fullPositionsString == fen.fullPositionsString);
+        int count = environment.turnManager.moves.Count(x => x.fen.fullPositionsString == fen.fullPositionsString);
 
         return count >= 3;
     }
 
     private bool IsInsuficcientMaterialDraw() 
     {
-        var pieces = GameManager.environment.board.pieces;
+        var pieces = environment.board.pieces;
 
         if (pieces.Count == 2) return true;
 
