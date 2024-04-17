@@ -1,4 +1,3 @@
-using System.Drawing;
 using UnityEngine;
 
 [RequireComponent(typeof(PiecesSetup), typeof(PiecesCapturedController), typeof(BoardStarter))]
@@ -52,7 +51,7 @@ public class GameManager : MonoBehaviour
 
         ChooseSetup();
 
-        playTurnManager.SetPlayers(new HumanPlayer(this), new AIPlayer(this));
+        playTurnManager.SetPlayers(new RandomAI(this), new RandomAI(this));
         playTurnManager.PlayerMove(environment.turnManager.ActualTurn);
     }
 

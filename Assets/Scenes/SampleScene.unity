@@ -1112,7 +1112,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   uiManager: {fileID: 63526791}
-  fen: 8/8/4k3/8/1n4p/8/3N2K1/8 b - - 0 1
+  fen: 4k3/1N6/3Rp1r1/1P6/5pn1/5P2/8/3BK3 b - - 1 2
   startWithFen: 0
 --- !u!114 &1722630695
 MonoBehaviour:
