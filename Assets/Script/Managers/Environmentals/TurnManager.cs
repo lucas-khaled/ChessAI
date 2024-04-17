@@ -31,7 +31,7 @@ public class TurnManager : IEnvironmentable
     {
         if(IsValidMove(move) is false) 
         {
-            Debug.LogError($"The move is not valid");
+            Debug.LogError($"The move is not valid:\n\n {move}");
             return;
         }
 
@@ -75,7 +75,8 @@ public class TurnManager : IEnvironmentable
         else
             ComputeSimpleMove(move);
 
-        moves.Add(new Turn(move, FENManager.GetFEN()));
+        var turn = new Turn(move, FENManager.GetFEN());
+        moves.Add(turn);
 
         this.Environment.events?.onMoveMade?.Invoke(move);
     }
