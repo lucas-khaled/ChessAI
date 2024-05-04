@@ -9,6 +9,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private bool startWithFen;
 
     public Environment environment { get; private set; } = new();
+    public EndGameChecker EndGameChecker { get; private set; }
 
     private PiecesSetup setup;
     private PiecesCapturedController captureController;
@@ -17,7 +18,6 @@ public class GameManager : MonoBehaviour
 
     public UIManager UIManager => uiManager;
 
-    private EndGameChecker endGameChecker;
     private FENManager FENManager;
 
     private void Awake()
@@ -47,12 +47,11 @@ public class GameManager : MonoBehaviour
         SetupEnvironment(board);
 
         FENManager = new FENManager(environment);
-        endGameChecker = new EndGameChecker(environment);
+        EndGameChecker = new EndGameChecker(environment);
 
         ChooseSetup();
 
-        playTurnManager.SetPlayers(new RandomAI(this), new RandomAI(this));
-        playTurnManager.PlayerMove(environment.turnManager.ActualTurn);
+        playTurnManager.SetPlayers(new HumanPlayer(this), new MinimaxAI(this, 1));
     }
 
     private void SetupEnvironment(Board board) 
@@ -66,13 +65,8 @@ public class GameManager : MonoBehaviour
 
     private void OnEndTurn(PieceColor color)
     {
-        var endInfo = endGameChecker.CheckEnd();
-
-        if (endInfo.hasEnded is false)
-        {
-            playTurnManager.PlayerMove(environment.turnManager.ActualTurn);
-            return;
-        }
+        var endInfo = EndGameChecker.CheckEnd();
+        if (endInfo.hasEnded is false) return;
 
         if (endInfo.isCheckMate)
         {

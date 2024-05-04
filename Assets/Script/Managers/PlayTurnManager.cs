@@ -3,8 +3,11 @@ using UnityEngine;
 
 public class PlayTurnManager : ManagerHelper
 {
-    IPlayer whitePlayer;
-    IPlayer blackPlayer;
+    private IPlayer whitePlayer;
+    private IPlayer blackPlayer;
+
+    private object moveLock = new();
+    private Move madeMove = null;
 
     public void SetPlayers(IPlayer player1, IPlayer player2) 
     {
@@ -23,18 +26,39 @@ public class PlayTurnManager : ManagerHelper
 
         whitePlayer.Init(PieceColor.White);
         blackPlayer.Init(PieceColor.Black);
+
+        Task.Run(() => PlayerMove(PieceColor.White));
+        InvokeRepeating("CheckForMove", 0, 0.2f);
     }
+
 
     public void PlayerMove(PieceColor turn) 
     {
         if (turn == PieceColor.White)
-            Task.Run(() => whitePlayer.StartTurn(OnMove));
+            whitePlayer.StartTurn(OnMove);
         if (turn == PieceColor.Black)
-            Task.Run(() => blackPlayer.StartTurn(OnMove)); 
+            blackPlayer.StartTurn(OnMove);
     }
 
     private void OnMove(Move move) 
     {
-        manager.environment.turnManager.DoMove(move);
+        lock (moveLock) 
+        {
+            madeMove = move;
+        }
+    }
+
+    private void CheckForMove() 
+    {
+        lock (moveLock) 
+        {
+            if (madeMove == null) return;
+
+            manager.environment.turnManager.DoMove(madeMove);
+            madeMove = null;
+
+            if(manager.EndGameChecker.CheckEnd().hasEnded is false)
+                Task.Run(() => PlayerMove(manager.environment.turnManager.ActualTurn));
+        }
     }
 }
