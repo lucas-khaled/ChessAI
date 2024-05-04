@@ -21,6 +21,8 @@ public class MinimaxAI : AIPlayer
         bool isWhite = actualColor == PieceColor.White;
         float bestScore = isWhite ? float.MinValue : float.MaxValue;
         Move bestMove = null;
+        var alpha = float.MinValue;
+        var beta = float.MaxValue;
 
         var moves = GetAllMoves(env, actualColor);
 
@@ -29,9 +31,9 @@ public class MinimaxAI : AIPlayer
         {
             Environment newEnv = env.Copy();
             newEnv.turnManager.DoMove(move);
-            float score = Minimax(newEnv, actualColor.GetOppositeColor(), maxDepth);
+            float score = Minimax(newEnv, actualColor.GetOppositeColor(), maxDepth-1, alpha, beta);
 
-            Debug.Log($"Evaluated {move} \nwith a score of {score}");
+            Debug.Log($"<color=blue>{maxDepth} -> Evaluated {move} \nwith a score of {score}</color>");
 
             if (IsBetterScoreThan(score, bestScore))
             {
@@ -46,14 +48,20 @@ public class MinimaxAI : AIPlayer
                 if(chanceToChange > 50) 
                     bestMove = move;
             }
+
+            if (isWhite)
+                alpha = Mathf.Max(alpha, score);
+            else
+                beta = Mathf.Min(beta, score);
+
+            if (beta <= alpha) break;
         }
 
-        Debug.Log($"Choosed {bestMove} \nas best with a score of {bestScore}");
+        Debug.Log($"<color=green>Choosed {bestMove} \nas best with a score of {bestScore}</color>");
         return bestMove;
     }
 
-
-    private float Minimax(Environment env, PieceColor color, int depth) 
+    private float Minimax(Environment env, PieceColor color, int depth, float alpha, float beta) 
     {
         bool isMaximize = color == PieceColor.White;
         endGameChecker.SetEnvironment(env);
@@ -73,9 +81,25 @@ public class MinimaxAI : AIPlayer
             Environment newEnv = env.Copy();
             newEnv.turnManager.DoMove(move);
 
-            float score = Minimax(newEnv, color.GetOppositeColor(), depth-1);
+            float score = Minimax(newEnv, color.GetOppositeColor(), depth-1, alpha, beta);
 
-            bestScore = isMaximize ? Mathf.Max(bestScore, score) : Mathf.Min(bestScore, score);
+            Debug.Log($"<color=yellow>{depth} -> Evaluated {move} \nwith a score of {score}</color>");
+            if (isMaximize)
+            {
+                bestScore = Mathf.Max(bestScore, score);
+                alpha = Mathf.Max(alpha, score);
+            }
+            else 
+            {
+                bestScore = Mathf.Min(bestScore, score);
+                beta = Mathf.Min(beta, score);
+            }
+
+            if (beta <= alpha)
+            {
+                Debug.Log($"<color=red>{depth} -> Prunned with alpha = {alpha} and beta = {beta}");
+                break;
+            }
         }
 
         return bestScore;
