@@ -11,7 +11,7 @@ public class RandomAI : AIPlayer
     protected override async Task<Move> CalculateMove()
     {
         await Task.Delay((int)(minimumWaitTime * 1000));
-        var allMoves = GetAllMoves(manager.environment);
+        var allMoves = GetAllMoves(manager.environment, actualColor);
         int index = Random.Range(0, allMoves.Count);
 
         var move = allMoves[index];

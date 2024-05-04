@@ -22,14 +22,14 @@ public class MinimaxAI : AIPlayer
         float bestScore = isWhite ? float.MinValue : float.MaxValue;
         Move bestMove = null;
 
-        var moves = GetAllMoves(env);
+        var moves = GetAllMoves(env, actualColor);
 
         Debug.Log($"Evaluating {moves.Count} moves");
         foreach(var move in moves) 
         {
             Environment newEnv = env.Copy();
             newEnv.turnManager.DoMove(move);
-            float score = Minimax(newEnv, isWhite, maxDepth);
+            float score = Minimax(newEnv, actualColor.GetOppositeColor(), maxDepth);
 
             Debug.Log($"Evaluated {move} \nwith a score of {score}");
 
@@ -46,7 +46,6 @@ public class MinimaxAI : AIPlayer
                 if(chanceToChange > 50) 
                     bestMove = move;
             }
-            
         }
 
         Debug.Log($"Choosed {bestMove} \nas best with a score of {bestScore}");
@@ -54,12 +53,13 @@ public class MinimaxAI : AIPlayer
     }
 
 
-    private float Minimax(Environment env, bool isMaximize, int depth) 
+    private float Minimax(Environment env, PieceColor color, int depth) 
     {
+        bool isMaximize = color == PieceColor.White;
         endGameChecker.SetEnvironment(env);
 
         if (endGameChecker.IsCheckMate())
-            return (isMaximize) ? 1000 - depth : -1000 + depth;
+            return isMaximize ? 1000 - depth : -1000 + depth;
 
         if (endGameChecker.HasDraw())
             return 0;
@@ -68,12 +68,12 @@ public class MinimaxAI : AIPlayer
             return GetHeuristicOnPosition(env);
 
         float bestScore = isMaximize ? float.MinValue : float.MaxValue;
-        foreach (var move in GetAllMoves(env)) 
+        foreach (var move in GetAllMoves(env, color)) 
         {
             Environment newEnv = env.Copy();
             newEnv.turnManager.DoMove(move);
 
-            float score = Minimax(newEnv, !isMaximize, depth-1);
+            float score = Minimax(newEnv, color.GetOppositeColor(), depth-1);
 
             bestScore = isMaximize ? Mathf.Max(bestScore, score) : Mathf.Min(bestScore, score);
         }
