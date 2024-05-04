@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
-using Random = UnityEngine.Random;
 
 public class MinimaxAI : AIPlayer
 {
@@ -39,16 +38,14 @@ public class MinimaxAI : AIPlayer
                 bestMove = move;
                 bestScore = score;
             }
-            /*else if(score == bestScore) 
+            else if(score == bestScore) 
             {
-                var chanceToChange = Random.Range(1, 100);
+                var rand = new System.Random();
+                var chanceToChange = rand.Next(1, 100);
 
                 if(chanceToChange > 50) 
-                {
                     bestMove = move;
-                    bestScore = score;
-                }
-            }*/
+            }
             
         }
 
@@ -89,7 +86,7 @@ public class MinimaxAI : AIPlayer
         return (actualColor == PieceColor.White) ? newScore > oldScore : newScore < oldScore;
     }
 
-        private float GetHeuristicOnPosition(Environment environment)
+    private float GetHeuristicOnPosition(Environment environment)
     {
         return GetHeuristicOnMaterial(environment);
     }
@@ -104,34 +101,29 @@ public class MinimaxAI : AIPlayer
     private float QueenMaterialCount(List<Piece> pieces) 
     {
         var score = GetMaterialCount(pieces.Where(x => x is Queen).ToList(), 10);
-        //Debug.Log($"Queen score {score}");
         return score;
     }
 
     private float RookMaterialCount(List<Piece> pieces) 
     {
         var score = GetMaterialCount(pieces.Where(x => x is Rook).ToList(), 5);
-        //Debug.Log($"Rook score {score}");
         return score;
     }
 
     private float BishopMaterialCount(List<Piece> pieces)
     {
         var score = GetMaterialCount(pieces.Where(x => x is Bishop).ToList(), 3);
-        //Debug.Log($"Bishop score {score}");
         return score;
     }
 
     private float KnightMaterialCount(List<Piece> pieces)
     {
         var score = GetMaterialCount(pieces.Where(x => x is Knight).ToList(), 3);
-        //Debug.Log($"Knight score {score}");
         return score;
     }
     private float PawnMaterialCount(List<Piece> pieces)
     {
         var score = GetMaterialCount(pieces.Where(x => x is Pawn).ToList(), 1);
-        //Debug.Log($"Pawn score {score}");
         return score;
     }
 
@@ -140,7 +132,6 @@ public class MinimaxAI : AIPlayer
         int wQnt = pieces.Count(x => x.pieceColor == PieceColor.White);
         int bQnt = pieces.Count(x => x.pieceColor == PieceColor.Black);
 
-        //Debug.Log($"White Qnt {wQnt} and Black Qnt {bQnt}");
         return weight * (wQnt - bQnt);
     }
 }
