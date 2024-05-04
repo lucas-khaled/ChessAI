@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using UnityEngine;
 
 public class PlayTurnManager : ManagerHelper
@@ -27,9 +28,9 @@ public class PlayTurnManager : ManagerHelper
     public void PlayerMove(PieceColor turn) 
     {
         if (turn == PieceColor.White)
-            whitePlayer.StartTurn(OnMove);
+            Task.Run(() => whitePlayer.StartTurn(OnMove));
         if (turn == PieceColor.Black)
-            blackPlayer.StartTurn(OnMove);
+            Task.Run(() => blackPlayer.StartTurn(OnMove)); 
     }
 
     private void OnMove(Move move) 
