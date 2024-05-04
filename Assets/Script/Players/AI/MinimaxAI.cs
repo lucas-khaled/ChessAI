@@ -7,11 +7,13 @@ public class MinimaxAI : AIPlayer
 {
     private int maxDepth = 2;
     private EndGameChecker endGameChecker;
+    private PositionHeuristic heuristic;
 
     public MinimaxAI(GameManager manager, int depth = 2) : base(manager) 
     {
         maxDepth = depth;
         endGameChecker = new(null);
+        heuristic = new SimplePositionHeuristic();
     } 
 
     protected override async Task<Move> CalculateMove()
@@ -73,7 +75,7 @@ public class MinimaxAI : AIPlayer
             return 0;
 
         if (depth == 0)
-            return GetHeuristicOnPosition(env);
+            return heuristic.GetHeuristic(env);
 
         float bestScore = isMaximize ? float.MinValue : float.MaxValue;
         foreach (var move in GetAllMoves(env, color)) 
@@ -108,54 +110,5 @@ public class MinimaxAI : AIPlayer
     private bool IsBetterScoreThan(float newScore, float oldScore)
     {
         return (actualColor == PieceColor.White) ? newScore > oldScore : newScore < oldScore;
-    }
-
-    private float GetHeuristicOnPosition(Environment environment)
-    {
-        return GetHeuristicOnMaterial(environment);
-    }
-
-    private float GetHeuristicOnMaterial(Environment environment)
-    {
-        var pieces = environment.board.pieces;
-
-        return QueenMaterialCount(pieces) + RookMaterialCount(pieces) + BishopMaterialCount(pieces) + KnightMaterialCount(pieces) + PawnMaterialCount(pieces);
-    }
-
-    private float QueenMaterialCount(List<Piece> pieces) 
-    {
-        var score = GetMaterialCount(pieces.Where(x => x is Queen).ToList(), 10);
-        return score;
-    }
-
-    private float RookMaterialCount(List<Piece> pieces) 
-    {
-        var score = GetMaterialCount(pieces.Where(x => x is Rook).ToList(), 5);
-        return score;
-    }
-
-    private float BishopMaterialCount(List<Piece> pieces)
-    {
-        var score = GetMaterialCount(pieces.Where(x => x is Bishop).ToList(), 3);
-        return score;
-    }
-
-    private float KnightMaterialCount(List<Piece> pieces)
-    {
-        var score = GetMaterialCount(pieces.Where(x => x is Knight).ToList(), 3);
-        return score;
-    }
-    private float PawnMaterialCount(List<Piece> pieces)
-    {
-        var score = GetMaterialCount(pieces.Where(x => x is Pawn).ToList(), 1);
-        return score;
-    }
-
-    private float GetMaterialCount(List<Piece> pieces, float weight) 
-    {
-        int wQnt = pieces.Count(x => x.pieceColor == PieceColor.White);
-        int bQnt = pieces.Count(x => x.pieceColor == PieceColor.Black);
-
-        return weight * (wQnt - bQnt);
     }
 }
