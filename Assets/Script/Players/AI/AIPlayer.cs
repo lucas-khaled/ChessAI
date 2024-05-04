@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Random = UnityEngine.Random;
 
 public abstract class AIPlayer : Player
 {
@@ -50,6 +49,21 @@ public abstract class AIPlayer : Player
             pieces.Remove(promotion.piece);
             pieces.Add(promotion.promoteTo);
         }
+    }
+
+    protected List<Move> GetAllMoves(Environment environment)
+    {
+        List<Move> possibleMoves = new List<Move>();
+        lock (pieceLock)
+        {
+            foreach (var piece in pieces)
+            {
+                var moves = environment.moveMaker.GetMoves(piece);
+                possibleMoves.AddRange(moves);
+            }
+        }
+
+        return possibleMoves;
     }
 
     protected abstract Task<Move> CalculateMove();
