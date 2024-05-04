@@ -13,13 +13,18 @@ public class EndGameChecker
 
     public EndGameChecker(Environment environment) 
     {
+        SetEnvironment(environment);
+    }
+
+    public void SetEnvironment(Environment environment) 
+    {
         this.environment = environment;
     }
 
     public EndGameInfo CheckEnd()
     {
         EndGameInfo info = new EndGameInfo();
-        if (environment.moveChecker.IsCheckMate())
+        if (IsCheckMate())
             //GameManager.UIManager.ShowCheckmateMessage(lastTurnColor);
             info.hasEnded = info.isCheckMate = true;
         else if (HasDraw(out info.drawType)) 
@@ -27,6 +32,17 @@ public class EndGameChecker
             //GameManager.UIManager.ShowDrawMessage(drawType);
 
         return info;
+    }
+
+    public bool IsCheckMate() 
+    {
+        return environment.moveChecker.IsCheckMate();
+    }
+
+    public bool HasDraw() 
+    {
+        DrawType _;
+        return HasDraw(out _);
     }
 
     public bool HasDraw(out DrawType drawType) 
