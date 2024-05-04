@@ -120,7 +120,7 @@ public class TurnManager : IEnvironmentable
         {
             capturedPiece.GetTile().DeOccupy();
             halfMoves = 0;
-            Environment.board.pieces.Remove(capturedPiece);
+            Environment.board.pieces.RemoveAll(p => p.Coordinates.Equals(capturedPiece.Coordinates));
             this.Environment.events?.onPieceCaptured?.Invoke(capturedPiece);
         }
     }
