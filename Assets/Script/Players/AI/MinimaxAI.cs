@@ -22,6 +22,7 @@ public class MinimaxAI : AIPlayer
 
         bool isWhite = actualColor == PieceColor.White;
         float bestScore = isWhite ? float.MinValue : float.MaxValue;
+        List<Move> bestMoves = new List<Move>();
         Move bestMove = null;
         var alpha = float.MinValue;
         var beta = float.MaxValue;
@@ -39,16 +40,13 @@ public class MinimaxAI : AIPlayer
 
             if (IsBetterScoreThan(score, bestScore))
             {
-                bestMove = move;
+                bestMoves.Clear();
+                bestMoves.Add(move);
                 bestScore = score;
             }
             else if(score == bestScore) 
             {
-                var rand = new System.Random();
-                var chanceToChange = rand.Next(1, 100);
-
-                if(chanceToChange > 50) 
-                    bestMove = move;
+                bestMoves.Add(move);
             }
 
             if (isWhite)
@@ -58,6 +56,13 @@ public class MinimaxAI : AIPlayer
 
             if (beta <= alpha) break;
         }
+
+        bestMoves.ForEach(x => Debug.Log($"<color=green>One of best was: {x}</color>"));
+
+        var rand = new System.Random();
+
+        int choice = rand.Next(0, bestMoves.Count);
+        bestMove = bestMoves[choice];
 
         Debug.Log($"<color=green>Choosed {bestMove} \nas best with a score of {bestScore}</color>");
         return bestMove;
