@@ -99,7 +99,7 @@ public class MinimaxAI : AIPlayer
 
             if (beta <= alpha)
             {
-                Debug.Log($"<color=red>{depth} -> Prunned with alpha = {alpha} and beta = {beta}");
+                Debug.Log($"<color=red>{depth} -> Prunned with alpha = {alpha} and beta = {beta}</color>");
                 break;
             }
         }
