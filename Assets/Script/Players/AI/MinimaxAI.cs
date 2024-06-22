@@ -34,9 +34,11 @@ public class MinimaxAI : AIPlayer
         {
             Environment newEnv = env.Copy();
             newEnv.turnManager.DoMove(move);
+            Debug.Log($"<color=cyan>{maxDepth} -> Evaluating {move}</color>");
+
             float score = Minimax(newEnv, actualColor.GetOppositeColor(), maxDepth-1, alpha, beta);
 
-            Debug.Log($"<color=blue>{maxDepth} -> Evaluated {move} \nwith a score of {score}</color>");
+            Debug.Log($"<color=cyan>{maxDepth} -> Evaluated {move} \nwith a score of {score}</color>");
 
             if (IsBetterScoreThan(score, bestScore))
             {
@@ -79,8 +81,12 @@ public class MinimaxAI : AIPlayer
         if (endGameChecker.HasDraw())
             return 0;
 
-        if (depth == 0)
-            return heuristic.GetHeuristic(env);
+        if (depth == 0) 
+        {
+            float heuristicValue = heuristic.GetHeuristic(env);
+            Debug.Log($"Position Evaluation: {heuristicValue}");
+            return heuristicValue;
+        }
 
         float bestScore = isMaximize ? float.MinValue : float.MaxValue;
         foreach (var move in GetAllMoves(env, color)) 
@@ -88,9 +94,10 @@ public class MinimaxAI : AIPlayer
             Environment newEnv = env.Copy();
             newEnv.turnManager.DoMove(move);
 
+            Debug.Log($"<color=yellow>{depth} -> Evaluating {move}</color>");
+
             float score = Minimax(newEnv, color.GetOppositeColor(), depth-1, alpha, beta);
 
-            Debug.Log($"<color=yellow>{depth} -> Evaluated {move} \nwith a score of {score}</color>");
             if (isMaximize)
             {
                 bestScore = Mathf.Max(bestScore, score);

@@ -18,8 +18,11 @@ public class Move
         var toTile = VirtualizeTile(to, env);
         var fromTile = VirtualizeTile(from, env);
         var captureTile = (capture == null) ? null : VirtualizeTile(capture.GetTile(), env);
+        var virtualizedPiece = fromTile.OccupiedBy;
 
-        return new Move(fromTile, toTile, VirtualizePiece(piece, env, toTile), VirtualizePiece(capture, env, captureTile));
+        var virtualizedCapturePiece = (captureTile == null) ? null : captureTile.OccupiedBy;
+
+        return new Move(fromTile, toTile, virtualizedPiece, virtualizedCapturePiece);
     }
 
     protected Tile VirtualizeTile(Tile tile, Environment env) 

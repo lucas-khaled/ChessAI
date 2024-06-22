@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 
 public class Board : IEnvironmentable
 {
@@ -22,6 +23,7 @@ public class Board : IEnvironmentable
     public IEnvironmentable Copy(Environment env)
     {
         List<List<Tile>> virtualTiles = new List<List<Tile>>();
+        List<Piece> pieces = new List<Piece>();
 
         foreach (var list in tiles)
         {
@@ -29,7 +31,10 @@ public class Board : IEnvironmentable
 
             foreach (var tile in list)
             {
-                virtualList.Add(tile.Copy(env) as Tile);
+                var copyTile = tile.Copy(env) as Tile;
+                virtualList.Add(copyTile);
+                if (tile.IsOccupied)
+                    pieces.Add(copyTile.OccupiedBy);
             }
 
             virtualTiles.Add(virtualList);
@@ -38,7 +43,7 @@ public class Board : IEnvironmentable
         return new Board(BoardRowSize, BoardColumnSize, env)
         {
             tiles = virtualTiles,
-            pieces = new(pieces),
+            pieces = pieces,
             BoardColumnSize = this.BoardColumnSize,
             BoardRowSize = this.BoardRowSize
         };

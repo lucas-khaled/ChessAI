@@ -11,6 +11,6 @@ public class CastleMove : Move
         var toTile = VirtualizeTile(to, env);
         var fromTile = VirtualizeTile(from, env);
 
-        return new CastleMove(fromTile, toTile, VirtualizePiece(piece, env, toTile) as King, rookMove.VirtualizeTo(env));
+        return new CastleMove(fromTile, toTile, fromTile.OccupiedBy as King, rookMove.VirtualizeTo(env));
     }
 }
