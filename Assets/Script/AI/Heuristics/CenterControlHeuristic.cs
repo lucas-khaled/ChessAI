@@ -104,7 +104,17 @@ public class CenterControlHeuristic : Heuristic
 
     private class QueenCenterControlHandler : MappedCenterControlHandler
     {
-        protected override float[,] Map => throw new System.NotImplementedException();
+        protected override float[,] Map => new float[,]
+        {
+            { 0.52f, 0.49f, 0.53f, 0.6f, 0.6f, 0.53f, 0.49f, 0.52f },
+            { 0.49f, 0.63f, 0.68f, 0.73f, 0.73f, 0.68f, 0.63f, 0.49f },
+            { 0.53f, 0.68f, 0.84f, 0.89f, 0.89f, 0.84f, 0.68f, 0.53f },
+            { 0.6f, 0.73f, 0.89f, 1, 1, 0.89f, 0.73f, 0.6f },
+            { 0.6f, 0.73f, 0.89f, 1, 1, 0.89f, 0.73f, 0.6f },
+            { 0.53f, 0.68f, 0.84f, 0.89f, 0.89f, 0.84f, 0.68f, 0.53f },
+            { 0.49f, 0.63f, 0.68f, 0.73f, 0.73f, 0.68f, 0.63f, 0.49f },
+            { 0.52f, 0.49f, 0.53f, 0.6f, 0.6f, 0.53f, 0.49f, 0.52f }
+        };
     }
 
     private class BishopCenterControlHandler : MappedCenterControlHandler
