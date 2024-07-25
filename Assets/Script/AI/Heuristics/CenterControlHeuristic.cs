@@ -1,14 +1,19 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class CenterControlHeuristic : Heuristic
 {
-    PawnCenterControlHandler pawnHandler = new();
-    RookCenterControlHandler rookHandler = new();
-    QueenCenterControlHandler queenHandler = new();
-    BishopCenterControlHandler bishopHandler = new();
-    KnightCenterControlHandler knightHandler = new();
+    private PawnCenterControlHandler pawnHandler = new();
+    private RookCenterControlHandler rookHandler = new();
+    private QueenCenterControlHandler queenHandler = new();
+    private BishopCenterControlHandler bishopHandler = new();
+    private KnightCenterControlHandler knightHandler = new();
+
+    private const float QUEEN_WEIGHT = 0.7f;
+    private const float ROOK_WEIGHT = 0.75f;
+    private const float BISHOP_WEIGHT = 0.85f;
+    private const float KNIGHT_WEIGHT = 0.85f;
+    private const float PAWN_WEIGHT = 1f;
+
 
     public CenterControlHeuristic(float weight) : base(weight)
     {
@@ -24,15 +29,15 @@ public class CenterControlHeuristic : Heuristic
             float points = 0;
 
             if (piece is Queen)
-                points = queenHandler.GetControlAmount(piece);
+                points = queenHandler.GetControlAmount(piece) * QUEEN_WEIGHT;
             else if (piece is Bishop)
-                points = bishopHandler.GetControlAmount(piece);
+                points = bishopHandler.GetControlAmount(piece) * BISHOP_WEIGHT;
             else if (piece is Knight)
-                points = knightHandler.GetControlAmount(piece);
+                points = knightHandler.GetControlAmount(piece) * KNIGHT_WEIGHT;
             else if (piece is Rook)
-                points = rookHandler.GetControlAmount(piece);
+                points = rookHandler.GetControlAmount(piece) * ROOK_WEIGHT;
             else if (piece is Pawn)
-                points = pawnHandler.GetControlAmount(piece);
+                points = pawnHandler.GetControlAmount(piece) * PAWN_WEIGHT;
 
             if (piece.pieceColor != PieceColor.White)
                 blackPoints += points;
@@ -41,7 +46,9 @@ public class CenterControlHeuristic : Heuristic
 
         }
 
-        return (whitePoints - blackPoints) * weight;
+        var finalHeuristic = (whitePoints - blackPoints) * weight;
+        Debug.Log("Center Heuristic: "+finalHeuristic);
+        return finalHeuristic;
     }
 
     private interface IPieceCenterControlHandler 
