@@ -50,7 +50,7 @@ public static class Debugger
             StopTimer(timerTag);
         }
 
-        Debug.Log(message + timeDict[timerTag].DifferenceMS);
+        Debug.Log(message + timeDict[timerTag].DifferenceMS + "ms");
     }
 
     private class TimeInfo 
