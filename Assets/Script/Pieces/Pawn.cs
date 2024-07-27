@@ -19,7 +19,7 @@ public class Pawn : BlockableMovesPiece
 
         possibleMoves.AddRange(GetFowardMoves());
         possibleMoves.AddRange(GetCaptures());
-        
+
         return possibleMoves.ToArray();
     }
     
@@ -67,15 +67,24 @@ public class Pawn : BlockableMovesPiece
 
     private PromotionMove[] GetPossiblePromotions(Tile to) 
     {
-        PromotionMove[] moves = new PromotionMove[4];
-        Piece[] promoteTo = new Piece[4] { new Rook(Environment), new Bishop(Environment), new Knight(Environment), new Queen(Environment) };
-
-        for(int i = 0; i < promoteTo.Length; i++) 
+        return new PromotionMove[4]
         {
-            moves[i] = new PromotionMove(actualTile, to, this, promoteTo[i], to.OccupiedBy);
-        }
+            new PromotionMove(actualTile, to, this, new Rook(Environment), to.OccupiedBy),
+            new PromotionMove(actualTile, to, this, new Bishop(Environment), to.OccupiedBy),
+            new PromotionMove(actualTile, to, this, new Knight(Environment), to.OccupiedBy),
+            new PromotionMove(actualTile, to, this, new Queen(Environment), to.OccupiedBy)
+        };
+    }
 
-        return moves;
+    private PromotionMove[] GetPossiblePromotionsOptimized(Tile to) 
+    {
+        return new PromotionMove[4]
+        {
+            new PromotionMove(actualTile, to, this, new Rook(Environment), to.OccupiedBy),
+            new PromotionMove(actualTile, to, this, new Bishop(Environment), to.OccupiedBy),
+            new PromotionMove(actualTile, to, this, new Knight(Environment), to.OccupiedBy),
+            new PromotionMove(actualTile, to, this, new Queen(Environment), to.OccupiedBy)
+        };
     }
 
     private Move[] GetFowardMoves() 
