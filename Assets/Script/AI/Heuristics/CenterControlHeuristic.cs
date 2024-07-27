@@ -47,7 +47,6 @@ public class CenterControlHeuristic : Heuristic
         }
 
         var finalHeuristic = (whitePoints - blackPoints) * weight;
-        Debug.Log("Center Heuristic: "+finalHeuristic);
         return finalHeuristic;
     }
 

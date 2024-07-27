@@ -29,7 +29,6 @@ public class MobilityHeuristic : Heuristic
 
         float finalHeuristic = weight * (whiteMovesQnt - blackMovesQnt);
         FEN fen = fenManager.GetFEN();
-        Debug.Log($"BlackQnt: {blackMovesQnt} | WhiteQnt: {whiteMovesQnt} | Final Heuristic: {finalHeuristic} || From Position {fen}");
         return finalHeuristic;
     }
 }
