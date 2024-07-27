@@ -92,4 +92,9 @@ public abstract class Piece : IEnvironmentable
     {
         return Copy(env, null);
     }
+
+    public override string ToString()
+    {
+        return $"{this.GetType().Name} ({Coordinates.row},{Coordinates.column})";
+    }
 }
