@@ -51,8 +51,8 @@ public class King : BlockableMovesPiece
         var range = tile.TilePosition.column - Column;
 
         var inBetweenTiles = (range > 0) ?
-            Environment.boardManager.GetRightHorizontals(Coordinates) :
-            Environment.boardManager.GetLeftHorizontals(Coordinates);
+            actualTile.GetHorizontalsByColor(pieceColor).rightHorizontals ://Environment.boardManager.GetRightHorizontals(Coordinates) :
+            actualTile.GetHorizontalsByColor(pieceColor).leftHorizontals;
 
         var blockingCheckedBetween = CheckForBlockingSquares(inBetweenTiles, includeBlockingPieceSquare: true);
 

@@ -20,7 +20,8 @@ public class MoveMaker : IEnvironmentable
     public Move[] GetMoves(Piece piece) 
     {
         var pieceMoves = piece.GetMoves();
-        
-        return Environment.moveChecker.GetLegalMoves(pieceMoves);
+        var moves = Environment.moveChecker.GetLegalMoves(pieceMoves);
+
+        return moves;
     }
 }

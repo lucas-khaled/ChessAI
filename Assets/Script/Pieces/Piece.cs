@@ -57,11 +57,12 @@ public abstract class Piece : IEnvironmentable
         return moves;
     }
 
-    protected List<Tile> CheckForBlockingSquares(List<Tile> segment, bool capturesIfEnemy = true, bool includeBlockingPieceSquare = false)
+    protected List<Tile> CheckForBlockingSquares(List<TileCoordinates> segment, bool capturesIfEnemy = true, bool includeBlockingPieceSquare = false)
     {
         List<Tile> finalTiles = new();
-        foreach (var tile in segment)
+        foreach (var tileCoord in segment)
         {
+            Tile tile = Environment.board.tiles[tileCoord.row][tileCoord.column];
             if (tile.IsOccupied)
             {
                 if (IsEnemyPiece(tile.OccupiedBy) && capturesIfEnemy || includeBlockingPieceSquare)
@@ -95,6 +96,6 @@ public abstract class Piece : IEnvironmentable
 
     public override string ToString()
     {
-        return $"{this.GetType().Name} ({Coordinates.row},{Coordinates.column})";
+        return $"{this.GetType().Name} {pieceColor} ({Coordinates.row},{Coordinates.column})";
     }
 }

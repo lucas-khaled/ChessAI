@@ -11,7 +11,6 @@ public class Knight : Piece
     public override Move[] GetMoves()
     {
         List<Move> moves = new List<Move>();
-
         moves.AddRange(GetMovesFromHorizontals());
         moves.AddRange(GetMovesFromVertical());
 
@@ -22,28 +21,34 @@ public class Knight : Piece
     {
         List<Move> moves = new List<Move>();
 
-        var horizontals = Environment.boardManager.GetHorizontalsFrom(actualTile.TilePosition, pieceColor, 2);
-
+        var horizontals = actualTile.GetHorizontalsByColor(pieceColor);
         moves.AddRange(GetMovesFromHorizontal(horizontals.rightHorizontals));
         moves.AddRange(GetMovesFromHorizontal(horizontals.leftHorizontals));
 
         return moves;
     }
 
-    private List<Move> GetMovesFromHorizontal(List<Tile> horizontal) 
+    private List<Move> GetMovesFromHorizontal(List<TileCoordinates> horizontal) 
     {
         List<Move> moves = new List<Move>();
 
-        if (horizontal.Count == 2)
+        if (horizontal.Count >= 2)
         {
-            var edge = horizontal[1];
-            var edgeVerticals = Environment.boardManager.GetVerticalsFrom(edge.TilePosition, pieceColor, 1);
+            var edgeCoord = horizontal[1];
+            var edge = Environment.board.tiles[edgeCoord.row][edgeCoord.column];
+            var edgeVerticals = edge.GetVerticalsByColor(pieceColor);
 
-            var checkedFront = CheckForBlockingSquares(edgeVerticals.frontVerticals);
-            var checkedBack = CheckForBlockingSquares(edgeVerticals.backVerticals);
+            if (edgeVerticals.frontVerticals.Count > 0)
+            {
+                var checkedFront = CheckForBlockingSquares(edgeVerticals.frontVerticals.GetRange(0, 1));
+                moves.AddRange(CreateMovesFromSegment(checkedFront));
+            }
 
-            moves.AddRange(CreateMovesFromSegment(checkedFront));
-            moves.AddRange(CreateMovesFromSegment(checkedBack));
+            if (edgeVerticals.backVerticals.Count > 0)
+            {
+                var checkedBack = CheckForBlockingSquares(edgeVerticals.backVerticals.GetRange(0, 1));
+                moves.AddRange(CreateMovesFromSegment(checkedBack));
+            }
         }
 
         return moves;
@@ -53,7 +58,7 @@ public class Knight : Piece
     {
         List<Move> moves = new List<Move>();
 
-        var verticals = Environment.boardManager.GetVerticalsFrom(actualTile.TilePosition, pieceColor, 2);
+        var verticals = actualTile.GetVerticalsByColor(pieceColor);
 
         moves.AddRange(GetMovesFromVertical(verticals.frontVerticals));
         moves.AddRange(GetMovesFromVertical(verticals.backVerticals));
@@ -61,20 +66,27 @@ public class Knight : Piece
         return moves;
     }
 
-    private List<Move> GetMovesFromVertical(List<Tile> vertical)
+    private List<Move> GetMovesFromVertical(List<TileCoordinates> vertical)
     {
         List<Move> moves = new List<Move>();
 
-        if (vertical.Count == 2)
+        if (vertical.Count >= 2)
         {
-            var edge = vertical[1];
-            var edgeHorizontals = Environment.boardManager.GetHorizontalsFrom(edge.TilePosition, pieceColor, 1);
+            var edgeCoord = vertical[1];
+            var edge = Environment.board.tiles[edgeCoord.row][edgeCoord.column];
+            var edgeHorizontals = edge.GetHorizontalsByColor(pieceColor);
 
-            var checkedLeft = CheckForBlockingSquares(edgeHorizontals.leftHorizontals);
-            var checkedRight = CheckForBlockingSquares(edgeHorizontals.rightHorizontals);
+            if (edgeHorizontals.leftHorizontals.Count > 0)
+            {
+                var checkedLeft = CheckForBlockingSquares(edgeHorizontals.leftHorizontals.GetRange(0, 1));
+                moves.AddRange(CreateMovesFromSegment(checkedLeft));
+            }
 
-            moves.AddRange(CreateMovesFromSegment(checkedLeft));
-            moves.AddRange(CreateMovesFromSegment(checkedRight));
+            if (edgeHorizontals.rightHorizontals.Count > 0)
+            {
+                var checkedRight = CheckForBlockingSquares(edgeHorizontals.rightHorizontals.GetRange(0, 1));
+                moves.AddRange(CreateMovesFromSegment(checkedRight));
+            }
         }
 
         return moves;

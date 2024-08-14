@@ -11,6 +11,15 @@ public class Tile : IEnvironmentable
 
     public Environment Environment { get; }
 
+    private Diagonals Diagonals;
+    private Diagonals InvertedDiagonals;
+
+    private Verticals Verticals;
+    private Verticals InvertedVerticals;
+
+    private Horizontals Horizontals;
+    private Horizontals InvertedHorizontals;
+
     public Tile(Environment env) 
     {
         Environment = env;
@@ -45,8 +54,59 @@ public class Tile : IEnvironmentable
             visualTile = null
         };
 
+        tile.Diagonals = Diagonals;
+        tile.InvertedDiagonals = InvertedDiagonals;
+        tile.Verticals = Verticals;
+        tile.InvertedVerticals = InvertedVerticals;
+        tile.Horizontals = Horizontals;
+        tile.InvertedHorizontals = Horizontals;
+
         tile.OccupiedBy = (IsOccupied) ? this.OccupiedBy.Copy(env, tile) as Piece : null;
 
         return tile;
+    }
+
+    public void SetVerticals(Verticals verticals) 
+    {
+        Verticals = verticals;
+        
+        InvertedVerticals = new Verticals();
+        InvertedVerticals.frontVerticals = verticals.backVerticals;
+        InvertedVerticals.backVerticals = verticals.frontVerticals;
+    }
+
+    public void SetHorizontals(Horizontals horizontals) 
+    {
+        Horizontals = horizontals;
+
+        InvertedHorizontals = new Horizontals();
+        InvertedHorizontals.rightHorizontals = horizontals.leftHorizontals;
+        InvertedHorizontals.leftHorizontals = horizontals.rightHorizontals;
+    }
+
+    public void SetDiagonals(Diagonals diagonals) 
+    {
+        Diagonals = diagonals;
+
+        InvertedDiagonals = new Diagonals();
+        InvertedDiagonals.topRightDiagonals = diagonals.downLeftDiagonals;
+        InvertedDiagonals.topLeftDiagonals = diagonals.downRightDiagonals;
+        InvertedDiagonals.downRightDiagonals = diagonals.topLeftDiagonals;
+        InvertedDiagonals.downLeftDiagonals = diagonals.topRightDiagonals;
+    }
+
+    public Verticals GetVerticalsByColor(PieceColor color) 
+    {
+        return (color == PieceColor.White) ? Verticals : InvertedVerticals;
+    }
+
+    public Horizontals GetHorizontalsByColor(PieceColor color) 
+    {
+        return (color == PieceColor.White) ? Horizontals : InvertedHorizontals;
+    }
+
+    public Diagonals GetDiagonalsByColor(PieceColor color) 
+    {
+        return (color == PieceColor.White) ? Diagonals : InvertedDiagonals;
     }
 }

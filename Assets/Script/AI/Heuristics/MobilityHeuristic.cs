@@ -17,8 +17,10 @@ public class MobilityHeuristic : Heuristic
 
         foreach (var piece in environment.board.pieces)
         {
-            var moves = environment.moveMaker.GetMoves(piece);
-            //Debug.Log($"[{nameof(MobilityHeuristic)}] {piece.GetType().Name} {piece.pieceColor} has {moves.Length} moves");
+            Move[] moves = piece.pieceColor == environment.turnManager.ActualTurn ?
+                environment.moveMaker.GetMoves(piece) :
+                piece.GetMoves();
+
             if (moves.Length <= 0) continue;
 
             if (piece.pieceColor == PieceColor.White)
@@ -28,7 +30,6 @@ public class MobilityHeuristic : Heuristic
         }
 
         float finalHeuristic = weight * (whiteMovesQnt - blackMovesQnt);
-        FEN fen = fenManager.GetFEN();
         return finalHeuristic;
     }
 }

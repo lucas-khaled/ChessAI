@@ -12,8 +12,9 @@ public class MaterialHeuristic : Heuristic
     public override float GetHeuristic(Environment environment)
     {
         var pieces = environment.board.pieces;
+        var heuristic = weight * (QueenMaterialCount(pieces) + RookMaterialCount(pieces) + BishopMaterialCount(pieces) + KnightMaterialCount(pieces) + PawnMaterialCount(pieces));
 
-        return weight * (QueenMaterialCount(pieces) + RookMaterialCount(pieces) + BishopMaterialCount(pieces) + KnightMaterialCount(pieces) + PawnMaterialCount(pieces));
+        return heuristic;
     }
 
     private float QueenMaterialCount(List<Piece> pieces)

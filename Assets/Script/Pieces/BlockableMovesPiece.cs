@@ -12,10 +12,10 @@ public abstract class BlockableMovesPiece : Piece
     {
         List<Move> moves = new();
 
-        var verticals = Environment.boardManager.GetVerticalsFrom(actualTile.TilePosition, pieceColor, range);
+        var verticals = actualTile.GetVerticalsByColor(pieceColor);
 
-        var checkedFrontBlockingSquares = CheckForBlockingSquares(verticals.frontVerticals);
-        var checkedBackBlockingSquares = CheckForBlockingSquares(verticals.backVerticals);
+        var checkedFrontBlockingSquares = CheckForBlockingSquares(verticals.frontVerticals.GetRange(0, Mathf.Min(range, verticals.frontVerticals.Count)));
+        var checkedBackBlockingSquares = CheckForBlockingSquares(verticals.backVerticals.GetRange(0, Mathf.Min(range, verticals.backVerticals.Count)));
 
         moves.AddRange(CreateMovesFromSegment(checkedFrontBlockingSquares));
         moves.AddRange(CreateMovesFromSegment(checkedBackBlockingSquares));
@@ -27,10 +27,10 @@ public abstract class BlockableMovesPiece : Piece
     {
         List<Move> moves = new();
 
-        var horizontals = Environment.boardManager.GetHorizontalsFrom(actualTile.TilePosition, pieceColor, range);
+        var horizontals = actualTile.GetHorizontalsByColor(pieceColor);
 
-        var checkedLeftBlockingSquares = CheckForBlockingSquares(horizontals.leftHorizontals);
-        var checkedRightBlockingSquares = CheckForBlockingSquares(horizontals.rightHorizontals);
+        var checkedLeftBlockingSquares = CheckForBlockingSquares(horizontals.leftHorizontals.GetRange(0, Mathf.Min(range, horizontals.leftHorizontals.Count)));
+        var checkedRightBlockingSquares = CheckForBlockingSquares(horizontals.rightHorizontals.GetRange(0, Mathf.Min(range, horizontals.rightHorizontals.Count)));
 
         moves.AddRange(CreateMovesFromSegment(checkedLeftBlockingSquares));
         moves.AddRange(CreateMovesFromSegment(checkedRightBlockingSquares));
@@ -42,12 +42,12 @@ public abstract class BlockableMovesPiece : Piece
     {
         List<Move> moves = new();
 
-        var diagonals = Environment.boardManager.GetDiagonalsFrom(actualTile.TilePosition, pieceColor, range);
+        var diagonals = actualTile.GetDiagonalsByColor(pieceColor);
 
-        var checkedTopLeftBlockingSquares = CheckForBlockingSquares(diagonals.topLeftDiagonals);
-        var checkedTopRightBlockingSquares = CheckForBlockingSquares(diagonals.topRightDiagonals);
-        var checkedDownLeftBlockingSquares = CheckForBlockingSquares(diagonals.downLeftDiagonals);
-        var checkedDownRightBlockingSquares = CheckForBlockingSquares(diagonals.downRightDiagonals);
+        var checkedTopLeftBlockingSquares = CheckForBlockingSquares(diagonals.topLeftDiagonals.GetRange(0, Mathf.Min(range, diagonals.topLeftDiagonals.Count))) ;
+        var checkedTopRightBlockingSquares = CheckForBlockingSquares(diagonals.topRightDiagonals.GetRange(0, Mathf.Min(range, diagonals.topRightDiagonals.Count)));
+        var checkedDownLeftBlockingSquares = CheckForBlockingSquares(diagonals.downLeftDiagonals.GetRange(0, Mathf.Min(range, diagonals.downLeftDiagonals.Count)));
+        var checkedDownRightBlockingSquares = CheckForBlockingSquares(diagonals.downRightDiagonals.GetRange(0, Mathf.Min(range, diagonals.downRightDiagonals.Count)));
 
         moves.AddRange(CreateMovesFromSegment(checkedTopLeftBlockingSquares));
         moves.AddRange(CreateMovesFromSegment(checkedTopRightBlockingSquares));

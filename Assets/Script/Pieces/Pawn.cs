@@ -44,17 +44,18 @@ public class Pawn : BlockableMovesPiece
 
     private PromotionMove[] GetPromotionsForward() 
     {
-        var verticals = Environment.boardManager.GetVerticalsFrom(actualTile.TilePosition, pieceColor, 1);
+        var verticals = actualTile.GetVerticalsByColor(pieceColor);
 
-        var toTile = verticals.frontVerticals[0];
-        return toTile.IsOccupied ? new PromotionMove[0] : GetPossiblePromotions(toTile);
+        var toTileCoord = verticals.frontVerticals[0];
+        var toTile = Environment.board.tiles[toTileCoord.row][toTileCoord.column];
+        return toTile.IsOccupied ? new PromotionMove[0] : GetPossiblePromotions(toTileCoord);
     }
 
     private List<PromotionMove> GetPromotionCaptures() 
     {
         List<PromotionMove> moves = new();
 
-        var diagonals = Environment.boardManager.GetDiagonalsFrom(actualTile.TilePosition, pieceColor, 1);
+        var diagonals = actualTile.GetDiagonalsByColor(pieceColor);
         
         if (CanMoveToDiagonal(diagonals.topLeftDiagonals))
             moves.AddRange(GetPossiblePromotions(diagonals.topLeftDiagonals[0]));
@@ -65,25 +66,14 @@ public class Pawn : BlockableMovesPiece
         return moves;
     }
 
-    private PromotionMove[] GetPossiblePromotions(Tile to) 
+    private PromotionMove[] GetPossiblePromotions(TileCoordinates toCoord) 
     {
         return new PromotionMove[4]
         {
-            new PromotionMove(actualTile, to, this, new Rook(Environment), to.OccupiedBy),
-            new PromotionMove(actualTile, to, this, new Bishop(Environment), to.OccupiedBy),
-            new PromotionMove(actualTile, to, this, new Knight(Environment), to.OccupiedBy),
-            new PromotionMove(actualTile, to, this, new Queen(Environment), to.OccupiedBy)
-        };
-    }
-
-    private PromotionMove[] GetPossiblePromotionsOptimized(Tile to) 
-    {
-        return new PromotionMove[4]
-        {
-            new PromotionMove(actualTile, to, this, new Rook(Environment), to.OccupiedBy),
-            new PromotionMove(actualTile, to, this, new Bishop(Environment), to.OccupiedBy),
-            new PromotionMove(actualTile, to, this, new Knight(Environment), to.OccupiedBy),
-            new PromotionMove(actualTile, to, this, new Queen(Environment), to.OccupiedBy)
+            new PromotionMove(actualTile, Environment.board.tiles[toCoord.row][toCoord.column], this, new Rook(Environment), Environment.board.tiles[toCoord.row][toCoord.column].OccupiedBy),
+            new PromotionMove(actualTile, Environment.board.tiles[toCoord.row][toCoord.column], this, new Bishop(Environment), Environment.board.tiles[toCoord.row][toCoord.column].OccupiedBy),
+            new PromotionMove(actualTile, Environment.board.tiles[toCoord.row][toCoord.column], this, new Knight(Environment), Environment.board.tiles[toCoord.row][toCoord.column].OccupiedBy),
+            new PromotionMove(actualTile, Environment.board.tiles[toCoord.row][toCoord.column], this, new Queen(Environment), Environment.board.tiles[toCoord.row][toCoord.column].OccupiedBy)
         };
     }
 
@@ -91,8 +81,8 @@ public class Pawn : BlockableMovesPiece
     {
         int range = (IsOnInitialRow()) ? 2 : 1;
 
-        var verticals = Environment.boardManager.GetVerticalsFrom(actualTile.TilePosition, pieceColor, range);
-        var checkingBlockVerticals = CheckForBlockingSquares(verticals.frontVerticals, false);
+        var verticals = actualTile.GetVerticalsByColor(pieceColor);
+        var checkingBlockVerticals = CheckForBlockingSquares(verticals.frontVerticals.GetRange(0, range), false);
         
         return CreateMovesFromSegment(checkingBlockVerticals);
     }
@@ -107,7 +97,7 @@ public class Pawn : BlockableMovesPiece
     {
         List<Move> moves = new();
 
-        var diagonals = Environment.boardManager.GetDiagonalsFrom(actualTile.TilePosition, pieceColor, 1);
+        var diagonals = actualTile.GetDiagonalsByColor(pieceColor);
 
         if (CanMoveToDiagonal(diagonals.topLeftDiagonals)) 
             moves.Add(CreateDiagonalMove(diagonals.topLeftDiagonals[0]));
@@ -118,16 +108,18 @@ public class Pawn : BlockableMovesPiece
         return moves.ToArray();
     }
 
-    private bool CanMoveToDiagonal(List<Tile> diagonal) 
+    private bool CanMoveToDiagonal(List<TileCoordinates> diagonal) 
     {
         if (diagonal.Count <= 0) return false;
 
-        return IsEnemyPiece(diagonal[0].OccupiedBy)
-            || (Environment.rules.enPassantTile != null && diagonal[0].TilePosition.Equals(Environment.rules.enPassantTile.TilePosition));
+        var diagonalTile = Environment.board.tiles[diagonal[0].row][diagonal[0].column];
+        return IsEnemyPiece(diagonalTile.OccupiedBy)
+            || (Environment.rules.enPassantTile != null && diagonal[0].Equals(Environment.rules.enPassantTile.TilePosition));
     }
 
-    private Move CreateDiagonalMove(Tile diagonalTile) 
+    private Move CreateDiagonalMove(TileCoordinates diagonalTileCoord) 
     {
+        Tile diagonalTile = Environment.board.tiles[diagonalTileCoord.row][diagonalTileCoord.column];
         return diagonalTile.IsOccupied ?
             new Move(actualTile, diagonalTile, this, diagonalTile.OccupiedBy) :
             new Move(actualTile, diagonalTile, this, Environment.rules.enPassantPawn);

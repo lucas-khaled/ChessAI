@@ -36,9 +36,9 @@ public class CheckChecker
         var manager = env.boardManager;
 
         kingTile = manager.GetKingTile(colorTurn);
-        verticals = manager.GetVerticalsFrom(kingTile.TilePosition, colorTurn);
-        horizontals = manager.GetHorizontalsFrom(kingTile.TilePosition, colorTurn);
-        diagonals = manager.GetDiagonalsFrom(kingTile.TilePosition, colorTurn);
+        verticals = kingTile.GetVerticalsByColor(colorTurn);
+        horizontals = kingTile.GetHorizontalsByColor(colorTurn);
+        diagonals = kingTile.GetDiagonalsByColor(colorTurn);
 
         checkMarkBools = new();
         this.colorTurn = colorTurn;
@@ -54,11 +54,15 @@ public class CheckChecker
         return ThereIsRookCheck(i, horizontals.leftHorizontals, ref checkMarkBools.horL) || ThereIsRookCheck(i, horizontals.rightHorizontals, ref checkMarkBools.horR);
     }
 
-    private bool ThereIsRookCheck(int index, List<Tile> segment, ref bool checkmark)
+    private bool ThereIsRookCheck(int index, List<TileCoordinates> segment, ref bool checkmark)
     {
-        if (checkmark is false && segment.Count > index && segment[index].IsOccupied)
+        if (segment.Count <= index) return false;
+
+        TileCoordinates coord = segment[index];
+        Tile tile = environment.board.tiles[coord.row][coord.column];
+        if (checkmark is false && tile.IsOccupied)
         {
-            Piece piece = segment[index].OccupiedBy;
+            Piece piece = tile.OccupiedBy;
             if (piece.pieceColor == colorTurn)
                 checkmark = true;
             else
@@ -81,11 +85,16 @@ public class CheckChecker
             ThereIsBishopCheck(i, diagonals.downRightDiagonals, ref checkMarkBools.diagDR);
     }
 
-    private bool ThereIsBishopCheck(int index, List<Tile> segment, ref bool checkmark, bool isTopDiagonal = false)
+    private bool ThereIsBishopCheck(int index, List<TileCoordinates> segment, ref bool checkmark, bool isTopDiagonal = false)
     {
-        if (checkmark is false && segment.Count > index && segment[index].IsOccupied)
+        if (segment.Count <= index) return false;
+
+        TileCoordinates coord = segment[index];
+        Tile tile = environment.board.tiles[coord.row][coord.column];
+
+        if (checkmark is false && tile.IsOccupied)
         {
-            Piece piece = segment[index].OccupiedBy;
+            Piece piece = tile.OccupiedBy;
             if (piece.pieceColor == colorTurn)
                 checkmark = true;
             else
