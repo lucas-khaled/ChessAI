@@ -1,63 +1,71 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using UnityEngine;
 
 public static class Debugger
 {
-    private static Dictionary<string, TimeInfo> timeDict = new();
-
-    public static void StartTimer(string timerTag) 
+    private static Dictionary<string, TimeRecord> m_timeRecordDict = new Dictionary<string, TimeRecord>();
+    public static void LogStopwatch(Stopwatch stopwatch, string message = "", bool record = false)
     {
-        DateTime now = DateTime.Now;
-        if (timeDict.ContainsKey(timerTag)) 
+        if (record) 
+            RecordTime(stopwatch, message);
+
+        UnityEngine.Debug.Log($"<color=#7a378b> {message} in {stopwatch.ElapsedMilliseconds} ms</color>");
+    }
+
+    public static void LogTimeRecord(string tag, string message = "") 
+    {
+        var record = GetRecord(tag);
+        if (record == null) return;
+
+        LogTimeRecord(record, message);
+    }
+
+    public static void LogTimeRecord(TimeRecord record, string message = "") 
+    {
+        UnityEngine.Debug.Log($"<color=#800080><b>{message}: {record}</b></color>");
+    }
+
+    private static void RecordTime(Stopwatch stopwatch, string tag) 
+    {
+        if (m_timeRecordDict.ContainsKey(tag)) 
         {
-            timeDict[timerTag].firstMeasureTime = now;
-            timeDict[timerTag].lastMeasureTime = now;
+            m_timeRecordDict[tag].AddTime(stopwatch.ElapsedMilliseconds);
             return;
         }
 
-        TimeInfo info = new TimeInfo()
-        {
-            firstMeasureTime = now,
-            lastMeasureTime = now
-        };
-
-        timeDict.Add(timerTag, info);
+        m_timeRecordDict.Add(tag, new TimeRecord());
+        m_timeRecordDict[tag].AddTime(stopwatch.ElapsedMilliseconds);
     }
 
-    public static void StopTimer(string timerTag) 
+    public static TimeRecord GetRecord(string tag)
     {
-        if (timeDict.ContainsKey(timerTag) is false)
+        if(m_timeRecordDict.ContainsKey(tag) is false)
         {
-            Debug.LogError($"No timer was initialized with the tag {timerTag}");
-            return;
+            UnityEngine.Debug.LogError($"There is no record tagged {tag}");
+            return null;
         }
-
-        timeDict[timerTag].lastMeasureTime = DateTime.Now;
+        return m_timeRecordDict[tag];
     }
 
-    public static void DebugTimer(string timerTag, string message = "", bool alsoStop = false) 
+    public class TimeRecord 
     {
-        if (timeDict.ContainsKey(timerTag) is false) 
+        public int timesCalled = 0;
+        public float totalTime = 0;
+
+        public float GetTotalTime() => totalTime;
+        public float GetMediumTime() => totalTime / timesCalled;
+        public void AddTime(float time) 
         {
-            Debug.LogError($"No timer was initialized with the tag {timerTag}");
-            return;
+            timesCalled++;
+            totalTime += time;
         }
 
-        if (alsoStop) 
+        public override string ToString()
         {
-            StopTimer(timerTag);
+            return $"Took {totalTime}ms and was called {timesCalled} times. Medium Time is {GetMediumTime()}ms";
         }
-
-        Debug.Log(message + timeDict[timerTag].DifferenceMS + "ms");
-    }
-
-    private class TimeInfo 
-    {
-        public DateTime firstMeasureTime;
-        public DateTime lastMeasureTime;
-        public TimeSpan TimeDifference => lastMeasureTime - firstMeasureTime;
-        public double DifferenceMS => TimeDifference.TotalMilliseconds;
     }
 }
