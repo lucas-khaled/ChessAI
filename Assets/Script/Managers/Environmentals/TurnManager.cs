@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -120,7 +121,14 @@ public class TurnManager : IEnvironmentable
         {
             capturedPiece.GetTile().DeOccupy();
             halfMoves = 0;
-            Environment.board.pieces.RemoveAll(p => p.Coordinates.Equals(capturedPiece.Coordinates));
+
+            Predicate<Piece> predicate = p => p.Coordinates.Equals(capturedPiece.Coordinates);
+            Environment.board.pieces.RemoveAll(predicate);
+            if (capturedPiece.pieceColor == PieceColor.White)
+                Environment.board.whitePieces.RemoveAll(predicate);
+            else
+                Environment.board.blackPieces.RemoveAll(predicate);
+
             this.Environment.events?.onPieceCaptured?.Invoke(capturedPiece);
         }
     }

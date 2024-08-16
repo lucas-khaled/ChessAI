@@ -8,6 +8,8 @@ public class Board : IEnvironmentable
 
     public List<List<Tile>> tiles;
     public List<Piece> pieces;
+    public List<Piece> whitePieces;
+    public List<Piece> blackPieces;
 
     public Environment Environment { get; }
 
@@ -17,6 +19,8 @@ public class Board : IEnvironmentable
         BoardColumnSize = column;
         tiles = new();
         pieces = new();
+        whitePieces = new();
+        blackPieces = new();
         Environment = environment;
     }
 
@@ -24,6 +28,8 @@ public class Board : IEnvironmentable
     {
         List<List<Tile>> virtualTiles = new List<List<Tile>>();
         List<Piece> pieces = new List<Piece>();
+        List<Piece> whitePieces = new List<Piece>();
+        List<Piece> blackPieces = new List<Piece>();
 
         foreach (var list in tiles)
         {
@@ -33,8 +39,17 @@ public class Board : IEnvironmentable
             {
                 var copyTile = tile.Copy(env) as Tile;
                 virtualList.Add(copyTile);
+
                 if (tile.IsOccupied)
-                    pieces.Add(copyTile.OccupiedBy);
+                {
+                    Piece piece = copyTile.OccupiedBy;
+                    pieces.Add(piece);
+
+                    if (piece.pieceColor == PieceColor.White)
+                        whitePieces.Add(piece);
+                    else
+                        blackPieces.Add(piece);
+                }
             }
 
             virtualTiles.Add(virtualList);
@@ -44,6 +59,8 @@ public class Board : IEnvironmentable
         {
             tiles = virtualTiles,
             pieces = pieces,
+            whitePieces = whitePieces,
+            blackPieces = blackPieces,
             BoardColumnSize = this.BoardColumnSize,
             BoardRowSize = this.BoardRowSize
         };

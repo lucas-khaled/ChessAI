@@ -93,17 +93,13 @@ public class EndGameChecker
 
     private bool IsInsuficcientMaterialDraw() 
     {
-        var pieces = environment.board.pieces;
+        if (environment.board.pieces.Count == 2) return true;
 
-        if (pieces.Count == 2) return true;
+        var notKingWhitePieces = environment.board.whitePieces.Where(x => x is not King);
+        var notKingBlackPieces = environment.board.blackPieces.Where(x => x is not King);
 
-        var notKingPieces = pieces.Where(x => x is not King);
+        if (notKingWhitePieces.Any(x => x is Pawn || x is Queen || x is Rook) || notKingBlackPieces.Any(x => x is Pawn || x is Queen || x is Rook)) return false;
 
-        if (notKingPieces.Any(x => x is Pawn || x is Queen || x is Rook)) return false;
-
-        var notKingWhitePieces = notKingPieces.Where(x => x.pieceColor == PieceColor.White);
-        var notKingBlackPieces = notKingPieces.Where(x => x.pieceColor == PieceColor.Black);
-
-        return notKingWhitePieces.Count() < 2 && notKingBlackPieces.Count() < 2;
+        return notKingWhitePieces.Count() <= 2 && notKingBlackPieces.Count() <= 2;
     }
 }

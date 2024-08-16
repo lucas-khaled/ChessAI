@@ -24,7 +24,9 @@ public abstract class AIPlayer : Player
     protected List<Move> GetAllMoves(Environment environment, PieceColor color)
     {
         List<Move> possibleMoves = new List<Move>();
-        foreach (var piece in environment.board.pieces.Where(x => x.pieceColor == color))
+        List<Piece> pieces = (color == PieceColor.White) ? environment.board.whitePieces : environment.board.blackPieces;
+
+        foreach (var piece in pieces)
         {
             var moves = environment.moveMaker.GetMoves(piece);
             possibleMoves.AddRange(moves);

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using UnityEngine;
 
 public class PiecesSetup : ManagerHelper
@@ -76,7 +77,7 @@ public class PiecesSetup : ManagerHelper
 
         AddVisual(piece, name);
 
-        environment.board.pieces.Add(piece);
+        AddPieceToList(piece);
     }
 
     public void InstantiatePiece<TPiece>(Tile tile, PieceColor color) where TPiece : Piece
@@ -90,7 +91,7 @@ public class PiecesSetup : ManagerHelper
 
         AddVisual(piece, name);
 
-        environment.board.pieces.Add(piece);
+        AddPieceToList(piece);
     }
 
     public void AddVisual(Piece piece, string name)
@@ -103,5 +104,15 @@ public class PiecesSetup : ManagerHelper
 
         piece.visualPiece = visualPiece;
         visualPiece.SetTilePosition(piece.GetTile());
+    }
+
+    private void AddPieceToList(Piece piece) 
+    {
+        environment.board.pieces.Add(piece);
+
+        if (piece.pieceColor == PieceColor.White)
+            environment.board.whitePieces.Add(piece);
+        else
+            environment.board.blackPieces.Add(piece);
     }
 }
