@@ -51,7 +51,7 @@ public class GameManager : MonoBehaviour
 
         ChooseSetup();
 
-        playTurnManager.SetPlayers(new HumanPlayer(this), new MinimaxAI(this,2));
+        playTurnManager.SetPlayers(new HumanPlayer(this), new MinimaxAI(this,2), environment.turnManager.ActualTurn);
     }
 
     private void SetupEnvironment(Board board) 
