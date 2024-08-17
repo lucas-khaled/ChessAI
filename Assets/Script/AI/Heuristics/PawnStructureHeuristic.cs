@@ -7,18 +7,18 @@ public class PawnStructureHeuristic : Heuristic
 {
     private List<Pawn> bPawns = new();
     private List<Pawn> wPawns = new();
-    private Environment environment;
+    private Board board;
 
-    public PawnStructureHeuristic(float weight = 1) : base(weight)
+    public PawnStructureHeuristic(GameManager manager, float weight = 1) : base(manager, weight)
     {
     }
 
-    public override float GetHeuristic(Environment environment)
+    public override float GetHeuristic(Board board)
     {
-        if(environment == null) 
+        if(board == null) 
             throw new System.Exception($"[{nameof(PawnStructureHeuristic)}]The environment passed is null");
 
-        this.environment = environment;
+        this.board = board;
         GetAllPawns();
         
         float sumForWhite = GetPawnsHeuristic(wPawns);
@@ -30,7 +30,7 @@ public class PawnStructureHeuristic : Heuristic
 
     private void GetAllPawns() 
     {
-        foreach (var piece in environment.board.pieces)
+        foreach (var piece in board.pieces)
         {
             if (piece is not Pawn pawn) continue;
 

@@ -15,16 +15,16 @@ public class CenterControlHeuristic : Heuristic
     private const float PAWN_WEIGHT = 1f;
 
 
-    public CenterControlHeuristic(float weight) : base(weight)
+    public CenterControlHeuristic(GameManager manager, float weight) : base(manager, weight)
     {
     }
 
-    public override float GetHeuristic(Environment environment)
+    public override float GetHeuristic(Board board)
     {
         float blackPoints = 0;
         float whitePoints = 0;
 
-        foreach(var piece in environment.board.pieces) 
+        foreach(var piece in board.pieces) 
         {
             float points = 0;
 

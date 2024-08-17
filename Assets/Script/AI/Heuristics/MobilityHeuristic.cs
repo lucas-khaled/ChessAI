@@ -5,20 +5,20 @@ using UnityEngine;
 
 public class MobilityHeuristic : Heuristic
 {
-    public MobilityHeuristic(float weight) : base(weight)
+    public MobilityHeuristic(GameManager manager, float weight) : base(manager, weight)
     {
     }
 
-    public override float GetHeuristic(Environment environment)
+    public override float GetHeuristic(Board board)
     {
-        FENManager fenManager = new FENManager(environment);
+        FENManager fenManager = new FENManager(board);
         var blackMovesQnt = 0;
         var whiteMovesQnt = 0;
 
-        foreach (var piece in environment.board.pieces)
+        foreach (var piece in board.pieces)
         {
-            Move[] moves = piece.pieceColor == environment.turnManager.ActualTurn ?
-                environment.moveMaker.GetMoves(piece) :
+            Move[] moves = piece.pieceColor == board.ActualTurn ?
+                manager.MoveChecker.GetMoves(piece) :
                 piece.GetMoves();
 
             if (moves.Length <= 0) continue;

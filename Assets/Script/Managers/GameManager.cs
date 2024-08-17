@@ -8,8 +8,14 @@ public class GameManager : MonoBehaviour
     [SerializeField] private string fen;
     [SerializeField] private bool startWithFen;
 
-    public Environment environment { get; private set; } = new();
+    public Board GameBoard { get; private set; }
+    public Board TestBoard { get; private set; }
+
+    public TurnManager TurnManager { get; private set; }
     public EndGameChecker EndGameChecker { get; private set; }
+    public MoveChecker MoveChecker { get; private set; }
+
+    public FENManager FENManager { get; private set; } 
 
     private PiecesSetup setup;
     private PiecesCapturedController captureController;
@@ -18,7 +24,6 @@ public class GameManager : MonoBehaviour
 
     public UIManager UIManager => uiManager;
 
-    private FENManager FENManager;
 
     private void Awake()
     {
@@ -46,26 +51,28 @@ public class GameManager : MonoBehaviour
         var board = boardStarter.StartNewBoard();
         SetupEnvironment(board);
 
-        FENManager = new FENManager(environment);
-        EndGameChecker = new EndGameChecker(environment);
+        FENManager = new FENManager(GameBoard);
+        EndGameChecker = new EndGameChecker(this);
+        MoveChecker = new MoveChecker(this);
 
         ChooseSetup();
 
-        playTurnManager.SetPlayers(new HumanPlayer(this), new MinimaxAI(this,2), environment.turnManager.ActualTurn);
+        playTurnManager.SetPlayers(new HumanPlayer(this), new MinimaxAI(this,2), GameBoard.ActualTurn);
     }
 
     private void SetupEnvironment(Board board) 
     {
-        environment.StartRealEnvironment(board);
+        GameBoard = board;
+        GameBoard.events.onTurnDone += OnEndTurn;
+        GameBoard.events.onPromotionMade += HandlePromotionMove;
+        GameBoard.events.onPieceCaptured += captureController.PieceCaptured;
 
-        environment.events.onTurnDone += OnEndTurn;
-        environment.events.onPromotionMade += HandlePromotionMove;
-        environment.events.onPieceCaptured += captureController.PieceCaptured;
+        TestBoard = GameBoard.Copy();
     }
 
     private void OnEndTurn(PieceColor color)
     {
-        var endInfo = EndGameChecker.CheckEnd();
+        var endInfo = EndGameChecker.CheckEnd(GameBoard);
         if (endInfo.hasEnded is false) return;
 
         if (endInfo.isCheckMate)
@@ -105,7 +112,7 @@ public class GameManager : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.T)) 
         {
-            environment.turnManager.DebugAllTurns();
+            TurnManager.DebugAllTurns(GameBoard);
         }
     }
 }

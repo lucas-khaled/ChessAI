@@ -7,7 +7,7 @@ public enum PieceColor
     Black
 }
 
-public abstract class Piece : IEnvironmentable
+public abstract class Piece
 {
     public PieceColor pieceColor;
 
@@ -19,13 +19,13 @@ public abstract class Piece : IEnvironmentable
     protected int Column => Coordinates.column;
     protected bool IsWhite => pieceColor == PieceColor.White;
 
-    public Environment Environment { get; }
+    public Board Board { get; }
 
     public abstract Move[] GetMoves();
 
-    public Piece(Environment env) 
+    public Piece(Board board) 
     {
-        Environment = env;
+        Board = board;
     }
 
     public void SetTile(Tile tile) 
@@ -62,7 +62,7 @@ public abstract class Piece : IEnvironmentable
         List<Tile> finalTiles = new();
         foreach (var tileCoord in segment)
         {
-            Tile tile = Environment.board.tiles[tileCoord.row][tileCoord.column];
+            Tile tile = Board.tiles[tileCoord.row][tileCoord.column];
             if (tile.IsOccupied)
             {
                 if (IsEnemyPiece(tile.OccupiedBy) && capturesIfEnemy || includeBlockingPieceSquare)
@@ -77,10 +77,10 @@ public abstract class Piece : IEnvironmentable
         return finalTiles;
     }
 
-    public IEnvironmentable Copy(Environment env, Tile tile) 
+    public Piece Copy(Tile tile) 
     {
         var type = this.GetType();
-        Piece piece = Activator.CreateInstance(type, env) as Piece;
+        Piece piece = Activator.CreateInstance(type, Board) as Piece;
 
         piece.SetTile(tile);
         piece.pieceColor = pieceColor;
@@ -89,9 +89,9 @@ public abstract class Piece : IEnvironmentable
         return piece;
     }
 
-    public IEnvironmentable Copy(Environment env)
+    public Piece Copy()
     {
-        return Copy(env, null);
+        return Copy(null);
     }
 
     public override string ToString()

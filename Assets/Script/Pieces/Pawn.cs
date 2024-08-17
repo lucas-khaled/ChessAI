@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 public class Pawn : BlockableMovesPiece
 {
-    public Pawn(Environment env) : base(env)
+    public Pawn(Board board) : base(board)
     {
     }
 
@@ -47,7 +47,7 @@ public class Pawn : BlockableMovesPiece
         var verticals = actualTile.GetVerticalsByColor(pieceColor);
 
         var toTileCoord = verticals.frontVerticals[0];
-        var toTile = Environment.board.tiles[toTileCoord.row][toTileCoord.column];
+        var toTile = Board.tiles[toTileCoord.row][toTileCoord.column];
         return toTile.IsOccupied ? new PromotionMove[0] : GetPossiblePromotions(toTileCoord);
     }
 
@@ -70,10 +70,10 @@ public class Pawn : BlockableMovesPiece
     {
         return new PromotionMove[4]
         {
-            new PromotionMove(actualTile, Environment.board.tiles[toCoord.row][toCoord.column], this, new Rook(Environment), Environment.board.tiles[toCoord.row][toCoord.column].OccupiedBy),
-            new PromotionMove(actualTile, Environment.board.tiles[toCoord.row][toCoord.column], this, new Bishop(Environment), Environment.board.tiles[toCoord.row][toCoord.column].OccupiedBy),
-            new PromotionMove(actualTile, Environment.board.tiles[toCoord.row][toCoord.column], this, new Knight(Environment), Environment.board.tiles[toCoord.row][toCoord.column].OccupiedBy),
-            new PromotionMove(actualTile, Environment.board.tiles[toCoord.row][toCoord.column], this, new Queen(Environment), Environment.board.tiles[toCoord.row][toCoord.column].OccupiedBy)
+            new PromotionMove(actualTile, Board.tiles[toCoord.row][toCoord.column], this, new Rook(Board), Board.tiles[toCoord.row][toCoord.column].OccupiedBy),
+            new PromotionMove(actualTile, Board.tiles[toCoord.row][toCoord.column], this, new Bishop(Board), Board.tiles[toCoord.row][toCoord.column].OccupiedBy),
+            new PromotionMove(actualTile, Board.tiles[toCoord.row][toCoord.column], this, new Knight(Board), Board.tiles[toCoord.row][toCoord.column].OccupiedBy),
+            new PromotionMove(actualTile, Board.tiles[toCoord.row][toCoord.column], this, new Queen(Board), Board.tiles[toCoord.row][toCoord.column].OccupiedBy)
         };
     }
 
@@ -112,16 +112,16 @@ public class Pawn : BlockableMovesPiece
     {
         if (diagonal.Count <= 0) return false;
 
-        var diagonalTile = Environment.board.tiles[diagonal[0].row][diagonal[0].column];
+        var diagonalTile = Board.tiles[diagonal[0].row][diagonal[0].column];
         return IsEnemyPiece(diagonalTile.OccupiedBy)
-            || (Environment.rules.enPassantTile != null && diagonal[0].Equals(Environment.rules.enPassantTile.TilePosition));
+            || (Board.rules.enPassantTile != null && diagonal[0].Equals(Board.rules.enPassantTile.TilePosition));
     }
 
     private Move CreateDiagonalMove(TileCoordinates diagonalTileCoord) 
     {
-        Tile diagonalTile = Environment.board.tiles[diagonalTileCoord.row][diagonalTileCoord.column];
+        Tile diagonalTile = Board.tiles[diagonalTileCoord.row][diagonalTileCoord.column];
         return diagonalTile.IsOccupied ?
             new Move(actualTile, diagonalTile, this, diagonalTile.OccupiedBy) :
-            new Move(actualTile, diagonalTile, this, Environment.rules.enPassantPawn);
+            new Move(actualTile, diagonalTile, this, Board.rules.enPassantPawn);
     }
 }

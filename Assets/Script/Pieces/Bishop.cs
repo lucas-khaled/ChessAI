@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Bishop : BlockableMovesPiece
 {
-    public Bishop(Environment env) : base(env)
+    public Bishop(Board board) : base(board)
     {
     }
 

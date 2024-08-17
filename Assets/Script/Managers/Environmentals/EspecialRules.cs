@@ -1,9 +1,7 @@
 using UnityEngine;
 
-public class EspecialRules : IEnvironmentable
+public class EspecialRules
 {
-    public Environment Environment { get; }
-
     public bool whiteCanCastleKingSide { get; private set; } = true;
     public bool whiteCanCastleQueenSide { get; private set; } = true;
     public bool blackCanCastleQueenSide { get; private set; } = true;
@@ -12,15 +10,16 @@ public class EspecialRules : IEnvironmentable
     public Tile enPassantTile { get; private set; }
     public Pawn enPassantPawn { get; private set; }
 
-    public EspecialRules(Environment environment) 
+    public Board Board { get; private set; }
+
+    public EspecialRules(Board board) 
     {
-        Environment = environment;
-        Environment.events.onMoveMade += OnPieceMoved;
+        board.events.onMoveMade += OnPieceMoved;
     }
 
-    public IEnvironmentable Copy(Environment env)
+    public EspecialRules Copy(Board board)
     {
-        return new EspecialRules(env)
+        return new EspecialRules(board)
         {
             whiteCanCastleQueenSide = this.whiteCanCastleQueenSide,
             whiteCanCastleKingSide = this.whiteCanCastleKingSide,
@@ -112,7 +111,7 @@ public class EspecialRules : IEnvironmentable
         }
 
         var row = (move.piece.pieceColor == PieceColor.White) ? toCoord.row - 1 : toCoord.row + 1;
-        SetEnPassant(Environment.board.GetTiles()[row][toCoord.column], move.piece as Pawn);
+        SetEnPassant(Board.GetTiles()[row][toCoord.column], move.piece as Pawn);
     }
 
     public void SetEnPassant(Tile tile, Pawn pawn) 

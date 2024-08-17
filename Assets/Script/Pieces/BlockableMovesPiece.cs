@@ -4,7 +4,7 @@ using UnityEngine;
 
 public abstract class BlockableMovesPiece : Piece
 {
-    protected BlockableMovesPiece(Environment env) : base(env)
+    protected BlockableMovesPiece(Board board) : base(board)
     {
     }
 

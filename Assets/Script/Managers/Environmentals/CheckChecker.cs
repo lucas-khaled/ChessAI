@@ -8,12 +8,12 @@ public class CheckChecker
     Diagonals diagonals;
     MoveCheckmark checkMarkBools;
     PieceColor colorTurn;
-    Environment environment;
     Tile kingTile;
+    Board board;
 
-    public bool IsCheck(Environment env, PieceColor colorTurn)
+    public bool IsCheck(Board board, PieceColor colorTurn)
     {
-        Setup(env, colorTurn);
+        Setup(board, colorTurn);
         
         for (int i = 0; i < 8; i++)
         {
@@ -30,18 +30,17 @@ public class CheckChecker
         return ThereIsKnightCheck();
     }
 
-    private void Setup(Environment env, PieceColor colorTurn) 
+    private void Setup(Board board, PieceColor colorTurn) 
     {
-        environment = env;
-        var manager = env.boardManager;
-
-        kingTile = manager.GetKingTile(colorTurn);
+        kingTile = board.GetKingTile(colorTurn);
         verticals = kingTile.GetVerticalsByColor(colorTurn);
         horizontals = kingTile.GetHorizontalsByColor(colorTurn);
         diagonals = kingTile.GetDiagonalsByColor(colorTurn);
 
         checkMarkBools = new();
         this.colorTurn = colorTurn;
+
+        this.board = board;
     }
 
     private bool ThereIsCheckOnVerticals(int i) 
@@ -59,7 +58,7 @@ public class CheckChecker
         if (segment.Count <= index) return false;
 
         TileCoordinates coord = segment[index];
-        Tile tile = environment.board.tiles[coord.row][coord.column];
+        Tile tile = board.tiles[coord.row][coord.column];
         if (checkmark is false && tile.IsOccupied)
         {
             Piece piece = tile.OccupiedBy;
@@ -90,7 +89,7 @@ public class CheckChecker
         if (segment.Count <= index) return false;
 
         TileCoordinates coord = segment[index];
-        Tile tile = environment.board.tiles[coord.row][coord.column];
+        Tile tile = board.tiles[coord.row][coord.column];
 
         if (checkmark is false && tile.IsOccupied)
         {
@@ -111,7 +110,7 @@ public class CheckChecker
 
     private bool ThereIsKnightCheck() 
     {
-        Knight knight = new(environment);
+        Knight knight = new(null);
         knight.SetTile(kingTile);
         knight.pieceColor = colorTurn;
 

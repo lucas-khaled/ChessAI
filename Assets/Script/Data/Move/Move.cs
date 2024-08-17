@@ -13,11 +13,11 @@ public class Move
         this.piece = piece;
     }
 
-    public virtual Move VirtualizeTo(Environment env) 
+    public virtual Move VirtualizeTo(Board board) 
     {
-        var toTile = VirtualizeTile(to, env);
-        var fromTile = VirtualizeTile(from, env);
-        var captureTile = (capture == null) ? null : VirtualizeTile(capture.GetTile(), env);
+        var toTile = VirtualizeTile(to, board);
+        var fromTile = VirtualizeTile(from, board);
+        var captureTile = (capture == null) ? null : VirtualizeTile(capture.GetTile(), board);
         var virtualizedPiece = fromTile.OccupiedBy;
 
         var virtualizedCapturePiece = (captureTile == null) ? null : captureTile.OccupiedBy;
@@ -25,17 +25,17 @@ public class Move
         return new Move(fromTile, toTile, virtualizedPiece, virtualizedCapturePiece);
     }
 
-    protected Tile VirtualizeTile(Tile tile, Environment env) 
+    protected Tile VirtualizeTile(Tile tile, Board board) 
     {
         var row = tile.TilePosition.row;
         var column = tile.TilePosition.column;
 
-        return env.board.GetTiles()[row][column];
+        return board.GetTiles()[row][column];
     }
 
-    protected Piece VirtualizePiece(Piece piece, Environment env, Tile tile) 
+    protected Piece VirtualizePiece(Piece piece, Tile tile) 
     {
-        return (piece == null) ? null : piece.Copy(env, tile) as Piece;
+        return (piece == null) ? null : piece.Copy(tile);
     }
 
     public override string ToString()

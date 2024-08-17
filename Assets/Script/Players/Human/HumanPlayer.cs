@@ -61,7 +61,7 @@ public class HumanPlayer : Player
 
     private void GetMoves() 
     {
-        actualPossibleMoves = manager.environment.moveMaker.GetMoves(selectedTile.OccupiedBy);
+        actualPossibleMoves = manager.MoveChecker.GetMoves(selectedTile.OccupiedBy);
 
         SetPossibleTilesMaterial(actualPossibleMoves);
     }

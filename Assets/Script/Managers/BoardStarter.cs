@@ -14,7 +14,7 @@ public class BoardStarter : ManagerHelper
 
     public Board StartNewBoard()
     {
-        Board board = new Board(8, 8, manager.environment);
+        Board board = new Board(8, 8);
         StartBoard(board);
         return board;
     }
@@ -43,7 +43,7 @@ public class BoardStarter : ManagerHelper
                 visualTile.name = $"Tile({row},{column})";
 
 
-                Tile tile = new(manager.environment);
+                Tile tile = new(manager.GameBoard);
                 tile.TilePosition = new TileCoordinates(row, column);
                 tile.SetVisual(visualTile);
 

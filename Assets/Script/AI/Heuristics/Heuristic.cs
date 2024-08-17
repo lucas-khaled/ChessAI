@@ -1,9 +1,11 @@
 public abstract class Heuristic
 {
     protected float weight;
-    public Heuristic(float weight) 
+    protected GameManager manager;
+    public Heuristic(GameManager manager, float weight) 
     {
         this.weight = weight;
+        this.manager = manager;
     }
-    public abstract float GetHeuristic(Environment environment);
+    public abstract float GetHeuristic(Board board);
 }
