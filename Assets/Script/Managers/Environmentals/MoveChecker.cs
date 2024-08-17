@@ -53,7 +53,7 @@ public class MoveChecker : IEnvironmentable
 
     public Move[] GetAllPossibleMoves() 
     {
-        Piece[] pieces = Environment.boardManager.GetAllPieces(Environment.turnManager.ActualTurn);
+        List<Piece> pieces = Environment.turnManager.ActualTurn == PieceColor.White ? Environment.board.whitePieces : Environment.board.blackPieces;
         List<Move> moves = new();
         foreach (var piece in pieces)
         {
