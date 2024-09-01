@@ -108,4 +108,9 @@ public class Tile
     {
         return (color == PieceColor.White) ? Diagonals : InvertedDiagonals;
     }
+
+    public override bool Equals(object obj)
+    {
+        return obj is Tile tile && tile.TilePosition.Equals(TilePosition);
+    }
 }

@@ -43,7 +43,7 @@ public class BoardStarter : ManagerHelper
                 visualTile.name = $"Tile({row},{column})";
 
 
-                Tile tile = new(manager.GameBoard);
+                Tile tile = new(board);
                 tile.TilePosition = new TileCoordinates(row, column);
                 tile.SetVisual(visualTile);
 

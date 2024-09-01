@@ -80,7 +80,7 @@ public abstract class Piece
     public Piece Copy(Tile tile) 
     {
         var type = this.GetType();
-        Piece piece = Activator.CreateInstance(type, Board) as Piece;
+        Piece piece = Activator.CreateInstance(type, tile.Board) as Piece;
 
         piece.SetTile(tile);
         piece.pieceColor = pieceColor;
@@ -96,6 +96,6 @@ public abstract class Piece
 
     public override string ToString()
     {
-        return $"{this.GetType().Name} {pieceColor} ({Coordinates.row},{Coordinates.column})";
+        return $"{this.GetType().Name} {pieceColor} ({Coordinates})";
     }
 }

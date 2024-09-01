@@ -40,10 +40,15 @@ public class Move
 
     public override string ToString()
     {
-        string captureString = (capture != null) ? capture.GetType().Name : "None";
-        return $"Move Piece {piece.GetType().Name} {piece.pieceColor}" +
-            $"\n - From tile ({from.TilePosition.row + 1}, {from.TilePosition.column + 1})" +
-            $"\n - To tile ({to.TilePosition.row + 1}, {to.TilePosition.column + 1})" +
-            $"\n - Capturing Piece {captureString}";
+        return $"Move Piece {piece}" +
+            $"\n - From tile ({from.TilePosition})" +
+            $"\n - To tile ({to.TilePosition})" +
+            $"\n - Capturing Piece {capture}";
+    }
+
+    public override bool Equals(object obj)
+    {
+        return obj is Move otherMove && otherMove.from.Equals(from) && otherMove.to.Equals(to) 
+            && otherMove.capture == capture && otherMove.piece == piece;
     }
 }

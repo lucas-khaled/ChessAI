@@ -41,7 +41,7 @@ public class FENManager
 
         SetPiecesPosition(fen.positions, instantiateCallback);
         SetInitialColor(fen.pieceColor);
-        SetCaslling(fen.castlingString);
+        SetCastling(fen.castlingString);
         SetEnPassant(fen.enPassantString);
 
         turn.halfMoves = GetHalfMoves(fen.halfMovesString);
@@ -99,26 +99,17 @@ public class FENManager
         board.ActualTurn = color;
     }
 
-    private void SetCaslling(string castlingString)
+    private void SetCastling(string castlingString)
     {
-        if (castlingString == "-")
-        {
-            board.rules.SetCastle(PieceColor.White);
-            board.rules.SetCastle(PieceColor.Black);
-            return;
-        }
+        bool castledWhiteKingside = (castlingString != "-" && castlingString.Contains("K"));
+        bool castledWhiteQueenside = (castlingString != "-" && castlingString.Contains("Q"));
+        bool castledBlackKingside = (castlingString != "-" && castlingString.Contains("K"));
+        bool castledBlackQueenside = (castlingString != "-" && castlingString.Contains("Q"));
 
-        if (castlingString.Contains("K") is false)
-            board.rules.SetCastleKingSide(PieceColor.White);
-
-        if (castlingString.Contains("Q") is false)
-            board.rules.SetCastleQueenSide(PieceColor.White);
-
-        if (castlingString.Contains("k") is false)
-            board.rules.SetCastleKingSide(PieceColor.Black);
-
-        if (castlingString.Contains("q") is false)
-            board.rules.SetCastleQueenSide(PieceColor.Black);
+        board.rules.SetCastleKingSide(PieceColor.White, castledWhiteKingside);
+        board.rules.SetCastleQueenSide(PieceColor.White, castledWhiteQueenside);
+        board.rules.SetCastleKingSide(PieceColor.Black, castledBlackKingside);
+        board.rules.SetCastleQueenSide(PieceColor.Black, castledBlackQueenside);
     }
 
     private void SetEnPassant(string enPassantString)
@@ -204,16 +195,16 @@ public class FENManager
     private string GetFENCastlingRights(EspecialRules rules)
     {
         string returnString = string.Empty;
-        if (rules.whiteCanCastleKingSide) 
+        if (rules.whiteCastleRights.CanCastleKingSide) 
             returnString += "K";
 
-        if (rules.whiteCanCastleQueenSide)
+        if (rules.whiteCastleRights.CanCastleQueenSide)
             returnString += "Q";
 
-        if (rules.blackCanCastleKingSide)
+        if (rules.blackCastleRights.CanCastleKingSide)
             returnString += "k";
 
-        if (rules.blackCanCastleQueenSide)
+        if (rules.blackCastleRights.CanCastleQueenSide)
             returnString += "q";
 
         if (returnString == string.Empty)

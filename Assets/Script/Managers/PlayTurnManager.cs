@@ -36,7 +36,7 @@ public class PlayTurnManager : ManagerHelper
     {
         if (turn == PieceColor.White)
             whitePlayer.StartTurn(OnMove);
-        if (turn == PieceColor.Black)
+        else
             blackPlayer.StartTurn(OnMove);
     }
 

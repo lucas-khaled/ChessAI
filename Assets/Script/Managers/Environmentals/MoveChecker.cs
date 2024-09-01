@@ -46,17 +46,16 @@ public class MoveChecker
 
     public bool IsCheckMate(Board board) 
     {
-        return checkChecker.IsCheck(board, board.ActualTurn) && HasAnyMove() is false;
+        return checkChecker.IsCheck(board, board.ActualTurn) && HasAnyMove(board) is false;
     }
 
-    public bool HasAnyMove()
+    public bool HasAnyMove(Board board)
     {
-        return GetAllPossibleMoves().Length > 0;
+        return GetAllPossibleMoves(board).Length > 0;
     }
 
-    public Move[] GetAllPossibleMoves() 
+    public Move[] GetAllPossibleMoves(Board board) 
     {
-        Board board = gameManager.GameBoard;
         List<Piece> pieces = board.ActualTurn == PieceColor.White ? board.whitePieces : board.blackPieces;
         List<Move> moves = new();
         foreach (var piece in pieces)

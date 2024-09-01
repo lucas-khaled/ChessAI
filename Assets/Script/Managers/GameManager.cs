@@ -54,10 +54,18 @@ public class GameManager : MonoBehaviour
         FENManager = new FENManager(GameBoard);
         EndGameChecker = new EndGameChecker(this);
         MoveChecker = new MoveChecker(this);
+        TurnManager = new TurnManager(this);
 
         ChooseSetup();
+        UpdateTestBoard();
 
-        playTurnManager.SetPlayers(new HumanPlayer(this), new MinimaxAI(this,2), GameBoard.ActualTurn);
+        playTurnManager.SetPlayers(new HumanPlayer(this), new MinimaxAI(this, 2), GameBoard.ActualTurn);
+    }
+
+    private void UpdateTestBoard()
+    {
+        TestBoard = GameBoard.Copy();
+        TestBoard.Name = "Test Board";
     }
 
     private void SetupEnvironment(Board board) 
@@ -66,12 +74,12 @@ public class GameManager : MonoBehaviour
         GameBoard.events.onTurnDone += OnEndTurn;
         GameBoard.events.onPromotionMade += HandlePromotionMove;
         GameBoard.events.onPieceCaptured += captureController.PieceCaptured;
-
-        TestBoard = GameBoard.Copy();
+        GameBoard.Name = "Game board";
     }
 
     private void OnEndTurn(PieceColor color)
     {
+        UpdateTestBoard();
         var endInfo = EndGameChecker.CheckEnd(GameBoard);
         if (endInfo.hasEnded is false) return;
 

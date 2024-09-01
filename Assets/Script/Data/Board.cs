@@ -15,8 +15,10 @@ public class Board
     public BoardEvents events;
 
     public List<Turn> turns { get; private set; } = new List<Turn>();
-    public Turn LastTurn => turns.Count>1 ? turns[turns.Count - 1] : new Turn();
+    public Turn LastTurn => turns.Count > 0 ? turns[turns.Count - 1] : new Turn();
     public PieceColor ActualTurn { get; set; } = PieceColor.White;
+
+    public string Name { get; set; }
 
     public Board(int row, int column)
     {
@@ -26,8 +28,8 @@ public class Board
         pieces = new();
         whitePieces = new();
         blackPieces = new();
-        rules = new EspecialRules(this);
         events = new BoardEvents();
+        rules = new EspecialRules(this);
     }
 
     public Board Copy()
@@ -37,6 +39,7 @@ public class Board
         List<Piece> whitePieces = new List<Piece>();
         List<Piece> blackPieces = new List<Piece>();
         Board board = new Board(BoardRowSize, BoardColumnSize);
+        board.Name = "Copy board";
 
         foreach (var list in tiles)
         {
@@ -44,7 +47,7 @@ public class Board
 
             foreach (var tile in list)
             {
-                var copyTile = tile.Copy(board) as Tile;
+                var copyTile = tile.Copy(board);
                 virtualList.Add(copyTile);
 
                 if (tile.IsOccupied)
@@ -66,7 +69,7 @@ public class Board
         board.pieces = pieces;
         board.whitePieces = whitePieces;
         board.blackPieces = blackPieces;
-
+        board.rules = rules.Copy(board);
         return board;
     }
 
@@ -127,5 +130,10 @@ public class Board
                 tile.DeOccupy();
             }
         }
+    }
+
+    public override string ToString()
+    {
+        return Name;
     }
 }

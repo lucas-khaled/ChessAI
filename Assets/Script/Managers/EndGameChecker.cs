@@ -1,4 +1,5 @@
 using System.Linq;
+using UnityEngine;
 
 public struct EndGameInfo
 {
@@ -77,7 +78,7 @@ public class EndGameChecker
 
     private bool IsStaleMateDraw(Board board)
     {
-        return manager.MoveChecker.HasAnyMove() is false;
+        return manager.MoveChecker.HasAnyMove(board) is false;
     }
 
     private bool IsThreefoldDraw(Board board)

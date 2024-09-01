@@ -11,12 +11,13 @@ public class MobilityHeuristic : Heuristic
 
     public override float GetHeuristic(Board board)
     {
-        FENManager fenManager = new FENManager(board);
         var blackMovesQnt = 0;
         var whiteMovesQnt = 0;
 
-        foreach (var piece in board.pieces)
+        List<Piece> pieces = new(board.pieces);
+        foreach (var piece in pieces)
         {
+            Debug.Log($"<color=red> ------- Mobility Heuristic from {piece}</color>");
             Move[] moves = piece.pieceColor == board.ActualTurn ?
                 manager.MoveChecker.GetMoves(piece) :
                 piece.GetMoves();

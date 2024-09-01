@@ -11,9 +11,10 @@ public class TurnManager
         Manager = manager;
     }
 
-    public void DoMove(Move move, Board board) 
+    #region DO
+    public void DoMove(Move move, Board board)
     {
-        if(IsValidMove(move) is false) 
+        if (IsValidMove(move) is false)
         {
             Debug.LogError($"The move is not valid:\n\n {move}");
             return;
@@ -23,7 +24,8 @@ public class TurnManager
 
         ComputeMove(convertedMove, board);
 
-        board.events?.onTurnDone?.Invoke(board.ActualTurn);
+        SwapTurn(board);
+        board.events?.onTurnDone?.Invoke(move.piece.pieceColor);
     }
 
     private Move ConvertMoveEnvironment(Move move, Board board)
@@ -127,7 +129,9 @@ public class TurnManager
         var turn = new Turn(move, Manager.FENManager.GetFEN(), halfMoves, fullMoves);
         board.turns.Add(turn);
     }
+    #endregion
 
+    #region UNDO
     public void UndoLastMove(Board board) 
     {
         Turn lastTurn = board.LastTurn;
@@ -141,7 +145,10 @@ public class TurnManager
         else
             UndoSimpleMove(lastMove, board);
 
-        board.events.onMoveUndone?.Invoke(lastMove);
+        board.events.onMoveUnmade?.Invoke(lastMove);
+
+        SwapTurn(board);
+        board.events.onTurnUndone?.Invoke(lastMove.piece.pieceColor);
     }
 
     private void UndoCastleMove(CastleMove castleMove, Board board)
@@ -176,6 +183,8 @@ public class TurnManager
             board.blackPieces.Remove(promotedPiece);
             board.blackPieces.Add(pawn);
         }
+
+        board.events.onPromotionUnmade?.Invoke(move);
     }
 
     private void UndoSimpleMove(Move lastMove, Board board)
@@ -201,7 +210,16 @@ public class TurnManager
                 board.whitePieces.Add(capturedPiece);
             else
                 board.blackPieces.Add(capturedPiece);
+
+            board.events.onPieceUncaptured?.Invoke(capturedPiece);
         }
+    }
+    #endregion
+
+    private void SwapTurn(Board board)
+    {
+        var thisTurn = board.ActualTurn;
+        board.ActualTurn = (thisTurn == PieceColor.White) ? PieceColor.Black : PieceColor.White;
     }
 
     public void DebugAllTurns(Board board) 

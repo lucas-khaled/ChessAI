@@ -27,7 +27,7 @@ public class CheckChecker
                 return true;
         }
 
-        return ThereIsKnightCheck();
+        return ThereIsKnightCheck(board);
     }
 
     private void Setup(Board board, PieceColor colorTurn) 
@@ -108,9 +108,9 @@ public class CheckChecker
         return false;
     }
 
-    private bool ThereIsKnightCheck() 
+    private bool ThereIsKnightCheck(Board board) 
     {
-        Knight knight = new(null);
+        Knight knight = new(board);
         knight.SetTile(kingTile);
         knight.pieceColor = colorTurn;
 
