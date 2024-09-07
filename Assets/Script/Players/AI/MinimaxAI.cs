@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
 using Debug = UnityEngine.Debug;
@@ -8,7 +7,6 @@ using Debug = UnityEngine.Debug;
 public class MinimaxAI : AIPlayer
 {
     private int maxDepth = 2;
-    private EndGameChecker endGameChecker;
     private PositionHeuristic heuristic;
 
     private const string HEURISTIC_DEBUG = "Heuristic";
@@ -18,13 +16,12 @@ public class MinimaxAI : AIPlayer
     public MinimaxAI(GameManager manager, int depth = 2) : base(manager) 
     {
         maxDepth = depth;
-        endGameChecker = new(null);
-        heuristic = new SimplePositionHeuristic();
+        heuristic = new SimplePositionHeuristic(manager);
     } 
 
     protected override async Task<Move> CalculateMove()
     {
-        var env = manager.environment;
+        var board = manager.TestBoard;
 
         bool isWhite = actualColor == PieceColor.White;
         float bestScore = isWhite ? float.MinValue : float.MaxValue;
@@ -33,7 +30,7 @@ public class MinimaxAI : AIPlayer
         var alpha = float.MinValue;
         var beta = float.MaxValue;
 
-        var moves = GetAllMoves(env, actualColor);
+        var moves = GetAllMoves(board, actualColor);
 
         Debug.Log($"Evaluating {moves.Count} moves");
         
@@ -42,19 +39,20 @@ public class MinimaxAI : AIPlayer
 
         foreach(var move in moves) 
         {
-            Environment newEnv = env.Copy();
-            newEnv.turnManager.DoMove(move);
+            manager.TurnManager.DoMove(move, board);
             Debug.Log($"<color=cyan>{maxDepth} -> Evaluating {move}</color>");
 
             Stopwatch moveMinimaxStopWatch = Stopwatch.StartNew();
             moveMinimaxStopWatch.Start();
 
-            float score = Minimax(newEnv, actualColor.GetOppositeColor(), maxDepth-1, alpha, beta);
+            float score = Minimax(actualColor.GetOppositeColor(), maxDepth-1, alpha, beta);
 
             moveMinimaxStopWatch.Stop();
             Debugger.LogStopwatch(moveMinimaxStopWatch, MOVE_MINIMAX_DEBUG, true);
 
             Debug.Log($"<color=cyan>{maxDepth} -> Evaluated {move} \nwith a score of {score}</color>");
+
+            manager.TurnManager.UndoLastMove(board);
 
             if (IsBetterScoreThan(score, bestScore))
             {
@@ -94,15 +92,15 @@ public class MinimaxAI : AIPlayer
         return bestMove;
     }
 
-    private float Minimax(Environment env, PieceColor color, int depth, float alpha, float beta) 
+    private float Minimax(PieceColor color, int depth, float alpha, float beta) 
     {
+        var board = manager.TestBoard;
         bool isMaximize = color == PieceColor.White;
-        endGameChecker.SetEnvironment(env);
 
-        if (endGameChecker.IsCheckMate())
+        if (manager.EndGameChecker.IsCheckMate(board))
             return isMaximize ? 1000 - depth : -1000 + depth;
 
-        if (endGameChecker.HasDraw())
+        if (manager.EndGameChecker.HasDraw(board))
             return 0;
 
         if (depth == 0) 
@@ -110,7 +108,7 @@ public class MinimaxAI : AIPlayer
             Stopwatch heuristicStopWatch = Stopwatch.StartNew();
 
             heuristicStopWatch.Start();
-            float heuristicValue = heuristic.GetHeuristic(env);
+            float heuristicValue = heuristic.GetHeuristic(board);
 
             heuristicStopWatch.Stop();
             Debugger.LogStopwatch(heuristicStopWatch, HEURISTIC_DEBUG, true);
@@ -120,14 +118,15 @@ public class MinimaxAI : AIPlayer
         }
 
         float bestScore = isMaximize ? float.MinValue : float.MaxValue;
-        foreach (var move in GetAllMoves(env, color)) 
+        foreach (var move in GetAllMoves(board, color)) 
         {
-            Environment newEnv = env.Copy();
-            newEnv.turnManager.DoMove(move);
+            manager.TurnManager.DoMove(move, board);
 
             Debug.Log($"<color=yellow>{depth} -> Evaluating {move}</color>");
 
-            float score = Minimax(newEnv, color.GetOppositeColor(), depth-1, alpha, beta);
+            float score = Minimax(color.GetOppositeColor(), depth-1, alpha, beta);
+
+            manager.TurnManager.UndoLastMove(board);
 
             if (isMaximize)
             {

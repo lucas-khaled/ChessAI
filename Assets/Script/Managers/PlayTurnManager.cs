@@ -36,7 +36,7 @@ public class PlayTurnManager : ManagerHelper
     {
         if (turn == PieceColor.White)
             whitePlayer.StartTurn(OnMove);
-        if (turn == PieceColor.Black)
+        else
             blackPlayer.StartTurn(OnMove);
     }
 
@@ -54,11 +54,12 @@ public class PlayTurnManager : ManagerHelper
         {
             if (madeMove == null) return;
 
-            manager.environment.turnManager.DoMove(madeMove);
+            var board = manager.GameBoard;
+            manager.TurnManager.DoMove(madeMove, board);
             madeMove = null;
 
-            if(manager.EndGameChecker.CheckEnd().hasEnded is false)
-                Task.Run(() => PlayerMove(manager.environment.turnManager.ActualTurn));
+            if(manager.EndGameChecker.CheckEnd(manager.TestBoard).hasEnded is false)
+                Task.Run(() => PlayerMove(board.ActualTurn));
         }
     }
 }

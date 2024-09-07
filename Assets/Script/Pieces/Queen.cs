@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Queen : BlockableMovesPiece
 {
-    public Queen(Environment env) : base(env)
+    public Queen(Board board) : base(board)
     {
     }
 

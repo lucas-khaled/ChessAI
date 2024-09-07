@@ -2,62 +2,36 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TurnManager : IEnvironmentable
+public class TurnManager
 {
-    public PieceColor ActualTurn { get; set; } = PieceColor.White;
+    public GameManager Manager { get; }
 
-    public List<Turn> moves { get; private set; } = new List<Turn>();
-    public int halfMoves = 0;
-    public int fullMoves = 0;
-
-    public Environment Environment { get; }
-    private FENManager FENManager;
-
-    public TurnManager(Environment env) 
+    public TurnManager(GameManager manager) 
     {
-        Environment = env;
-        FENManager = new FENManager(env);
+        Manager = manager;
     }
 
-    public IEnvironmentable Copy(Environment env)
+    #region DO
+    public void DoMove(Move move, Board board)
     {
-        return new TurnManager(env)
-        {
-            moves = new List<Turn>(moves),
-            ActualTurn = ActualTurn
-        };
-    }
-
-    public void DoMove(Move move) 
-    {
-        if(IsValidMove(move) is false) 
+        if (IsValidMove(move) is false)
         {
             Debug.LogError($"The move is not valid:\n\n {move}");
             return;
         }
 
-        Move convertedMove = ConvertMoveEnvironment(move);
+        Move convertedMove = ConvertMoveEnvironment(move, board);
 
-        IncrementNumberOfMoves();
-        ComputeMove(convertedMove);
+        ComputeMove(convertedMove, board);
 
-        var thisTurn = ActualTurn;
-
-        ActualTurn = (thisTurn == PieceColor.White) ? PieceColor.Black : PieceColor.White;
-        Environment.events?.onTurnDone?.Invoke(thisTurn);
+        SwapTurn(board);
+        board.events?.onTurnDone?.Invoke(move.piece.pieceColor);
     }
 
-    private void IncrementNumberOfMoves()
+    private Move ConvertMoveEnvironment(Move move, Board board)
     {
-        halfMoves++;
-        if (ActualTurn == PieceColor.Black)
-            fullMoves++;
-    }
-
-    private Move ConvertMoveEnvironment(Move move)
-    {
-        if (move.from.Environment != this.Environment || move.to.Environment != this.Environment)
-            return move.VirtualizeTo(Environment);
+        if (move.from.Board != board || move.to.Board != board)
+            return move.VirtualizeTo(board);
 
         return move;
     }
@@ -67,76 +41,191 @@ public class TurnManager : IEnvironmentable
         return move.from.IsOccupied;
     }
 
-    private void ComputeMove(Move move) 
+    private void ComputeMove(Move move, Board board) 
     {
         if (move is CastleMove castleMove)
-            ComputeCastleMove(castleMove);
+            ComputeCastleMove(castleMove, board);
         else if (move is PromotionMove promotionMove)
-            ComputePromotionMove(promotionMove);
+            ComputePromotionMove(promotionMove, board);
         else
-            ComputeSimpleMove(move);
+            ComputeSimpleMove(move, board);
 
-        var turn = new Turn(move, FENManager.GetFEN());
-        moves.Add(turn);
-
-        this.Environment.events?.onMoveMade?.Invoke(move);
+        SetTurn(move, board);
+        board.events?.onMoveMade?.Invoke(move);
     }
 
-    private void ComputeCastleMove(CastleMove move) 
+    private void ComputeCastleMove(CastleMove move, Board board) 
     {
-        ComputeSimpleMove(move);
-        ComputeSimpleMove(move.rookMove);
+        ComputeSimpleMove(move, board);
+        ComputeSimpleMove(move.rookMove, board);
     }
 
-    private void ComputePromotionMove(PromotionMove move)
+    private void ComputePromotionMove(PromotionMove move, Board board)
     {
-        HandleCapture(move);
-        
-        move.promoteTo.pieceColor = move.piece.pieceColor;
-        move.promoteTo.SetTile(move.to);
-        move.to.Occupy(move.promoteTo);
+        HandleCapture(move, board);
+
+        Piece promotedPiece = move.promoteTo;
+        Piece pawn = move.piece;
+
+        promotedPiece.pieceColor = pawn.pieceColor;
+        promotedPiece.SetTile(move.to);
+        move.to.Occupy(promotedPiece);
 
         move.from.DeOccupy();
 
+        board.pieces.Remove(pawn);
+        board.pieces.Add(promotedPiece);
 
-        Environment.events?.onPromotionMade?.Invoke(move);
+        if(pawn.pieceColor == PieceColor.White)
+        {
+            board.whitePieces.Add(promotedPiece);
+            board.whitePieces.Remove(pawn);
+        }
+        else
+        {
+            board.blackPieces.Add(promotedPiece);
+            board.blackPieces.Remove(pawn);
+        }
+
+        board.events?.onPromotionMade?.Invoke(move);
     }
 
-    private void ComputeSimpleMove(Move move) 
+    private void ComputeSimpleMove(Move move, Board board) 
     {
         Piece movingPiece = move.piece;
         move.from.DeOccupy();
 
-        HandleCapture(move);
+        HandleCapture(move, board);
 
         move.to.Occupy(movingPiece);
 
         movingPiece.SetTile(move.to);
     }
 
-    private void HandleCapture(Move move) 
+    private void HandleCapture(Move move, Board board) 
     {
         var capturedPiece = move.capture;
         if (capturedPiece != null)
         {
             capturedPiece.GetTile().DeOccupy();
-            halfMoves = 0;
 
             Predicate<Piece> predicate = p => p.Coordinates.Equals(capturedPiece.Coordinates);
-            Environment.board.pieces.RemoveAll(predicate);
+            board.pieces.RemoveAll(predicate);
             if (capturedPiece.pieceColor == PieceColor.White)
-                Environment.board.whitePieces.RemoveAll(predicate);
+                board.whitePieces.RemoveAll(predicate);
             else
-                Environment.board.blackPieces.RemoveAll(predicate);
+                board.blackPieces.RemoveAll(predicate);
 
-            this.Environment.events?.onPieceCaptured?.Invoke(capturedPiece);
+            board.events?.onPieceCaptured?.Invoke(capturedPiece);
         }
     }
 
-    public void DebugAllTurns() 
+    private void SetTurn(Move move, Board board) 
+    {
+        Turn lastTurn = board.LastTurn;
+        int halfMoves = (move.capture != null) ? 0 : lastTurn.halfMoves + 1;
+        int fullMoves = (board.ActualTurn == PieceColor.Black) ? lastTurn.fullMoves + 1 : lastTurn.fullMoves;
+
+        var turn = new Turn(move, Manager.FENManager.GetFEN(), halfMoves, fullMoves);
+        board.turns.Add(turn);
+    }
+    #endregion
+
+    #region UNDO
+    public void UndoLastMove(Board board) 
+    {
+        Turn lastTurn = board.LastTurn;
+        board.turns.Remove(lastTurn);
+
+        Move lastMove = lastTurn.move;
+        if (lastMove is CastleMove castleMove)
+            UndoCastleMove(castleMove, board);
+        else if (lastMove is PromotionMove promotionMove)
+            UndoPromotionMove(promotionMove, board);
+        else
+            UndoSimpleMove(lastMove, board);
+
+        board.events.onMoveUnmade?.Invoke(lastMove);
+
+        SwapTurn(board);
+        board.events.onTurnUndone?.Invoke(lastMove.piece.pieceColor);
+    }
+
+    private void UndoCastleMove(CastleMove castleMove, Board board)
+    {
+        UndoSimpleMove(castleMove, board);
+        UndoSimpleMove(castleMove.rookMove, board);
+    }
+
+    private void UndoPromotionMove(PromotionMove move, Board board)
+    {
+        UndoCapture(move, board);
+
+        Piece promotedPiece = move.promoteTo;
+        Piece pawn = move.piece;
+
+        promotedPiece.SetTile(null);
+        move.from.Occupy(pawn);
+        pawn.SetTile(move.from);
+
+        move.to.DeOccupy();
+
+        board.pieces.Add(pawn);
+        board.pieces.Remove(promotedPiece);
+
+        if (pawn.pieceColor == PieceColor.White)
+        {
+            board.whitePieces.Remove(promotedPiece);
+            board.whitePieces.Add(pawn);
+        }
+        else
+        {
+            board.blackPieces.Remove(promotedPiece);
+            board.blackPieces.Add(pawn);
+        }
+
+        board.events.onPromotionUnmade?.Invoke(move);
+    }
+
+    private void UndoSimpleMove(Move lastMove, Board board)
+    {
+        lastMove.from.Occupy(lastMove.piece);
+        lastMove.piece.SetTile(lastMove.from);
+        lastMove.to.DeOccupy();
+
+        UndoCapture(lastMove, board);
+    }
+
+    private void UndoCapture(Move move, Board board) 
+    {
+        Piece capturedPiece = move.capture;
+        if (capturedPiece != null)
+        {
+            move.to.Occupy(capturedPiece);
+            capturedPiece.SetTile(move.to);
+
+            board.pieces.Add(capturedPiece);
+
+            if (capturedPiece.pieceColor == PieceColor.White)
+                board.whitePieces.Add(capturedPiece);
+            else
+                board.blackPieces.Add(capturedPiece);
+
+            board.events.onPieceUncaptured?.Invoke(capturedPiece);
+        }
+    }
+    #endregion
+
+    private void SwapTurn(Board board)
+    {
+        var thisTurn = board.ActualTurn;
+        board.ActualTurn = (thisTurn == PieceColor.White) ? PieceColor.Black : PieceColor.White;
+    }
+
+    public void DebugAllTurns(Board board) 
     {
         int count = 0;
-        foreach (var turn in moves)
+        foreach (var turn in board.turns)
         {
             count++;
             Debug.Log($"Turn {count}:\n{turn}");
@@ -148,11 +237,15 @@ public struct Turn
 {
     public Move move;
     public FEN fen;
+    public int halfMoves;
+    public int fullMoves; 
 
-    public Turn(Move move, FEN fen) 
+    public Turn(Move move, FEN fen, int halfMoves, int fullMoves) 
     {
         this.move = move;
         this.fen = fen;
+        this.halfMoves = halfMoves;
+        this.fullMoves = fullMoves;
     }
 
     public override string ToString()

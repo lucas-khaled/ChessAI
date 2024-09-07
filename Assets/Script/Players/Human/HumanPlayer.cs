@@ -57,11 +57,12 @@ public class HumanPlayer : Player
         selectedTile = tile;
 
         GetMoves();
+        Debug.Log("STATE - " + manager.GameBoard.rules.blackCastleRights.KingRookFirstMove);
     }
 
     private void GetMoves() 
     {
-        actualPossibleMoves = manager.environment.moveMaker.GetMoves(selectedTile.OccupiedBy);
+        actualPossibleMoves = manager.MoveChecker.GetMoves(selectedTile.OccupiedBy);
 
         SetPossibleTilesMaterial(actualPossibleMoves);
     }

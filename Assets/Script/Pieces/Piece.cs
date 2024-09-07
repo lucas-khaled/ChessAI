@@ -7,11 +7,12 @@ public enum PieceColor
     Black
 }
 
-public abstract class Piece : IEnvironmentable
+public abstract class Piece
 {
     public PieceColor pieceColor;
 
     public VisualPiece visualPiece { get; set; }
+    public string name { get; set; }
 
     protected Tile actualTile;
     public TileCoordinates Coordinates => actualTile.TilePosition;
@@ -19,18 +20,19 @@ public abstract class Piece : IEnvironmentable
     protected int Column => Coordinates.column;
     protected bool IsWhite => pieceColor == PieceColor.White;
 
-    public Environment Environment { get; }
+    public Board Board { get; }
 
     public abstract Move[] GetMoves();
 
-    public Piece(Environment env) 
+    public Piece(Board board) 
     {
-        Environment = env;
+        Board = board;
     }
 
     public void SetTile(Tile tile) 
     {
         actualTile = tile;
+        name = $"{pieceColor} - {GetType().Name} ({tile.TilePosition.row},{tile.TilePosition.column})";
 
         if (visualPiece == null || tile == null) return;
 
@@ -62,7 +64,7 @@ public abstract class Piece : IEnvironmentable
         List<Tile> finalTiles = new();
         foreach (var tileCoord in segment)
         {
-            Tile tile = Environment.board.tiles[tileCoord.row][tileCoord.column];
+            Tile tile = Board.tiles[tileCoord.row][tileCoord.column];
             if (tile.IsOccupied)
             {
                 if (IsEnemyPiece(tile.OccupiedBy) && capturesIfEnemy || includeBlockingPieceSquare)
@@ -77,25 +79,31 @@ public abstract class Piece : IEnvironmentable
         return finalTiles;
     }
 
-    public IEnvironmentable Copy(Environment env, Tile tile) 
+    public Piece Copy(Tile tile) 
     {
         var type = this.GetType();
-        Piece piece = Activator.CreateInstance(type, env) as Piece;
+        Piece piece = Activator.CreateInstance(type, tile.Board) as Piece;
 
         piece.SetTile(tile);
         piece.pieceColor = pieceColor;
         piece.visualPiece = null;
+        piece.name = name;
 
         return piece;
     }
 
-    public IEnvironmentable Copy(Environment env)
+    public Piece Copy()
     {
-        return Copy(env, null);
+        return Copy(null);
     }
 
     public override string ToString()
     {
-        return $"{this.GetType().Name} {pieceColor} ({Coordinates.row},{Coordinates.column})";
+        return $"{this.GetType().Name} {pieceColor} ({Coordinates})";
+    }
+
+    public override bool Equals(object obj)
+    {
+        return obj is Piece otherPiece && otherPiece.name == name;
     }
 }

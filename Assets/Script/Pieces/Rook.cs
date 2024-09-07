@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Rook : BlockableMovesPiece
 {
-    public Rook(Environment env) : base(env)
+    public Rook(Board board) : base(board)
     {
     }
 

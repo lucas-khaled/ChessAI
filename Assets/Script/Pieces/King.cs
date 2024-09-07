@@ -5,11 +5,9 @@ using UnityEngine;
 
 public class King : BlockableMovesPiece
 {
-    private TileCoordinates initialTile;
-
     private CheckChecker checkChecker = new();
 
-    public King(Environment env) : base(env)
+    public King(Board board) : base(board)
     {
         
     }
@@ -34,9 +32,9 @@ public class King : BlockableMovesPiece
     {
         List<CastleMove> moves = new List<CastleMove>();
 
-        if (checkChecker.IsCheck(Environment, pieceColor)) return moves;
+        if (checkChecker.IsCheck(Board, pieceColor)) return moves;
         
-        var tiles = Environment.boardManager.GetRookTiles(pieceColor);
+        var tiles = Board.GetRookTiles(pieceColor);
 
         foreach(var tile in tiles) 
             CheckRook(tile, ref moves);
@@ -46,12 +44,16 @@ public class King : BlockableMovesPiece
 
     private void CheckRook(Tile tile, ref List<CastleMove> moves) 
     {
-        if (Environment.rules.CanCastle(pieceColor, tile.OccupiedBy as Rook) is false) return;
+        if (Board.rules.CanCastle(pieceColor, tile.OccupiedBy as Rook) is false) return;
 
-        var range = tile.TilePosition.column - Column;
+        int range = tile.TilePosition.column - Column;
 
-        var inBetweenTiles = (range > 0) ?
-            actualTile.GetHorizontalsByColor(pieceColor).rightHorizontals ://Environment.boardManager.GetRightHorizontals(Coordinates) :
+        bool isWhite = pieceColor == PieceColor.White;
+        bool positiveRange = range > 0;
+        bool isRight = (!isWhite || positiveRange) && (!positiveRange || isWhite);
+
+        var inBetweenTiles = isRight ?
+            actualTile.GetHorizontalsByColor(pieceColor).rightHorizontals:
             actualTile.GetHorizontalsByColor(pieceColor).leftHorizontals;
 
         var blockingCheckedBetween = CheckForBlockingSquares(inBetweenTiles, includeBlockingPieceSquare: true);
@@ -64,10 +66,10 @@ public class King : BlockableMovesPiece
     {
         var iterator = (range > 0) ? 1 : -1;
 
-        Tile rookToTile = Environment.board.GetTiles()[Row][Column + iterator]; 
+        Tile rookToTile = Board.GetTiles()[Row][Column + iterator]; 
         Move rookMove = new Move(rookTile, rookToTile, rookTile.OccupiedBy);
 
-        Tile toTile = Environment.board.GetTiles()[Row][Column + iterator * 2];
+        Tile toTile = Board.GetTiles()[Row][Column + iterator * 2];
 
         return new CastleMove(actualTile, toTile, this, rookMove);
     }

@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-public class Board : IEnvironmentable
+public class Board
 {
     public int BoardRowSize;
     public int BoardColumnSize;
@@ -11,9 +11,16 @@ public class Board : IEnvironmentable
     public List<Piece> whitePieces;
     public List<Piece> blackPieces;
 
-    public Environment Environment { get; }
+    public EspecialRules rules;
+    public BoardEvents events;
 
-    public Board(int row, int column, Environment environment)
+    public List<Turn> turns { get; private set; } = new List<Turn>();
+    public Turn LastTurn => turns.Count > 0 ? turns[turns.Count - 1] : new Turn();
+    public PieceColor ActualTurn { get; set; } = PieceColor.White;
+
+    public string Name { get; set; }
+
+    public Board(int row, int column)
     {
         BoardRowSize = row;
         BoardColumnSize = column;
@@ -21,15 +28,18 @@ public class Board : IEnvironmentable
         pieces = new();
         whitePieces = new();
         blackPieces = new();
-        Environment = environment;
+        events = new BoardEvents();
+        rules = new EspecialRules(this);
     }
 
-    public IEnvironmentable Copy(Environment env)
+    public Board Copy()
     {
         List<List<Tile>> virtualTiles = new List<List<Tile>>();
         List<Piece> pieces = new List<Piece>();
         List<Piece> whitePieces = new List<Piece>();
         List<Piece> blackPieces = new List<Piece>();
+        Board board = new Board(BoardRowSize, BoardColumnSize);
+        board.Name = "Copy board";
 
         foreach (var list in tiles)
         {
@@ -37,7 +47,7 @@ public class Board : IEnvironmentable
 
             foreach (var tile in list)
             {
-                var copyTile = tile.Copy(env) as Tile;
+                var copyTile = tile.Copy(board);
                 virtualList.Add(copyTile);
 
                 if (tile.IsOccupied)
@@ -55,19 +65,75 @@ public class Board : IEnvironmentable
             virtualTiles.Add(virtualList);
         }
 
-        return new Board(BoardRowSize, BoardColumnSize, env)
-        {
-            tiles = virtualTiles,
-            pieces = pieces,
-            whitePieces = whitePieces,
-            blackPieces = blackPieces,
-            BoardColumnSize = this.BoardColumnSize,
-            BoardRowSize = this.BoardRowSize
-        };
+        board.tiles = virtualTiles;
+        board.pieces = pieces;
+        board.whitePieces = whitePieces;
+        board.blackPieces = blackPieces;
+        board.rules = rules.Copy(board);
+        return board;
     }
 
     public List<List<Tile>> GetTiles()
     {
         return tiles;
+    }
+
+    public Tile GetKingTile(PieceColor color)
+    {
+        foreach (var row in tiles)
+        {
+            var kingTile = row.Find(t => t.OccupiedBy is King king && king.pieceColor == color);
+            if (kingTile != null)
+                return kingTile;
+        }
+
+        return null;
+    }
+
+    public Tile[] GetRookTiles(PieceColor color)
+    {
+        List<Tile> rookTiles = new();
+        foreach (var row in this.tiles)
+        {
+            var rookTile = row.Where(t => t.OccupiedBy is Rook rook && rook.pieceColor == color);
+            if (rookTile != null && rookTile.ToList().Count > 0)
+            {
+                rookTiles.AddRange(rookTile);
+                if (rookTiles.Count >= 2) break;
+            }
+        }
+
+        return rookTiles.ToArray();
+    }
+
+    public Piece[] GetAllPieces(PieceColor pieceColor)
+    {
+        List<Piece> pieces = new();
+        foreach (var tileList in tiles)
+        {
+            foreach (var tile in tileList)
+            {
+                if (tile.IsOccupied && tile.OccupiedBy.pieceColor == pieceColor)
+                    pieces.Add(tile.OccupiedBy);
+            }
+        }
+
+        return pieces.ToArray();
+    }
+
+    public void Clear()
+    {
+        foreach (var row in tiles)
+        {
+            foreach (var tile in row)
+            {
+                tile.DeOccupy();
+            }
+        }
+    }
+
+    public override string ToString()
+    {
+        return Name;
     }
 }

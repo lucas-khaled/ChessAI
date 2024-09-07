@@ -5,14 +5,14 @@ using UnityEngine;
 
 public class MaterialHeuristic : Heuristic
 {
-    public MaterialHeuristic(float weight = 1) : base(weight)
+    public MaterialHeuristic(GameManager manager, float weight = 1) : base(manager, weight)
     {
     }
 
-    public override float GetHeuristic(Environment environment)
+    public override float GetHeuristic(Board board)
     {
-        var whitePieces = environment.board.whitePieces;
-        var blackPieces = environment.board.blackPieces;
+        var whitePieces = board.whitePieces;
+        var blackPieces = board.blackPieces;
         var heuristic = weight * (QueenMaterialCount(whitePieces, blackPieces) + RookMaterialCount(whitePieces, blackPieces) + BishopMaterialCount(whitePieces, blackPieces) + KnightMaterialCount(whitePieces, blackPieces) + PawnMaterialCount(whitePieces, blackPieces));
 
         return heuristic;

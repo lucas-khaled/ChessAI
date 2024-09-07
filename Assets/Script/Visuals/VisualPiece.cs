@@ -9,13 +9,12 @@ public class VisualPiece : MonoBehaviour
     {
         transform.position = tile.visualTile.transform.position;
         transform.SetParent(tile.visualTile.transform);
-
-        name = $"{actualPiece.pieceColor} - {actualPiece.GetType().Name} ({tile.TilePosition.row},{tile.TilePosition.column})";
     }
 
     public void SetPiece(Piece piece, PiecesConfig config) 
     {
         actualPiece = piece;
+        name = piece.name;
 
         GetComponent<Renderer>().material = (piece.pieceColor == PieceColor.White) ? config.lightMaterial : config.darkMaterial;
     }

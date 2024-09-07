@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Knight : Piece
 {
-    public Knight(Environment env) : base(env)
+    public Knight(Board board) : base(board)
     {
     }
 
@@ -35,7 +35,7 @@ public class Knight : Piece
         if (horizontal.Count >= 2)
         {
             var edgeCoord = horizontal[1];
-            var edge = Environment.board.tiles[edgeCoord.row][edgeCoord.column];
+            var edge = Board.tiles[edgeCoord.row][edgeCoord.column];
             var edgeVerticals = edge.GetVerticalsByColor(pieceColor);
 
             if (edgeVerticals.frontVerticals.Count > 0)
@@ -73,7 +73,7 @@ public class Knight : Piece
         if (vertical.Count >= 2)
         {
             var edgeCoord = vertical[1];
-            var edge = Environment.board.tiles[edgeCoord.row][edgeCoord.column];
+            var edge = Board.tiles[edgeCoord.row][edgeCoord.column];
             var edgeHorizontals = edge.GetHorizontalsByColor(pieceColor);
 
             if (edgeHorizontals.leftHorizontals.Count > 0)

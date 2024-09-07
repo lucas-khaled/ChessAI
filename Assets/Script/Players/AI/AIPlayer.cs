@@ -21,14 +21,15 @@ public abstract class AIPlayer : Player
         onMove?.Invoke(move);
     }
 
-    protected List<Move> GetAllMoves(Environment environment, PieceColor color)
+    protected List<Move> GetAllMoves(Board board, PieceColor color)
     {
         List<Move> possibleMoves = new List<Move>();
-        List<Piece> pieces = (color == PieceColor.White) ? environment.board.whitePieces : environment.board.blackPieces;
+        List<Piece> pieces = (color == PieceColor.White) ? board.whitePieces : board.blackPieces;
 
-        foreach (var piece in pieces)
+        for(int i = 0; i < pieces.Count; i++)
         {
-            var moves = environment.moveMaker.GetMoves(piece);
+            var piece = pieces[i];
+            var moves = manager.MoveChecker.GetMoves(piece);
             possibleMoves.AddRange(moves);
         }
 

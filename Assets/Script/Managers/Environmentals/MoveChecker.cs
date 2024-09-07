@@ -1,21 +1,22 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MoveChecker : IEnvironmentable
+public class MoveChecker
 {
-    public Environment Environment { get; }
+    private CheckChecker checkChecker = new();
+    private GameManager gameManager;
 
-    private CheckChecker checkChecker;
-
-    public MoveChecker(Environment env) 
+    public MoveChecker(GameManager manager) 
     {
-        Environment = env;
-        checkChecker = new();
+        gameManager = manager;
     }
 
-    public IEnvironmentable Copy(Environment env)
+    public Move[] GetMoves(Piece piece)
     {
-        return new MoveChecker(env);
+        var pieceMoves = piece.GetMoves();
+        var moves = GetLegalMoves(pieceMoves);
+
+        return moves;
     }
 
     public Move[] GetLegalMoves(Move[] moves)
@@ -27,36 +28,39 @@ public class MoveChecker : IEnvironmentable
 
     private List<Move> FilterCheckMoves(Move[] moves)
     {
+        Board board = gameManager.TestBoard;
         List<Move> validMoves = new List<Move>();
-        PieceColor turn = Environment.turnManager.ActualTurn;
+        PieceColor turn = board.ActualTurn;
         foreach (var move in moves)
         {
-            var env = Environment.Copy();
-            env.turnManager.DoMove(move);
+            gameManager.TurnManager.DoMove(move, board);
 
-            if (checkChecker.IsCheck(env, turn) is false)
+            if (checkChecker.IsCheck(board, turn) is false)
                 validMoves.Add(move);
+
+            gameManager.TurnManager.UndoLastMove(board);
         }
 
         return validMoves;
     }
 
-    public bool IsCheckMate() 
+    public bool IsCheckMate(Board board) 
     {
-        return checkChecker.IsCheck(Environment, Environment.turnManager.ActualTurn) && HasAnyMove() is false;
+        return checkChecker.IsCheck(board, board.ActualTurn) && HasAnyMove(board) is false;
     }
 
-    public bool HasAnyMove()
+    public bool HasAnyMove(Board board)
     {
-        return GetAllPossibleMoves().Length > 0;
+        return GetAllPossibleMoves(board).Length > 0;
     }
 
-    public Move[] GetAllPossibleMoves() 
+    public Move[] GetAllPossibleMoves(Board board) 
     {
-        List<Piece> pieces = Environment.turnManager.ActualTurn == PieceColor.White ? Environment.board.whitePieces : Environment.board.blackPieces;
+        List<Piece> pieces = board.ActualTurn == PieceColor.White ? board.whitePieces : board.blackPieces;
         List<Move> moves = new();
-        foreach (var piece in pieces)
+        for(int i = 0; i < pieces.Count; i++)
         {
+            var piece = pieces[i];
             var legalMoves = GetLegalMoves(piece.GetMoves());
             moves.AddRange(legalMoves);
         }

@@ -1,4 +1,5 @@
 using System.Linq;
+using UnityEngine;
 
 public struct EndGameInfo
 {
@@ -9,60 +10,58 @@ public struct EndGameInfo
 
 public class EndGameChecker
 {
-    private Environment environment;
+    private GameManager manager;
 
-    public EndGameChecker(Environment environment) 
+    public EndGameChecker(GameManager manager) 
     {
-        SetEnvironment(environment);
+        SetManager(manager);
     }
 
-    public void SetEnvironment(Environment environment) 
+    public void SetManager(GameManager manager) 
     {
-        this.environment = environment;
+        this.manager = manager;
     }
 
-    public EndGameInfo CheckEnd()
+    public EndGameInfo CheckEnd(Board board)
     {
         EndGameInfo info = new EndGameInfo();
-        if (IsCheckMate())
-            //GameManager.UIManager.ShowCheckmateMessage(lastTurnColor);
+        if (IsCheckMate(board))
             info.hasEnded = info.isCheckMate = true;
-        else if (HasDraw(out info.drawType)) 
+        else if (HasDraw(out info.drawType, board)) 
             info.hasEnded = true;
-            //GameManager.UIManager.ShowDrawMessage(drawType);
 
         return info;
     }
 
-    public bool IsCheckMate() 
+    public bool IsCheckMate(Board board) 
     {
-        return environment.moveChecker.IsCheckMate();
+        return manager.MoveChecker.IsCheckMate(board);
     }
 
-    public bool HasDraw() 
+    public bool HasDraw(Board board) 
     {
         DrawType _;
-        return HasDraw(out _);
+        return HasDraw(out _, board);
     }
 
-    public bool HasDraw(out DrawType drawType) 
+    public bool HasDraw(out DrawType drawType, Board board) 
     {
-        if (IsStaleMateDraw())
+        if (IsStaleMateDraw(board))
         {
             drawType = DrawType.Stalemate;
             return true;
         }
-        if (Is50MoveDraw()) 
+        if (Is50MoveDraw(board)) 
         {
             drawType = DrawType.RuleOf50Moves;
             return true;
         }
-        if (IsThreefoldDraw()) 
+        if (IsThreefoldDraw(board)) 
         {
             drawType = DrawType.ThreefoldDraw;
             return true;
         }
-        if (IsInsuficcientMaterialDraw()) 
+        if (IsInsuficcientMaterialDraw(board)) 
         {
             drawType = DrawType.Deadposition;
             return true;
@@ -72,31 +71,34 @@ public class EndGameChecker
         return false;
     }
 
-    private bool Is50MoveDraw()
+    private bool Is50MoveDraw(Board board)
     {
-        return environment.turnManager.halfMoves >= 50;
+        return board.LastTurn.halfMoves >= 50;
     }
 
-    private bool IsStaleMateDraw()
+    private bool IsStaleMateDraw(Board board)
     {
-        return environment.moveChecker.HasAnyMove() is false;
+        return manager.MoveChecker.HasAnyMove(board) is false;
     }
 
-    private bool IsThreefoldDraw()
+    private bool IsThreefoldDraw(Board board)
     {
-        var moves = environment.turnManager.moves;
+        var moves = board.turns;
+
+        if (moves.Count < 3) return false;
+
         FEN fen = moves[moves.Count-1].fen;
-        int count = environment.turnManager.moves.Count(x => x.fen.fullPositionsString == fen.fullPositionsString);
+        int count = moves.Count(x => x.fen.fullPositionsString == fen.fullPositionsString);
 
         return count >= 3;
     }
 
-    private bool IsInsuficcientMaterialDraw() 
+    private bool IsInsuficcientMaterialDraw(Board board) 
     {
-        if (environment.board.pieces.Count == 2) return true;
+        if (board.pieces.Count == 2) return true;
 
-        var notKingWhitePieces = environment.board.whitePieces.Where(x => x is not King);
-        var notKingBlackPieces = environment.board.blackPieces.Where(x => x is not King);
+        var notKingWhitePieces = board.whitePieces.Where(x => x is not King);
+        var notKingBlackPieces = board.blackPieces.Where(x => x is not King);
 
         if (notKingWhitePieces.Any(x => x is Pawn || x is Queen || x is Rook) || notKingBlackPieces.Any(x => x is Pawn || x is Queen || x is Rook)) return false;
 
