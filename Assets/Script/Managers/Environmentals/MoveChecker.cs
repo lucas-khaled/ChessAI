@@ -58,8 +58,9 @@ public class MoveChecker
     {
         List<Piece> pieces = board.ActualTurn == PieceColor.White ? board.whitePieces : board.blackPieces;
         List<Move> moves = new();
-        foreach (var piece in pieces)
+        for(int i = 0; i < pieces.Count; i++)
         {
+            var piece = pieces[i];
             var legalMoves = GetLegalMoves(piece.GetMoves());
             moves.AddRange(legalMoves);
         }

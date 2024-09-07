@@ -28,7 +28,7 @@ public struct TileCoordinates
 
     public override bool Equals(object obj)
     {
-        return base.Equals(obj) && obj is TileCoordinates coord && coord.row == row && coord.column == column; 
+        return obj is TileCoordinates coord && coord.row == row && coord.column == column; 
     }
 
     public override string ToString()

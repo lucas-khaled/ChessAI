@@ -48,7 +48,10 @@ public class Move
 
     public override bool Equals(object obj)
     {
-        return obj is Move otherMove && otherMove.from.Equals(from) && otherMove.to.Equals(to) 
-            && otherMove.capture == capture && otherMove.piece == piece;
+        if (obj is not Move otherMove) return false;
+
+        bool sameCapture = (capture == null) ? otherMove.capture == null : otherMove.capture.Equals(capture);
+        return otherMove.from.Equals(from) && otherMove.to.Equals(to) 
+            && sameCapture && piece.Equals(otherMove.piece);
     }
 }

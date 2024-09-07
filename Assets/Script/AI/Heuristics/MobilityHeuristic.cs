@@ -14,10 +14,10 @@ public class MobilityHeuristic : Heuristic
         var blackMovesQnt = 0;
         var whiteMovesQnt = 0;
 
-        List<Piece> pieces = new(board.pieces);
-        foreach (var piece in pieces)
+        List<Piece> pieces = board.pieces;
+        for (int i = 0; i< pieces.Count; i++)
         {
-            Debug.Log($"<color=red> ------- Mobility Heuristic from {piece}</color>");
+            var piece = pieces[i];
             Move[] moves = piece.pieceColor == board.ActualTurn ?
                 manager.MoveChecker.GetMoves(piece) :
                 piece.GetMoves();

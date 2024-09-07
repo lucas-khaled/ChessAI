@@ -26,8 +26,9 @@ public abstract class AIPlayer : Player
         List<Move> possibleMoves = new List<Move>();
         List<Piece> pieces = (color == PieceColor.White) ? board.whitePieces : board.blackPieces;
 
-        foreach (var piece in pieces)
+        for(int i = 0; i < pieces.Count; i++)
         {
+            var piece = pieces[i];
             var moves = manager.MoveChecker.GetMoves(piece);
             possibleMoves.AddRange(moves);
         }

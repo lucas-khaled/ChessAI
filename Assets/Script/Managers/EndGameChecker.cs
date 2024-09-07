@@ -84,6 +84,9 @@ public class EndGameChecker
     private bool IsThreefoldDraw(Board board)
     {
         var moves = board.turns;
+
+        if (moves.Count < 3) return false;
+
         FEN fen = moves[moves.Count-1].fen;
         int count = moves.Count(x => x.fen.fullPositionsString == fen.fullPositionsString);
 

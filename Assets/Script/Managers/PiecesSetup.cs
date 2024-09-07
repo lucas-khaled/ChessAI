@@ -75,7 +75,7 @@ public class PiecesSetup : ManagerHelper
         pieces.Add(piece);
         tile.Occupy(piece);
 
-        AddVisual(piece, name);
+        AddVisual(piece);
 
         AddPieceToList(piece);
     }
@@ -89,17 +89,16 @@ public class PiecesSetup : ManagerHelper
         pieces.Add(piece);
         tile.Occupy(piece);
 
-        AddVisual(piece, name);
+        AddVisual(piece);
 
         AddPieceToList(piece);
     }
 
-    public void AddVisual(Piece piece, string name)
+    public void AddVisual(Piece piece)
     {
         var prefab = config.GetPrefabFromPiece(piece);
 
         var visualPiece = Instantiate(prefab);
-        visualPiece.name = name;
         visualPiece.SetPiece(piece, config);
 
         piece.visualPiece = visualPiece;

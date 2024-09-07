@@ -24,6 +24,8 @@ public class GameManager : MonoBehaviour
 
     public UIManager UIManager => uiManager;
 
+    public const string GAME_BOARD_NAME = "Game Board";
+    public const string TEST_BOARD_NAME = "Test Board";
 
     private void Awake()
     {
@@ -65,7 +67,7 @@ public class GameManager : MonoBehaviour
     private void UpdateTestBoard()
     {
         TestBoard = GameBoard.Copy();
-        TestBoard.Name = "Test Board";
+        TestBoard.Name = TEST_BOARD_NAME;
     }
 
     private void SetupEnvironment(Board board) 
@@ -74,7 +76,7 @@ public class GameManager : MonoBehaviour
         GameBoard.events.onTurnDone += OnEndTurn;
         GameBoard.events.onPromotionMade += HandlePromotionMove;
         GameBoard.events.onPieceCaptured += captureController.PieceCaptured;
-        GameBoard.Name = "Game board";
+        GameBoard.Name = GAME_BOARD_NAME;
     }
 
     private void OnEndTurn(PieceColor color)
@@ -95,7 +97,7 @@ public class GameManager : MonoBehaviour
 
     private void HandlePromotionMove(PromotionMove move)
     {
-        setup.AddVisual(move.promoteTo, move.piece.visualPiece.name);
+        setup.AddVisual(move.promoteTo);
 
         Destroy(move.piece.visualPiece.gameObject);
     }

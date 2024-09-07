@@ -46,10 +46,14 @@ public class King : BlockableMovesPiece
     {
         if (Board.rules.CanCastle(pieceColor, tile.OccupiedBy as Rook) is false) return;
 
-        var range = tile.TilePosition.column - Column;
+        int range = tile.TilePosition.column - Column;
 
-        var inBetweenTiles = (range > 0) ?
-            actualTile.GetHorizontalsByColor(pieceColor).rightHorizontals ://Environment.boardManager.GetRightHorizontals(Coordinates) :
+        bool isWhite = pieceColor == PieceColor.White;
+        bool positiveRange = range > 0;
+        bool isRight = (!isWhite || positiveRange) && (!positiveRange || isWhite);
+
+        var inBetweenTiles = isRight ?
+            actualTile.GetHorizontalsByColor(pieceColor).rightHorizontals:
             actualTile.GetHorizontalsByColor(pieceColor).leftHorizontals;
 
         var blockingCheckedBetween = CheckForBlockingSquares(inBetweenTiles, includeBlockingPieceSquare: true);
