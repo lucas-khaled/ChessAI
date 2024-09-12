@@ -15,8 +15,6 @@ public class GameManager : MonoBehaviour
     public EndGameChecker EndGameChecker { get; private set; }
     public MoveChecker MoveChecker { get; private set; }
 
-    public FENManager FENManager { get; private set; } 
-
     private PiecesSetup setup;
     private PiecesCapturedController captureController;
     private BoardStarter boardStarter;
@@ -53,7 +51,6 @@ public class GameManager : MonoBehaviour
         var board = boardStarter.StartNewBoard();
         SetupEnvironment(board);
 
-        FENManager = new FENManager(GameBoard);
         EndGameChecker = new EndGameChecker(this);
         MoveChecker = new MoveChecker(this);
         TurnManager = new TurnManager(this);
@@ -61,7 +58,7 @@ public class GameManager : MonoBehaviour
         ChooseSetup();
         UpdateTestBoard();
 
-        playTurnManager.SetPlayers(new HumanPlayer(this), new MinimaxAI(this, 2), GameBoard.ActualTurn);
+        playTurnManager.SetPlayers(new HumanPlayer(this), new MinimaxAI(this, 3), GameBoard.ActualTurn);
     }
 
     private void UpdateTestBoard()
@@ -108,7 +105,7 @@ public class GameManager : MonoBehaviour
             setup.SetInitialPieces();
         else
         {
-            FENManager.SetupByFEN(new FEN(fen), setup.InstantiatePiece);
+            GameBoard.FENManager.SetupByFEN(new FEN(fen), setup.InstantiatePiece);
         }
     }
 
@@ -116,7 +113,7 @@ public class GameManager : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.F)) 
         {
-            FEN fen = FENManager.GetFEN();
+            FEN fen = GameBoard.FENManager.GetFEN();
             Debug.Log("FEN  -  " + fen);
         }
 

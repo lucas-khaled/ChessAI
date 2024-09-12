@@ -126,7 +126,7 @@ public class TurnManager
         int halfMoves = (move.capture != null) ? 0 : lastTurn.halfMoves + 1;
         int fullMoves = (board.ActualTurn == PieceColor.Black) ? lastTurn.fullMoves + 1 : lastTurn.fullMoves;
 
-        var turn = new Turn(move, Manager.FENManager.GetFEN(), halfMoves, fullMoves);
+        var turn = new Turn(move, board.FENManager.GetFEN(), halfMoves, fullMoves);
         board.turns.Add(turn);
     }
     #endregion

@@ -17,6 +17,7 @@ public class Board
     public List<Turn> turns { get; private set; } = new List<Turn>();
     public Turn LastTurn => turns.Count > 0 ? turns[turns.Count - 1] : new Turn();
     public PieceColor ActualTurn { get; set; } = PieceColor.White;
+    public FENManager FENManager { get; private set; }
 
     public string Name { get; set; }
 
@@ -30,6 +31,7 @@ public class Board
         blackPieces = new();
         events = new BoardEvents();
         rules = new EspecialRules(this);
+        FENManager = new FENManager(this);
     }
 
     public Board Copy()
