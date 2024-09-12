@@ -13,6 +13,8 @@ public class MinimaxAI : AIPlayer
     private const string MOVE_CHOICE_DEBUG = "Move Choice";
     private const string MOVE_MINIMAX_DEBUG = "Move Minimax";
 
+    private int evalCount = 0;
+
     public MinimaxAI(GameManager manager, int depth = 2) : base(manager) 
     {
         maxDepth = depth;
@@ -29,6 +31,7 @@ public class MinimaxAI : AIPlayer
         Move bestMove = null;
         var alpha = float.MinValue;
         var beta = float.MaxValue;
+        evalCount = 0;
 
         var moves = GetAllMoves(board, actualColor);
 
@@ -87,6 +90,8 @@ public class MinimaxAI : AIPlayer
         Debugger.LogStopwatch(moveChoiceStopWatch, MOVE_CHOICE_DEBUG, true);
         Debugger.LogTimeRecord(MOVE_CHOICE_DEBUG, "Move Choice final record");
 
+        Debug.Log($"Evaluated {evalCount} times");
+
 
         Debug.Log($"<color=green>Choosed {bestMove} \nas best with a score of {bestScore}</color>");
         return bestMove;
@@ -114,6 +119,7 @@ public class MinimaxAI : AIPlayer
             Debugger.LogStopwatch(heuristicStopWatch, HEURISTIC_DEBUG, true);
 
             Debug.Log($"Position Evaluation: {heuristicValue}");
+            evalCount++;
             return heuristicValue;
         }
 
