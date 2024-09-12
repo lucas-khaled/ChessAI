@@ -90,8 +90,6 @@ public class EspecialRules
 
     private void SetKingMove(Move move)
     {
-        Debug.Log($"<color=red>[Rules {Board.Name}] Setting King first move {move}</color>");
-
         var castleRights = move.piece.pieceColor == PieceColor.White ? whiteCastleRights : blackCastleRights;
         castleRights.SetKingMove(move);
     }
@@ -132,8 +130,6 @@ public class EspecialRules
 
             if (castleRights.QueenRookFirstMove == null)
             {
-                if (Board.Name == GameManager.GAME_BOARD_NAME)
-                    Debug.Log($"<color=red>[Rules {Board.Name}] Setting Queen rook first move {rookMove} </color>");
                 castleRights.SetQueenRookFirstMove(rookMove);
             }
             return;
@@ -145,8 +141,6 @@ public class EspecialRules
 
             if (castleRights.KingRookFirstMove == null)
             {
-                if(Board.Name == GameManager.GAME_BOARD_NAME)
-                    Debug.Log($"<color=red>[Rules {Board.Name}] Setting King rook first move {rookMove} </color>");
                 castleRights.SetKingRookFirstMove(rookMove);
             }
             return;
@@ -155,7 +149,6 @@ public class EspecialRules
 
     public void SetCastleKingSide(PieceColor color, bool can) 
     {
-        Debug.Log($"<color=red>[Rules {Board.Name}] Setting Castle Kingside {can}</color>");
         if (color == PieceColor.White)
             whiteCastleRights.CanCastleKingSide = can;
         else
@@ -164,7 +157,6 @@ public class EspecialRules
 
     public void SetCastleQueenSide(PieceColor color, bool can)
     {
-        Debug.Log($"<color=red>[Rules {Board.Name}] Setting Castle Queenside {can}</color>");
         if (color == PieceColor.White)
             whiteCastleRights.CanCastleQueenSide = can;
         else
@@ -187,7 +179,6 @@ public class EspecialRules
         var castleRights = (move.piece.pieceColor == PieceColor.White) ? whiteCastleRights : blackCastleRights;
         bool undo = castleRights.KingFirstMove != null && castleRights.KingFirstMove.Equals(move);
 
-        Debug.Log($">>> KING FIRST MOVE IS {castleRights.KingFirstMove}\n MOVE DONE WAS {move} \nSHOULD UNDO? {undo}");
         if (undo)
             castleRights.SetKingMove(null);
     }
@@ -239,7 +230,6 @@ public class EspecialRules
 
         public void SetKingMove(Move move) 
         {
-            Debug.Log("KING MOVE: "+move + "\nFirst Move: "+KingFirstMove);
             SetCastleOnBothSides(move == null);
             KingFirstMove = move;
         }
