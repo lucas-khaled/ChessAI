@@ -139,7 +139,7 @@ public class MinimaxAI : AIPlayer
             manager.TurnManager.UndoLastMove(board);
 
             moveMinimaxStopWatch.Stop();
-            Debugger.LogStopwatch(moveMinimaxStopWatch, MOVE_MINIMAX_DEBUG, true);
+            Debugger.LogStopwatch(moveMinimaxStopWatch, MOVE_MINIMAX_DEBUG + " - " + depth, true);
 
 
             if (isMaximize)
