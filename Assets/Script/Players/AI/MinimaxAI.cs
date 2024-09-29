@@ -129,7 +129,7 @@ public class MinimaxAI : AIPlayer
         {
             manager.TurnManager.DoMove(move, board);
 
-            Debug.Log($"<color=yellow>{depth} -> Evaluating {move} from {board.FENManager.GetFEN()}</color>");
+            Debug.Log($"<color=yellow>{depth} -> Evaluating {move}</color>");
 
             float score = Minimax(color.GetOppositeColor(), depth-1, alpha, beta);
 
