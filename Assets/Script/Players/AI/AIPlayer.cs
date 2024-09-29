@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using UnityEngine;
 
 public abstract class AIPlayer : Player
 {
@@ -36,5 +37,76 @@ public abstract class AIPlayer : Player
         return possibleMoves;
     }
 
+    protected List<Move> SortMoves(List<Move> moves) 
+    {
+        int[] moveHeuristics = new int[moves.Count];
+        for(int i = 0; i < moves.Count; i++) 
+        {
+            var move = moves[i];
+            var heuristic = 0;
+
+            var capture = move.capture;
+            if(capture != null) 
+            {
+                if (capture is Queen)
+                    heuristic += 5;
+                else if (capture is Rook)
+                    heuristic += 4;
+                else if (capture is Bishop || capture is Knight)
+                    heuristic += 3;
+                else if (capture is Pawn)
+                    heuristic += 2;
+            }
+
+            if (move is CastleMove)
+                heuristic += 1;
+
+            if (move is PromotionMove)
+                heuristic += 5;
+
+            
+            moveHeuristics[i] = heuristic;
+        }
+
+        return CountingSortMoves(moveHeuristics, moves);
+    }
+
+    private List<Move> CountingSortMoves(int[] moveHeuristics, List<Move> moves) 
+    {
+        if(moveHeuristics.Length != moves.Count) 
+        {
+            Debug.LogError("Move sort heuristics array are not the same length of moves array");
+            return null;
+        }
+
+        int[] count = new int[11];
+        Move[] outputMoves = new Move[moves.Count];
+
+        for(int i = 0; i< moveHeuristics.Length; i++) 
+        {
+            count[moveHeuristics[i]]++;
+        }
+
+        for (int i = 1; i < count.Length; i++)
+        {
+            count[i] += count[i - 1];
+        }
+
+        for(int i = moveHeuristics.Length-1; i >= 0; i--) 
+        {
+            var index = --count[moveHeuristics[i]];
+            outputMoves[index] = moves[i];
+        }
+
+        return outputMoves.ToList();
+    }
+
     protected abstract Task<Move> CalculateMove();
+
+    protected struct MoveDTO
+    {
+        public Move move;
+        public bool WasCheckmate;
+        public bool WasDraw;
+    }
 }

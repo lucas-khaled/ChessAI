@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
 using System.Threading.Tasks;
 using UnityEngine;
 using Debug = UnityEngine.Debug;
@@ -33,7 +34,7 @@ public class MinimaxAI : AIPlayer
         var beta = float.MaxValue;
         evalCount = 0;
 
-        var moves = GetAllMoves(board, actualColor);
+        var moves = SortMoves(GetAllMoves(board, actualColor));
 
         Debug.Log($"Evaluating {moves.Count} moves");
         
@@ -118,17 +119,17 @@ public class MinimaxAI : AIPlayer
             heuristicStopWatch.Stop();
             Debugger.LogStopwatch(heuristicStopWatch, HEURISTIC_DEBUG, true);
 
-            Debug.Log($"Position Evaluation: {heuristicValue}");
             evalCount++;
             return heuristicValue;
         }
 
         float bestScore = isMaximize ? float.MinValue : float.MaxValue;
-        foreach (var move in GetAllMoves(board, color)) 
+        var moves = GetAllMoves(board, color);
+        foreach (var move in moves) 
         {
             manager.TurnManager.DoMove(move, board);
 
-            Debug.Log($"<color=yellow>{depth} -> Evaluating {move}</color>");
+            Debug.Log($"<color=yellow>{depth} -> Evaluating {move} from {board.FENManager.GetFEN()}</color>");
 
             float score = Minimax(color.GetOppositeColor(), depth-1, alpha, beta);
 
