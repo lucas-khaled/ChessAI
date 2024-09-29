@@ -43,20 +43,20 @@ public class MinimaxAI : AIPlayer
 
         foreach(var move in moves) 
         {
-            manager.TurnManager.DoMove(move, board);
-            Debug.Log($"<color=cyan>{maxDepth} -> Evaluating {move}</color>");
-
             Stopwatch moveMinimaxStopWatch = Stopwatch.StartNew();
             moveMinimaxStopWatch.Start();
 
+            manager.TurnManager.DoMove(move, board);
+            Debug.Log($"<color=cyan>{maxDepth} -> Evaluating {move}</color>");
+
             float score = Minimax(actualColor.GetOppositeColor(), maxDepth-1, alpha, beta);
+
+            manager.TurnManager.UndoLastMove(board);
 
             moveMinimaxStopWatch.Stop();
             Debugger.LogStopwatch(moveMinimaxStopWatch, MOVE_MINIMAX_DEBUG, true);
 
             Debug.Log($"<color=cyan>{maxDepth} -> Evaluated {move} \nwith a score of {score}</color>");
-
-            manager.TurnManager.UndoLastMove(board);
 
             if (IsBetterScoreThan(score, bestScore))
             {
@@ -111,13 +111,13 @@ public class MinimaxAI : AIPlayer
 
         if (depth == 0) 
         {
-            Stopwatch heuristicStopWatch = Stopwatch.StartNew();
+            //Stopwatch heuristicStopWatch = Stopwatch.StartNew();
 
-            heuristicStopWatch.Start();
+            //heuristicStopWatch.Start();
             float heuristicValue = heuristic.GetHeuristic(board);
 
-            heuristicStopWatch.Stop();
-            Debugger.LogStopwatch(heuristicStopWatch, HEURISTIC_DEBUG, true);
+            //heuristicStopWatch.Stop();
+            //Debugger.LogStopwatch(heuristicStopWatch, HEURISTIC_DEBUG, true);
 
             evalCount++;
             return heuristicValue;
@@ -127,6 +127,9 @@ public class MinimaxAI : AIPlayer
         var moves = GetAllMoves(board, color);
         foreach (var move in moves) 
         {
+            Stopwatch moveMinimaxStopWatch = Stopwatch.StartNew();
+            moveMinimaxStopWatch.Start();
+
             manager.TurnManager.DoMove(move, board);
 
             Debug.Log($"<color=yellow>{depth} -> Evaluating {move}</color>");
@@ -134,6 +137,10 @@ public class MinimaxAI : AIPlayer
             float score = Minimax(color.GetOppositeColor(), depth-1, alpha, beta);
 
             manager.TurnManager.UndoLastMove(board);
+
+            moveMinimaxStopWatch.Stop();
+            Debugger.LogStopwatch(moveMinimaxStopWatch, MOVE_MINIMAX_DEBUG, true);
+
 
             if (isMaximize)
             {
