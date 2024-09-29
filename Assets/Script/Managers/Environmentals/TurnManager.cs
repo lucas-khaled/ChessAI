@@ -109,7 +109,7 @@ public class TurnManager
         {
             capturedPiece.GetTile().DeOccupy();
 
-            Predicate<Piece> predicate = p => p.Coordinates.Equals(capturedPiece.Coordinates);
+            Predicate<Piece> predicate = p => p.name.Equals(capturedPiece.name);
             board.pieces.RemoveAll(predicate);
             if (capturedPiece.pieceColor == PieceColor.White)
                 board.whitePieces.RemoveAll(predicate);
@@ -159,6 +159,7 @@ public class TurnManager
 
     private void UndoPromotionMove(PromotionMove move, Board board)
     {
+        move.to.DeOccupy();
         UndoCapture(move, board);
 
         Piece promotedPiece = move.promoteTo;
@@ -167,8 +168,6 @@ public class TurnManager
         promotedPiece.SetTile(null);
         move.from.Occupy(pawn);
         pawn.SetTile(move.from);
-
-        move.to.DeOccupy();
 
         board.pieces.Add(pawn);
         board.pieces.Remove(promotedPiece);

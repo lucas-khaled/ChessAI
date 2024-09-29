@@ -147,20 +147,32 @@ public class EspecialRules
         }
     }
 
-    public void SetCastleKingSide(PieceColor color, bool can) 
+    public void SetCastleKingSide(PieceColor color, bool can, bool setByFEN = false) 
     {
         if (color == PieceColor.White)
+        {
             whiteCastleRights.CanCastleKingSide = can;
+            whiteCastleRights.WasSetByFEN = setByFEN;
+        }
         else
+        {
             blackCastleRights.CanCastleKingSide = can;
+            blackCastleRights.WasSetByFEN = setByFEN;
+        }
     }
 
-    public void SetCastleQueenSide(PieceColor color, bool can)
+    public void SetCastleQueenSide(PieceColor color, bool can, bool setByFEN = false)
     {
         if (color == PieceColor.White)
+        {
             whiteCastleRights.CanCastleQueenSide = can;
+            whiteCastleRights.WasSetByFEN = setByFEN;
+        }
         else
+        {
             blackCastleRights.CanCastleQueenSide = can;
+            blackCastleRights.WasSetByFEN = setByFEN;
+        }
     }
 
     private void OnPieceUnmoved(Move move)
@@ -177,7 +189,7 @@ public class EspecialRules
     private void UndoKingMove(Move move)
     {
         var castleRights = (move.piece.pieceColor == PieceColor.White) ? whiteCastleRights : blackCastleRights;
-        bool undo = castleRights.KingFirstMove != null && castleRights.KingFirstMove.Equals(move);
+        bool undo = castleRights.KingFirstMove != null && castleRights.WasSetByFEN is false && castleRights.KingFirstMove.Equals(move);
 
         if (undo)
             castleRights.SetKingMove(null);
@@ -188,15 +200,16 @@ public class EspecialRules
         var color = move.piece.pieceColor;
         var castleRights = (color == PieceColor.White) ? whiteCastleRights : blackCastleRights;
 
-        if (castleRights.KingRookFirstMove != null && castleRights.KingRookFirstMove.Equals(move)) 
+        if (castleRights.KingRookFirstMove != null && castleRights.WasSetByFEN is false && castleRights.KingRookFirstMove.Equals(move)) 
             castleRights.SetKingRookFirstMove(null);
 
-        if (castleRights.QueenRookFirstMove != null && castleRights.QueenRookFirstMove.Equals(move))
+        if (castleRights.QueenRookFirstMove != null && castleRights.WasSetByFEN is false && castleRights.QueenRookFirstMove.Equals(move))
             castleRights.SetQueenRookFirstMove(null);
     }
 
     public class CastleRights 
     {
+        public bool WasSetByFEN { get; set; }
         public bool CanCastleKingSide { get; set; }
         public bool CanCastleQueenSide { get; set; }
 

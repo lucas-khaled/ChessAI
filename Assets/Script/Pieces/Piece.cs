@@ -32,8 +32,11 @@ public abstract class Piece
     public void SetTile(Tile tile) 
     {
         actualTile = tile;
-        name = $"{pieceColor} - {GetType().Name} ({tile.TilePosition.row},{tile.TilePosition.column})";
 
+        if (tile == null) return;
+
+        name = $"{pieceColor} - {GetType().Name} ({tile.TilePosition.row},{tile.TilePosition.column})";
+        
         if (visualPiece == null || tile == null) return;
 
         visualPiece.SetTilePosition(tile);
@@ -99,7 +102,8 @@ public abstract class Piece
 
     public override string ToString()
     {
-        return $"{this.GetType().Name} {pieceColor} ({Coordinates})";
+        string coord = (actualTile == null) ? "null" : Coordinates.ToString();
+        return $"{this.GetType().Name} {pieceColor} ({coord})";
     }
 
     public override bool Equals(object obj)

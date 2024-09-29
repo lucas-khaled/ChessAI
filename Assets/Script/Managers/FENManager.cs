@@ -106,10 +106,10 @@ public class FENManager
         bool castledBlackKingside = (castlingString != "-" && castlingString.Contains("K"));
         bool castledBlackQueenside = (castlingString != "-" && castlingString.Contains("Q"));
 
-        board.rules.SetCastleKingSide(PieceColor.White, castledWhiteKingside);
-        board.rules.SetCastleQueenSide(PieceColor.White, castledWhiteQueenside);
-        board.rules.SetCastleKingSide(PieceColor.Black, castledBlackKingside);
-        board.rules.SetCastleQueenSide(PieceColor.Black, castledBlackQueenside);
+        board.rules.SetCastleKingSide(PieceColor.White, castledWhiteKingside, true);
+        board.rules.SetCastleQueenSide(PieceColor.White, castledWhiteQueenside, true);
+        board.rules.SetCastleKingSide(PieceColor.Black, castledBlackKingside, true);
+        board.rules.SetCastleQueenSide(PieceColor.Black, castledBlackQueenside, true);
     }
 
     private void SetEnPassant(string enPassantString)

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -31,14 +32,23 @@ public class MoveChecker
         Board board = gameManager.TestBoard;
         List<Move> validMoves = new List<Move>();
         PieceColor turn = board.ActualTurn;
+        int index = 0;
         foreach (var move in moves)
         {
-            gameManager.TurnManager.DoMove(move, board);
+            try
+            {
+                gameManager.TurnManager.DoMove(move, board);
 
-            if (checkChecker.IsCheck(board, turn) is false)
-                validMoves.Add(move);
+                if (checkChecker.IsCheck(board, turn) is false)
+                    validMoves.Add(move);
 
-            gameManager.TurnManager.UndoLastMove(board);
+                gameManager.TurnManager.UndoLastMove(board);
+            }
+            catch (Exception e)
+            {
+                Debug.LogError($"Found error:\n{e}\n\n FEN is {board.FENManager.GetFEN()} and move is {move}; \n Last: {moves[index-1]}");
+            }
+            index++;
         }
 
         return validMoves;
