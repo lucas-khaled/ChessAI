@@ -87,8 +87,8 @@ public class EndGameChecker
 
         if (moves.Count < 3) return false;
 
-        FEN fen = moves[moves.Count-1].fen;
-        int count = moves.Count(x => x.fen.fullPositionsString == fen.fullPositionsString);
+        string hash = moves[moves.Count-1].zobristHash;
+        int count = moves.Count(x => x.zobristHash == hash);
 
         return count >= 3;
     }

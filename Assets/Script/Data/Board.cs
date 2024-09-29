@@ -14,6 +14,8 @@ public class Board
     public EspecialRules rules;
     public BoardEvents events;
 
+    public string ActualHash;
+
     public List<Turn> turns { get; private set; } = new List<Turn>();
     public Turn LastTurn => turns.Count > 0 ? turns[turns.Count - 1] : new Turn();
     public PieceColor ActualTurn { get; set; } = PieceColor.White;

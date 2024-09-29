@@ -19,6 +19,8 @@ public class PiecesSetup : ManagerHelper
         SetBishops();
         SetKnights();
         SetPawns();
+
+        board.ActualHash = manager.HashManager.GetHashFromPosition(board).ToString();
     }
 
     private void SetKings()

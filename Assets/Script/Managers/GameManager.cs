@@ -14,6 +14,7 @@ public class GameManager : MonoBehaviour
     public TurnManager TurnManager { get; private set; }
     public EndGameChecker EndGameChecker { get; private set; }
     public MoveChecker MoveChecker { get; private set; }
+    public ZobristHashManager HashManager { get; private set; }
 
     private PiecesSetup setup;
     private PiecesCapturedController captureController;
@@ -33,6 +34,9 @@ public class GameManager : MonoBehaviour
 
     private void GetHelperManagers()
     {
+        HashManager = new ZobristHashManager();
+        HashManager.InitializeHashes();
+
         setup = GetComponent<PiecesSetup>();
         setup.SetManager(this);
 
@@ -105,7 +109,7 @@ public class GameManager : MonoBehaviour
             setup.SetInitialPieces();
         else
         {
-            GameBoard.FENManager.SetupByFEN(new FEN(fen), setup.InstantiatePiece);
+            GameBoard.FENManager.SetupByFEN(new FEN(fen), setup.InstantiatePiece, this);
         }
     }
 

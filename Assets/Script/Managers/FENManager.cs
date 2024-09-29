@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 
 public class FENManager
 {
@@ -35,7 +36,7 @@ public class FENManager
         this.board = board;
     }
 
-    public void SetupByFEN(FEN fen, InstantiateCallback instantiateCallback)
+    public void SetupByFEN(FEN fen, InstantiateCallback instantiateCallback, GameManager manager)
     {
         Turn turn = new Turn();
 
@@ -46,7 +47,9 @@ public class FENManager
 
         turn.halfMoves = GetHalfMoves(fen.halfMovesString);
         turn.fullMoves = GetFullMoves(fen.fullMovesString);
-        turn.fen = fen;
+
+        long hash = manager.HashManager.GetHashFromPosition(board);
+        board.ActualHash = turn.zobristHash = hash.ToString();
 
         board.turns.Add(turn);
     }

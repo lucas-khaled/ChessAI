@@ -58,7 +58,7 @@ public class PlayTurnManager : ManagerHelper
             manager.TurnManager.DoMove(madeMove, board);
             madeMove = null;
 
-            if(manager.EndGameChecker.CheckEnd(manager.TestBoard).hasEnded is false)
+            if (manager.EndGameChecker.CheckEnd(manager.TestBoard).hasEnded is false)
                 Task.Run(() => PlayerMove(board.ActualTurn));
         }
     }

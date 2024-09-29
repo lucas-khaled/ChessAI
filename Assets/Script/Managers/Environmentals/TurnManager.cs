@@ -43,6 +43,9 @@ public class TurnManager
 
     private void ComputeMove(Move move, Board board) 
     {
+        EspecialRules oldRules = board.rules.Copy(board);
+        string oldHash = board.ActualHash;
+
         if (move is CastleMove castleMove)
             ComputeCastleMove(castleMove, board);
         else if (move is PromotionMove promotionMove)
@@ -50,8 +53,13 @@ public class TurnManager
         else
             ComputeSimpleMove(move, board);
 
-        SetTurn(move, board);
         board.events?.onMoveMade?.Invoke(move);
+
+        
+        long hash = Manager.HashManager.GetNewHashFromMove(Convert.ToInt64(oldHash), move, board.rules, oldRules);
+        board.ActualHash = hash.ToString();
+
+        SetTurn(move, board);
     }
 
     private void ComputeCastleMove(CastleMove move, Board board) 
@@ -126,7 +134,7 @@ public class TurnManager
         int halfMoves = (move.capture != null) ? 0 : lastTurn.halfMoves + 1;
         int fullMoves = (board.ActualTurn == PieceColor.Black) ? lastTurn.fullMoves + 1 : lastTurn.fullMoves;
 
-        var turn = new Turn(move, board.FENManager.GetFEN(), halfMoves, fullMoves);
+        var turn = new Turn(move, board.ActualHash, halfMoves, fullMoves);
         board.turns.Add(turn);
     }
     #endregion
@@ -134,7 +142,10 @@ public class TurnManager
     #region UNDO
     public void UndoLastMove(Board board) 
     {
+        EspecialRules oldRules = board.rules.Copy(board);
         Turn lastTurn = board.LastTurn;
+        string hash = lastTurn.zobristHash;
+
         board.turns.Remove(lastTurn);
 
         Move lastMove = lastTurn.move;
@@ -146,6 +157,8 @@ public class TurnManager
             UndoSimpleMove(lastMove, board);
 
         board.events.onMoveUnmade?.Invoke(lastMove);
+
+        board.ActualHash = hash;
 
         SwapTurn(board);
         board.events.onTurnUndone?.Invoke(lastMove.piece.pieceColor);
@@ -235,20 +248,20 @@ public class TurnManager
 public struct Turn 
 {
     public Move move;
-    public FEN fen;
+    public string zobristHash;
     public int halfMoves;
     public int fullMoves; 
 
-    public Turn(Move move, FEN fen, int halfMoves, int fullMoves) 
+    public Turn(Move move, string zobristHash, int halfMoves, int fullMoves) 
     {
         this.move = move;
-        this.fen = fen;
+        this.zobristHash = zobristHash;
         this.halfMoves = halfMoves;
         this.fullMoves = fullMoves;
     }
 
     public override string ToString()
     {
-        return $"{move};\n\nFEN: {fen}";
+        return $"{move};\n\nFEN: {zobristHash}";
     }
 }
