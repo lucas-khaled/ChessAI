@@ -12,8 +12,8 @@ public class SimplePositionHeuristic : PositionHeuristic
     {
         new MaterialHeuristic(manager),
         new CenterControlHeuristic(manager, 0.5f),
-        new PawnStructureHeuristic(manager, 0.3f),
-        new MobilityHeuristic(manager, 0.1f)
+        //new PawnStructureHeuristic(manager, 0.3f),
+        //new MobilityHeuristic(manager, 0.1f)
     };
 }
 
