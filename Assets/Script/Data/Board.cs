@@ -74,6 +74,9 @@ public class Board
         board.whitePieces = whitePieces;
         board.blackPieces = blackPieces;
         board.rules = rules.Copy(board);
+        board.ActualTurn = ActualTurn;
+        board.ActualHash = ActualHash;
+        board.turns = turns;
         return board;
     }
 
