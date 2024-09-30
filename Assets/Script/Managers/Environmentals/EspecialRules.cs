@@ -12,20 +12,23 @@ public class EspecialRules
 
     public Board Board { get; private set; }
 
-    public EspecialRules(Board board) 
+    public EspecialRules(Board board, bool listenToEvents = true) 
     {
         whiteCastleRights = new();
         blackCastleRights = new();
 
-        board.events.onMoveMade += OnPieceMoved;
-        board.events.onMoveUnmade += OnPieceUnmoved;
+        if (listenToEvents)
+        {
+            board.events.onMoveMade += OnPieceMoved;
+            board.events.onMoveUnmade += OnPieceUnmoved;
+        }
 
         Board = board;
     }
 
-    public EspecialRules Copy(Board board)
+    public EspecialRules Copy(Board board, bool listenToEvents = true)
     {
-        return new EspecialRules(board)
+        return new EspecialRules(board, listenToEvents)
         {
             whiteCastleRights = this.whiteCastleRights,
             blackCastleRights = this.blackCastleRights,

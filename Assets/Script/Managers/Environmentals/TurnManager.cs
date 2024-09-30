@@ -43,7 +43,7 @@ public class TurnManager
 
     private void ComputeMove(Move move, Board board) 
     {
-        EspecialRules oldRules = board.rules.Copy(board);
+        EspecialRules oldRules = board.rules.Copy(board, false);
         string oldHash = board.ActualHash;
 
         if (move is CastleMove castleMove)
@@ -142,7 +142,6 @@ public class TurnManager
     #region UNDO
     public void UndoLastMove(Board board) 
     {
-        EspecialRules oldRules = board.rules.Copy(board);
         Turn lastTurn = board.LastTurn;
         string hash = lastTurn.zobristHash;
 
