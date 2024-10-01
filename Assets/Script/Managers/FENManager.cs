@@ -106,8 +106,8 @@ public class FENManager
     {
         bool castledWhiteKingside = (castlingString != "-" && castlingString.Contains("K"));
         bool castledWhiteQueenside = (castlingString != "-" && castlingString.Contains("Q"));
-        bool castledBlackKingside = (castlingString != "-" && castlingString.Contains("K"));
-        bool castledBlackQueenside = (castlingString != "-" && castlingString.Contains("Q"));
+        bool castledBlackKingside = (castlingString != "-" && castlingString.Contains("k"));
+        bool castledBlackQueenside = (castlingString != "-" && castlingString.Contains("q"));
 
         board.rules.SetCastleKingSide(PieceColor.White, castledWhiteKingside, true);
         board.rules.SetCastleQueenSide(PieceColor.White, castledWhiteQueenside, true);
