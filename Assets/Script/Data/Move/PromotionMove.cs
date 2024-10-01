@@ -8,4 +8,11 @@ public class PromotionMove : Move
     {
         this.promoteTo = promoteTo;
     }
+
+    public override Move VirtualizeTo(Board board)
+    {
+        Move virtualizedMove = base.VirtualizeTo(board);
+
+        return new PromotionMove(virtualizedMove.from, virtualizedMove.to, virtualizedMove.piece, promoteTo, virtualizedMove.capture);
+    }
 }
