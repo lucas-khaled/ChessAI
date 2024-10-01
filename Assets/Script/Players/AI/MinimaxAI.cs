@@ -60,8 +60,24 @@ public class MinimaxAI : AIPlayer
             }
             else
             {
+                if (manager.EndGameChecker.IsCheckMate(board))
+                {
+                    bestMoves.Clear();
+                    bestMoves.Add(move);
+
+                    score = (actualColor == PieceColor.White) ? 1000 : -1000;
+                    transpositionTable.AddScore(board.ActualHash, score);
+
+                    manager.TurnManager.UndoLastMove(board);
+
+                    moveMinimaxStopWatch.Stop();
+                    Debugger.LogStopwatch(moveMinimaxStopWatch, MOVE_MINIMAX_DEBUG, true);
+                    break;
+                }
+
                 score = Minimax(actualColor.GetOppositeColor(), maxDepth - 1, alpha, beta);
                 transpositionTable.AddScore(board.ActualHash, score);
+
             }
 
             manager.TurnManager.UndoLastMove(board);
@@ -116,11 +132,11 @@ public class MinimaxAI : AIPlayer
         var board = manager.TestBoard;
         bool isMaximize = color == PieceColor.White;
 
-        if (manager.EndGameChecker.IsCheckMate(board))
-            return isMaximize ? 1000 - depth : -1000 + depth;
-
         if (manager.EndGameChecker.HasDraw(board))
             return 0;
+
+        if (manager.EndGameChecker.IsCheckMate(board))
+            return !isMaximize ? 1000 - (maxDepth-depth): -1000 + (maxDepth-depth);
 
         if (depth == 0) 
         {
