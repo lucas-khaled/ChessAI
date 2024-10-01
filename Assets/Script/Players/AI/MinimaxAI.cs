@@ -60,7 +60,7 @@ public class MinimaxAI : AIPlayer
             }
             else
             {
-                score = Minimax(actualColor, maxDepth - 1, alpha, beta);
+                score = Minimax(actualColor.GetOppositeColor(), maxDepth - 1, alpha, beta);
                 transpositionTable.AddScore(board.ActualHash, score);
             }
 
@@ -136,7 +136,6 @@ public class MinimaxAI : AIPlayer
             return heuristicValue;
         }
 
-        color = color.GetOppositeColor();
         float bestScore = isMaximize ? float.MinValue : float.MaxValue;
         var moves = SortMoves(GetAllMoves(board, color));
         foreach (var move in moves) 
@@ -155,7 +154,7 @@ public class MinimaxAI : AIPlayer
             }
             else
             {
-                score = Minimax(color, depth - 1, alpha, beta);
+                score = Minimax(color.GetOppositeColor(), depth - 1, alpha, beta);
                 transpositionTable.AddScore(board.ActualHash, score);
             }
 
