@@ -57,7 +57,6 @@ public class HumanPlayer : Player
         selectedTile = tile;
 
         GetMoves();
-        Debug.Log("STATE - " + manager.GameBoard.rules.blackCastleRights.KingRookFirstMove);
     }
 
     private void GetMoves() 
