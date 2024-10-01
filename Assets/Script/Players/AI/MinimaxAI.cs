@@ -68,6 +68,8 @@ public class MinimaxAI : AIPlayer
             moveMinimaxStopWatch.Stop();
             Debugger.LogStopwatch(moveMinimaxStopWatch, MOVE_MINIMAX_DEBUG, true);
 
+            Debug.Log($"<color=cyan>{maxDepth} -> Evaluated {move} \nwith a score of {score}</color>");
+
             if (IsBetterScoreThan(score, bestScore))
             {
                 bestMoves.Clear();
@@ -159,7 +161,6 @@ public class MinimaxAI : AIPlayer
 
             moveMinimaxStopWatch.Stop();
             Debugger.LogStopwatch(moveMinimaxStopWatch, MOVE_MINIMAX_DEBUG + " - " + depth, true);
-
 
             if (isMaximize)
             {

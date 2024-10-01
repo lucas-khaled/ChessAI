@@ -20,25 +20,25 @@ public class MaterialHeuristic : Heuristic
 
     private float QueenMaterialCount(List<Piece> whitePieces, List<Piece> blackPieces)
     {
-        var score = GetMaterialCount(whitePieces.Where(x => x is Queen).ToList(), blackPieces.Where(x => x is Pawn).ToList(), 10);
+        var score = GetMaterialCount(whitePieces.Where(x => x is Queen).ToList(), blackPieces.Where(x => x is Queen).ToList(), 10);
         return score;
     }
 
     private float RookMaterialCount(List<Piece> whitePieces, List<Piece> blackPieces)
     {
-        var score = GetMaterialCount(whitePieces.Where(x => x is Rook).ToList(), blackPieces.Where(x => x is Pawn).ToList(), 5);
+        var score = GetMaterialCount(whitePieces.Where(x => x is Rook).ToList(), blackPieces.Where(x => x is Rook).ToList(), 5);
         return score;
     }
 
     private float BishopMaterialCount(List<Piece> whitePieces, List<Piece> blackPieces)
     {
-        var score = GetMaterialCount(whitePieces.Where(x => x is Bishop).ToList(), blackPieces.Where(x => x is Pawn).ToList(), 3);
+        var score = GetMaterialCount(whitePieces.Where(x => x is Bishop).ToList(), blackPieces.Where(x => x is Bishop).ToList(), 3);
         return score;
     }
 
     private float KnightMaterialCount(List<Piece> whitePieces, List<Piece> blackPieces)
     {
-        var score = GetMaterialCount(whitePieces.Where(x => x is Knight).ToList(), blackPieces.Where(x => x is Pawn).ToList(), 3);
+        var score = GetMaterialCount(whitePieces.Where(x => x is Knight).ToList(), blackPieces.Where(x => x is Knight).ToList(), 3);
         return score;
     }
     private float PawnMaterialCount(List<Piece> whitePieces, List<Piece> blackPieces)
