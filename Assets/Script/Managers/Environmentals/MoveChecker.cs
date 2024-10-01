@@ -46,7 +46,7 @@ public class MoveChecker
             }
             catch (Exception e)
             {
-                Debug.LogError($"Found error:\n{e}\n\n FEN is {board.FENManager.GetFEN()} and move is {move}; \n Last: {moves[index-1]}");
+                Debug.LogError($"Found error:\n{e}\n\n FEN is {board.FENManager.GetFEN()} and move is {move}");
             }
             index++;
         }
