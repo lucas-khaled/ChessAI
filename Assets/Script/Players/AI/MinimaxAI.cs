@@ -36,7 +36,8 @@ public class MinimaxAI : AIPlayer
         var beta = float.MaxValue;
         evalCount = 0;
 
-        var moves = SortMoves(GetAllMoves(board, actualColor));
+        var unsortedMoves = GetAllMoves(board, actualColor);
+        var moves = SortMoves(unsortedMoves);
 
         Debug.Log($"Evaluating {moves.Count} moves");
         
@@ -136,7 +137,7 @@ public class MinimaxAI : AIPlayer
         }
 
         float bestScore = isMaximize ? float.MinValue : float.MaxValue;
-        var moves = GetAllMoves(board, color);
+        var moves = SortMoves(GetAllMoves(board, color));
         foreach (var move in moves) 
         {
             Stopwatch moveMinimaxStopWatch = Stopwatch.StartNew();

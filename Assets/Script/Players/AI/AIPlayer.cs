@@ -37,38 +37,59 @@ public abstract class AIPlayer : Player
         return possibleMoves;
     }
 
+    protected List<Move> SortMoveWithLinq(List<Move> moves) 
+    {
+        moves.Sort(Compare);
+
+        return moves;
+    }
+
     protected List<Move> SortMoves(List<Move> moves) 
     {
         int[] moveHeuristics = new int[moves.Count];
         for(int i = 0; i < moves.Count; i++) 
         {
             var move = moves[i];
-            var heuristic = 0;
-
-            var capture = move.capture;
-            if(capture != null) 
-            {
-                if (capture is Queen)
-                    heuristic += 5;
-                else if (capture is Rook)
-                    heuristic += 4;
-                else if (capture is Bishop || capture is Knight)
-                    heuristic += 3;
-                else if (capture is Pawn)
-                    heuristic += 2;
-            }
-
-            if (move is CastleMove)
-                heuristic += 1;
-
-            if (move is PromotionMove)
-                heuristic += 5;
-
-            
+            var heuristic = GetMoveHeuristic(move);
             moveHeuristics[i] = heuristic;
         }
 
-        return CountingSortMoves(moveHeuristics, moves);
+        var finalMoves = CountingSortMoves(moveHeuristics, moves);
+        return finalMoves;
+    }
+
+    private int Compare(Move x, Move y) 
+    {
+        var xHeuristic = GetMoveHeuristic(x);
+        var yHeuristic = GetMoveHeuristic(y);
+
+        return yHeuristic - xHeuristic; 
+    }
+
+    private int GetMoveHeuristic(Move move) 
+    {
+        var heuristic = 0;
+
+        var capture = move.capture;
+        if (capture != null)
+        {
+            if (capture is Queen)
+                heuristic += 5;
+            else if (capture is Rook)
+                heuristic += 4;
+            else if (capture is Bishop || capture is Knight)
+                heuristic += 3;
+            else if (capture is Pawn)
+                heuristic += 2;
+        }
+
+        if (move is CastleMove)
+            heuristic += 1;
+
+        if (move is PromotionMove)
+            heuristic += 5;
+
+        return heuristic;
     }
 
     private List<Move> CountingSortMoves(int[] moveHeuristics, List<Move> moves) 
@@ -94,7 +115,8 @@ public abstract class AIPlayer : Player
 
         for(int i = moveHeuristics.Length-1; i >= 0; i--) 
         {
-            var index = --count[moveHeuristics[i]];
+            --count[moveHeuristics[i]];
+            var index = moves.Count - count[moveHeuristics[i]] - 1;
             outputMoves[index] = moves[i];
         }
 
@@ -103,10 +125,9 @@ public abstract class AIPlayer : Player
 
     protected abstract Task<Move> CalculateMove();
 
-    protected struct MoveDTO
+    protected struct MoveSortHeuristic
     {
         public Move move;
-        public bool WasCheckmate;
-        public bool WasDraw;
+        public int heuristic;
     }
 }
