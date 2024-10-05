@@ -42,7 +42,7 @@ public class EspecialRules
         if (HasCastledAllSides(color)) return false;
 
         var coord = GetRookCoordinates(true, color);
-        var castleRights = (color == PieceColor.White) ? whiteCastleRights : blackCastleRights;
+        var castleRights = GetCastleRightsByColor(color);
 
         var queensideBool = castleRights.CanCastleQueenSide;
         if (rook.GetTile().TilePosition.Equals(coord) && queensideBool)
@@ -59,7 +59,7 @@ public class EspecialRules
 
     public bool HasCastledAllSides(PieceColor pieceColor) 
     {
-        var castleRights = pieceColor == PieceColor.White ? whiteCastleRights : blackCastleRights;
+        var castleRights = GetCastleRightsByColor(pieceColor);
 
         return castleRights.CanCastleKingSide is false && castleRights.CanCastleQueenSide is false;
     }
@@ -93,8 +93,10 @@ public class EspecialRules
 
     private void SetKingMove(Move move)
     {
-        var castleRights = move.piece.pieceColor == PieceColor.White ? whiteCastleRights : blackCastleRights;
-        castleRights.SetKingMove(move);
+        var castleRights = GetCastleRightsByColor(move.piece.pieceColor);
+
+        if (castleRights.KingFirstMove == null && castleRights.WasSetByFEN is false)
+            castleRights.SetKingMove(move);
     }
 
     private void CheckEnPassant(Move move)
@@ -129,7 +131,7 @@ public class EspecialRules
 
         if (rookMove.from.TilePosition.Equals(queensidePosition)) 
         {
-            var castleRights = (pieceColor == PieceColor.White) ? whiteCastleRights : blackCastleRights;
+            var castleRights = GetCastleRightsByColor(pieceColor);
 
             if (castleRights.QueenRookFirstMove == null)
             {
@@ -140,7 +142,7 @@ public class EspecialRules
 
         if (rookMove.from.TilePosition.Equals(kingsidePosition))
         {
-            var castleRights = (pieceColor == PieceColor.White) ? whiteCastleRights : blackCastleRights;
+            var castleRights = GetCastleRightsByColor(pieceColor);
 
             if (castleRights.KingRookFirstMove == null)
             {
@@ -191,7 +193,7 @@ public class EspecialRules
 
     private void UndoKingMove(Move move)
     {
-        var castleRights = (move.piece.pieceColor == PieceColor.White) ? whiteCastleRights : blackCastleRights;
+        var castleRights = GetCastleRightsByColor(move.piece.pieceColor);
         bool undo = castleRights.KingFirstMove != null && castleRights.WasSetByFEN is false && castleRights.KingFirstMove.Equals(move);
 
         if (undo)
@@ -201,13 +203,18 @@ public class EspecialRules
     private void UndoRookMove(Move move)
     {
         var color = move.piece.pieceColor;
-        var castleRights = (color == PieceColor.White) ? whiteCastleRights : blackCastleRights;
+        var castleRights = GetCastleRightsByColor(color);
 
         if (castleRights.KingRookFirstMove != null && castleRights.WasSetByFEN is false && castleRights.KingRookFirstMove.Equals(move)) 
             castleRights.SetKingRookFirstMove(null);
 
         if (castleRights.QueenRookFirstMove != null && castleRights.WasSetByFEN is false && castleRights.QueenRookFirstMove.Equals(move))
             castleRights.SetQueenRookFirstMove(null);
+    }
+
+    public CastleRights GetCastleRightsByColor(PieceColor color) 
+    {
+        return (color == PieceColor.White) ? whiteCastleRights : blackCastleRights;
     }
 
     public class CastleRights 
