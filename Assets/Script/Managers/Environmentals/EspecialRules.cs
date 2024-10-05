@@ -57,7 +57,7 @@ public class EspecialRules
         return false;
     }
 
-    private bool HasCastledAllSides(PieceColor pieceColor) 
+    public bool HasCastledAllSides(PieceColor pieceColor) 
     {
         var castleRights = pieceColor == PieceColor.White ? whiteCastleRights : blackCastleRights;
 

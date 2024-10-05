@@ -32,7 +32,8 @@ public class King : BlockableMovesPiece
     {
         List<CastleMove> moves = new List<CastleMove>();
 
-        if (checkChecker.IsCheck(Board, pieceColor)) return moves;
+
+        if (Board.rules.HasCastledAllSides(pieceColor) || checkChecker.IsCheck(Board, pieceColor)) return moves;
         
         var tiles = Board.GetRookTiles(pieceColor);
 
