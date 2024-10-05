@@ -15,4 +15,13 @@ public class PromotionMove : Move
 
         return new PromotionMove(virtualizedMove.from, virtualizedMove.to, virtualizedMove.piece, promoteTo, virtualizedMove.capture);
     }
+
+    public override string ToString()
+    {
+        return $"Promotion Move Piece {piece}" +
+            $"\n - From tile ({from.TilePosition})" +
+            $"\n - To tile ({to.TilePosition})" +
+            $"\n - Capturing Piece {capture}"+
+            $"\n - Promoting to {promoteTo}";
+    }
 }

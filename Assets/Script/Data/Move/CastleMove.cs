@@ -13,4 +13,12 @@ public class CastleMove : Move
 
         return new CastleMove(fromTile, toTile, fromTile.OccupiedBy as King, rookMove.VirtualizeTo(board));
     }
+
+    public override string ToString()
+    {
+        return $"Castle Move Piece {piece}" +
+            $"\n - From tile ({from.TilePosition})" +
+            $"\n - To tile ({to.TilePosition})" +
+            $"\n - Rook move:\n{rookMove}";
+    }
 }
