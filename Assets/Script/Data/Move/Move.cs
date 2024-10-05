@@ -1,3 +1,6 @@
+using System;
+using UnityEngine;
+
 public class Move 
 {
     public Tile from;
@@ -49,9 +52,14 @@ public class Move
     public override bool Equals(object obj)
     {
         if (obj is not Move otherMove) return false;
+        
+        bool sameCapture = (capture == null) ? 
+            otherMove.capture == null : 
+            (otherMove.capture == null) 
+                ? false 
+                : otherMove.capture.Equals(capture);
 
-        bool sameCapture = (capture == null) ? otherMove.capture == null : otherMove.capture.Equals(capture);
-        return otherMove.from.Equals(from) && otherMove.to.Equals(to) 
+        return otherMove.from.Equals(from) && otherMove.to.Equals(to)
             && sameCapture && piece.Equals(otherMove.piece);
     }
 }
