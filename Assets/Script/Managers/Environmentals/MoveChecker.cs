@@ -61,20 +61,35 @@ public class MoveChecker
 
     public bool HasAnyMove(Board board)
     {
-        return GetAllPossibleMoves(board).Length > 0;
-    }
-
-    public Move[] GetAllPossibleMoves(Board board) 
-    {
         List<Piece> pieces = board.ActualTurn == PieceColor.White ? board.whitePieces : board.blackPieces;
-        List<Move> moves = new();
-        for(int i = 0; i < pieces.Count; i++)
+        for (int i = 0; i < pieces.Count; i++)
         {
             var piece = pieces[i];
-            var legalMoves = GetLegalMoves(piece.GetMoves());
-            moves.AddRange(legalMoves);
+            var legalMoves = HasAnyLegalMove(piece.GetMoves());
+            if (legalMoves)
+                return true;
         }
 
-        return moves.ToArray();
+        return false;
+    }
+
+    public bool HasAnyLegalMove(Move[] moves) 
+    {
+        Board board = gameManager.TestBoard;
+        PieceColor turn = board.ActualTurn;
+        foreach (var move in moves)
+        {
+            bool valid = false;
+            gameManager.TurnManager.DoMove(move, board);
+
+            if (checkChecker.IsCheck(board, turn) is false)
+                valid = true;
+
+            gameManager.TurnManager.UndoLastMove(board);
+
+            if (valid) return true;
+        }
+
+        return false;
     }
 }
