@@ -46,9 +46,6 @@ public class MinimaxAI : AIPlayer
 
         foreach(var move in moves) 
         {
-            Stopwatch moveMinimaxStopWatch = Stopwatch.StartNew();
-            moveMinimaxStopWatch.Start();
-
             manager.TurnManager.DoMove(move, board);
 
             float score = 0;
@@ -69,9 +66,6 @@ public class MinimaxAI : AIPlayer
                     transpositionTable.AddScore(board.ActualHash, score);
 
                     manager.TurnManager.UndoLastMove(board);
-
-                    moveMinimaxStopWatch.Stop();
-                    Debugger.LogStopwatch(moveMinimaxStopWatch, MOVE_MINIMAX_DEBUG, true);
                     break;
                 }
 
@@ -81,11 +75,6 @@ public class MinimaxAI : AIPlayer
             }
 
             manager.TurnManager.UndoLastMove(board);
-
-            moveMinimaxStopWatch.Stop();
-            Debugger.LogStopwatch(moveMinimaxStopWatch, MOVE_MINIMAX_DEBUG, true);
-
-            Debug.Log($"<color=cyan>{maxDepth} -> Evaluated {move} \nwith a score of {score}</color>");
 
             if (IsBetterScoreThan(score, bestScore))
             {
@@ -106,11 +95,6 @@ public class MinimaxAI : AIPlayer
             if (beta <= alpha) break;
         }
 
-        Debugger.LogTimeRecord(HEURISTIC_DEBUG, "Heuristic final record");
-        Debugger.LogTimeRecord(MOVE_MINIMAX_DEBUG, "Move Minimax final record");
-
-        bestMoves.ForEach(x => Debug.Log($"<color=green>One of best was: {x}</color>"));
-
         var rand = new System.Random();
 
         int choice = rand.Next(0, bestMoves.Count);
@@ -121,7 +105,6 @@ public class MinimaxAI : AIPlayer
         Debugger.LogTimeRecord(MOVE_CHOICE_DEBUG, "Move Choice final record");
 
         Debug.Log($"Evaluated {evalCount} times");
-
 
         Debug.Log($"<color=green>Choosed {bestMove} \nas best with a score of {bestScore}</color>");
         return bestMove;
@@ -156,9 +139,6 @@ public class MinimaxAI : AIPlayer
         var moves = SortMoves(GetAllMoves(board, color));
         foreach (var move in moves) 
         {
-            Stopwatch moveMinimaxStopWatch = Stopwatch.StartNew();
-            moveMinimaxStopWatch.Start();
-
             manager.TurnManager.DoMove(move, board);
 
             float score = 0;
@@ -176,9 +156,6 @@ public class MinimaxAI : AIPlayer
 
             manager.TurnManager.UndoLastMove(board);
 
-            moveMinimaxStopWatch.Stop();
-            Debugger.LogStopwatch(moveMinimaxStopWatch, MOVE_MINIMAX_DEBUG + " - " + depth, true);
-
             if (isMaximize)
             {
                 bestScore = Mathf.Max(bestScore, score);
@@ -191,10 +168,7 @@ public class MinimaxAI : AIPlayer
             }
 
             if (beta <= alpha)
-            {
-                Debug.Log($"<color=red>{depth} -> Prunned with alpha = {alpha} and beta = {beta}</color>");
                 break;
-            }
         }
 
         return bestScore;
