@@ -12,7 +12,8 @@ public class RandomAI : AIPlayer
     {
         await Task.Delay((int)(minimumWaitTime * 1000));
         var allMoves = GetAllMoves(manager.GameBoard, actualColor);
-        int index = Random.Range(0, allMoves.Count);
+        System.Random rand = new System.Random();
+        int index = rand.Next(0, allMoves.Count);
 
         var move = allMoves[index];
         return move;
