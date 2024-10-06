@@ -7,6 +7,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private UIManager uiManager;
     [SerializeField] private string fen;
     [SerializeField] private bool startWithFen;
+    [SerializeField] private PlayersConfig playersConfig;
 
     public Board GameBoard { get; private set; }
     public Board TestBoard { get; private set; }
@@ -62,7 +63,7 @@ public class GameManager : MonoBehaviour
         ChooseSetup();
         UpdateTestBoard();
 
-        playTurnManager.SetPlayers(new HumanPlayer(this), new MinimaxAI(this, 3), GameBoard.ActualTurn);
+        playTurnManager.SetPlayers(playersConfig.GetWhitePlayer(this), playersConfig.GetBlackPlayer(this), GameBoard.ActualTurn);
     }
 
     private void UpdateTestBoard()

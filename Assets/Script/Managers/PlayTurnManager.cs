@@ -9,23 +9,15 @@ public class PlayTurnManager : ManagerHelper
     private object moveLock = new();
     private Move madeMove = null;
 
-    public void SetPlayers(IPlayer player1, IPlayer player2, PieceColor startTurn) 
+    public void SetPlayers(IPlayer whitePlayer, IPlayer blackPlayer, PieceColor startTurn) 
     {
         int random = Random.Range(0, 100);
 
-       /* if (random > 50)
-        {
-            whitePlayer = player1;
-            blackPlayer = player2;
-        }*/
-        /*else 
-        {*/
-            whitePlayer = player2;
-            blackPlayer = player1;
-        //}
+        this.whitePlayer = whitePlayer;
+        this.blackPlayer = blackPlayer;
 
-        whitePlayer.Init(PieceColor.White);
-        blackPlayer.Init(PieceColor.Black);
+        this.whitePlayer.Init(PieceColor.White);
+        this.blackPlayer.Init(PieceColor.Black);
 
         Task.Run(() => PlayerMove(startTurn));
         InvokeRepeating("CheckForMove", 0, 0.2f);
