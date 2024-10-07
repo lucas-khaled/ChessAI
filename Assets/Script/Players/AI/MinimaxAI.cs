@@ -16,10 +16,12 @@ public class MinimaxAI : AIPlayer
     private const string MOVE_MINIMAX_DEBUG = "Move Minimax";
 
     private int evalCount = 0;
+    private int timeLimit = -1;
 
-    public MinimaxAI(GameManager manager, int depth = 2) : base(manager) 
+    public MinimaxAI(GameManager manager, int depth = 2, int timeLimit = 60000) : base(manager) 
     {
         maxDepth = depth;
+        this.timeLimit = timeLimit;
         heuristic = new SimplePositionHeuristic(manager);
         transpositionTable = new TranspositionTable();
     } 
@@ -44,56 +46,63 @@ public class MinimaxAI : AIPlayer
         Stopwatch moveChoiceStopWatch = Stopwatch.StartNew();
         moveChoiceStopWatch.Start();
 
-        foreach(var move in moves) 
+        Stopwatch timeLimitChecker = Stopwatch.StartNew();
+        timeLimitChecker.Start();
+        for (int depth = 1; depth < maxDepth; depth++)
         {
-            manager.TurnManager.DoMove(move, board);
-
-            float score = 0;
-
-            if (transpositionTable.HasScore(board.ActualHash))
+            foreach (var move in moves)
             {
-                score = transpositionTable.GetScore(board.ActualHash);
-                Debug.Log($"Got score {score} from table in position {board.ActualHash}");
-            }
-            else
-            {
-                if (manager.EndGameChecker.IsCheckMate(board))
+                if (timeLimit > 0 && timeLimitChecker.ElapsedMilliseconds >= timeLimit)
+                    break;
+
+                manager.TurnManager.DoMove(move, board);
+
+                float score = 0;
+
+                if (transpositionTable.HasScore(board.ActualHash))
+                    score = transpositionTable.GetScore(board.ActualHash);
+                else
+                {
+                    if (manager.EndGameChecker.IsCheckMate(board))
+                    {
+                        bestMoves.Clear();
+                        bestMoves.Add(move);
+
+                        score = (actualColor == PieceColor.White) ? 1000 : -1000;
+                        transpositionTable.AddScore(board.ActualHash, score);
+
+                        manager.TurnManager.UndoLastMove(board);
+                        break;
+                    }
+
+                    score = Minimax(actualColor.GetOppositeColor(), depth, alpha, beta);
+                    transpositionTable.AddScore(board.ActualHash, score);
+
+                }
+
+                manager.TurnManager.UndoLastMove(board);
+
+                if (IsBetterScoreThan(score, bestScore))
                 {
                     bestMoves.Clear();
                     bestMoves.Add(move);
-
-                    score = (actualColor == PieceColor.White) ? 1000 : -1000;
-                    transpositionTable.AddScore(board.ActualHash, score);
-
-                    manager.TurnManager.UndoLastMove(board);
-                    break;
+                    bestScore = score;
+                }
+                else if (score == bestScore)
+                {
+                    bestMoves.Add(move);
                 }
 
-                score = Minimax(actualColor.GetOppositeColor(), maxDepth - 1, alpha, beta);
-                transpositionTable.AddScore(board.ActualHash, score);
+                if (isWhite)
+                    alpha = Mathf.Max(alpha, score);
+                else
+                    beta = Mathf.Min(beta, score);
 
+                if (beta <= alpha) break;
             }
-
-            manager.TurnManager.UndoLastMove(board);
-
-            if (IsBetterScoreThan(score, bestScore))
-            {
-                bestMoves.Clear();
-                bestMoves.Add(move);
-                bestScore = score;
-            }
-            else if(score == bestScore) 
-            {
-                bestMoves.Add(move);
-            }
-
-            if (isWhite)
-                alpha = Mathf.Max(alpha, score);
-            else
-                beta = Mathf.Min(beta, score);
-
-            if (beta <= alpha) break;
         }
+
+        timeLimitChecker.Stop();
 
         var rand = new System.Random();
 
@@ -123,13 +132,7 @@ public class MinimaxAI : AIPlayer
 
         if (depth == 0) 
         {
-            //Stopwatch heuristicStopWatch = Stopwatch.StartNew();
-
-            //heuristicStopWatch.Start();
             float heuristicValue = heuristic.GetHeuristic(board);
-
-            //heuristicStopWatch.Stop();
-            //Debugger.LogStopwatch(heuristicStopWatch, HEURISTIC_DEBUG, true);
 
             evalCount++;
             return heuristicValue;
@@ -144,10 +147,7 @@ public class MinimaxAI : AIPlayer
             float score = 0;
 
             if (transpositionTable.HasScore(board.ActualHash))
-            {
                 score = transpositionTable.GetScore(board.ActualHash);
-                Debug.Log($"Got score {score} from table in position {board.ActualHash}");
-            }
             else
             {
                 score = Minimax(color.GetOppositeColor(), depth - 1, alpha, beta);

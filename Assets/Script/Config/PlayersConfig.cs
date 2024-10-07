@@ -62,6 +62,7 @@ public class RandomPlayerInfo : PlayerSelectionInfo
 public class MinimaxPlayerInfo : PlayerSelectionInfo
 {
     [SerializeField] public int depth = 3;
+    [SerializeField] public int maxTimePerChoice = 60000;
 
     public MinimaxPlayerInfo() : base(PlayerSelectionType.Minimax) { }
 
@@ -71,7 +72,7 @@ public class MinimaxPlayerInfo : PlayerSelectionInfo
 
     public override IPlayer GetPlayer(GameManager manager)
     {
-        return new MinimaxAI(manager, depth);
+        return new MinimaxAI(manager, depth, maxTimePerChoice);
     }
 }
 
