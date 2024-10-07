@@ -61,7 +61,7 @@ public class MoveChecker
 
     public bool HasAnyMove(Board board)
     {
-        List<Piece> pieces = board.ActualTurn == PieceColor.White ? board.whitePieces : board.blackPieces;
+        List<Piece> pieces = board.ActualTurn == PieceColor.White ? board.piecesHolder.whitePieces : board.piecesHolder.blackPieces;
         for (int i = 0; i < pieces.Count; i++)
         {
             var piece = pieces[i];

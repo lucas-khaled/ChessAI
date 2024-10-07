@@ -1,7 +1,4 @@
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using UnityEngine;
 
 public class MobilityHeuristic : Heuristic
 {
@@ -14,7 +11,7 @@ public class MobilityHeuristic : Heuristic
         var blackMovesQnt = 0;
         var whiteMovesQnt = 0;
 
-        List<Piece> pieces = board.pieces;
+        List<Piece> pieces = board.piecesHolder.pieces;
         for (int i = 0; i< pieces.Count; i++)
         {
             var piece = pieces[i];

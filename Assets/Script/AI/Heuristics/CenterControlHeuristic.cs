@@ -21,33 +21,53 @@ public class CenterControlHeuristic : Heuristic
 
     public override float GetHeuristic(Board board)
     {
-        float blackPoints = 0;
-        float whitePoints = 0;
-
-        foreach(var piece in board.pieces) 
-        {
-            float points = 0;
-
-            if (piece is Queen)
-                points = queenHandler.GetControlAmount(piece) * QUEEN_WEIGHT;
-            else if (piece is Bishop)
-                points = bishopHandler.GetControlAmount(piece) * BISHOP_WEIGHT;
-            else if (piece is Knight)
-                points = knightHandler.GetControlAmount(piece) * KNIGHT_WEIGHT;
-            else if (piece is Rook)
-                points = rookHandler.GetControlAmount(piece) * ROOK_WEIGHT;
-            else if (piece is Pawn)
-                points = pawnHandler.GetControlAmount(piece) * PAWN_WEIGHT;
-
-            if (piece.pieceColor != PieceColor.White)
-                blackPoints += points;
-            else
-                whitePoints += points;
-
-        }
+        float blackPoints = GetBlackPoints(board);
+        float whitePoints = GetWhitePoints(board);
 
         var finalHeuristic = (whitePoints - blackPoints) * weight;
         return finalHeuristic;
+    }
+
+    private float GetWhitePoints(Board board) 
+    {
+        float points = 0;
+        foreach (var piece in board.piecesHolder.whiteQueens)
+            points += queenHandler.GetControlAmount(piece) * QUEEN_WEIGHT;
+
+        foreach (var piece in board.piecesHolder.whiteBishops)
+            points += bishopHandler.GetControlAmount(piece) * BISHOP_WEIGHT;
+
+        foreach (var piece in board.piecesHolder.whiteKnights)
+            points += knightHandler.GetControlAmount(piece) * KNIGHT_WEIGHT;
+
+        foreach (var piece in board.piecesHolder.whiteRooks)
+            points += rookHandler.GetControlAmount(piece) * ROOK_WEIGHT;
+
+        foreach (var piece in board.piecesHolder.whitePawns)
+            points += pawnHandler.GetControlAmount(piece) * PAWN_WEIGHT;
+
+        return points;
+    }
+
+    private float GetBlackPoints(Board board)
+    {
+        float points = 0;
+        foreach (var piece in board.piecesHolder.blackQueens)
+            points += queenHandler.GetControlAmount(piece) * QUEEN_WEIGHT;
+
+        foreach (var piece in board.piecesHolder.blackBishops)
+            points += bishopHandler.GetControlAmount(piece) * BISHOP_WEIGHT;
+
+        foreach (var piece in board.piecesHolder.blackKnights)
+            points += knightHandler.GetControlAmount(piece) * KNIGHT_WEIGHT;
+
+        foreach (var piece in board.piecesHolder.blackRooks)
+            points += rookHandler.GetControlAmount(piece) * ROOK_WEIGHT;
+
+        foreach (var piece in board.piecesHolder.blackPawns)
+            points += pawnHandler.GetControlAmount(piece) * PAWN_WEIGHT;
+
+        return points;
     }
 
     private interface IPieceCenterControlHandler 
