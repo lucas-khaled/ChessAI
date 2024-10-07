@@ -32,19 +32,19 @@ public class CenterControlHeuristic : Heuristic
     {
         float points = 0;
         foreach (var piece in board.piecesHolder.whiteQueens)
-            points = queenHandler.GetControlAmount(piece) * QUEEN_WEIGHT;
+            points += queenHandler.GetControlAmount(piece) * QUEEN_WEIGHT;
 
         foreach (var piece in board.piecesHolder.whiteBishops)
-            points = bishopHandler.GetControlAmount(piece) * BISHOP_WEIGHT;
+            points += bishopHandler.GetControlAmount(piece) * BISHOP_WEIGHT;
 
         foreach (var piece in board.piecesHolder.whiteKnights)
-            points = knightHandler.GetControlAmount(piece) * KNIGHT_WEIGHT;
+            points += knightHandler.GetControlAmount(piece) * KNIGHT_WEIGHT;
 
         foreach (var piece in board.piecesHolder.whiteRooks)
-            points = rookHandler.GetControlAmount(piece) * ROOK_WEIGHT;
+            points += rookHandler.GetControlAmount(piece) * ROOK_WEIGHT;
 
         foreach (var piece in board.piecesHolder.whitePawns)
-            points = pawnHandler.GetControlAmount(piece) * PAWN_WEIGHT;
+            points += pawnHandler.GetControlAmount(piece) * PAWN_WEIGHT;
 
         return points;
     }
@@ -53,19 +53,19 @@ public class CenterControlHeuristic : Heuristic
     {
         float points = 0;
         foreach (var piece in board.piecesHolder.blackQueens)
-            points = queenHandler.GetControlAmount(piece) * QUEEN_WEIGHT;
+            points += queenHandler.GetControlAmount(piece) * QUEEN_WEIGHT;
 
         foreach (var piece in board.piecesHolder.blackBishops)
-            points = bishopHandler.GetControlAmount(piece) * BISHOP_WEIGHT;
+            points += bishopHandler.GetControlAmount(piece) * BISHOP_WEIGHT;
 
         foreach (var piece in board.piecesHolder.blackKnights)
-            points = knightHandler.GetControlAmount(piece) * KNIGHT_WEIGHT;
+            points += knightHandler.GetControlAmount(piece) * KNIGHT_WEIGHT;
 
         foreach (var piece in board.piecesHolder.blackRooks)
-            points = rookHandler.GetControlAmount(piece) * ROOK_WEIGHT;
+            points += rookHandler.GetControlAmount(piece) * ROOK_WEIGHT;
 
         foreach (var piece in board.piecesHolder.blackPawns)
-            points = pawnHandler.GetControlAmount(piece) * PAWN_WEIGHT;
+            points += pawnHandler.GetControlAmount(piece) * PAWN_WEIGHT;
 
         return points;
     }
