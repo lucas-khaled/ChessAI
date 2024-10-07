@@ -79,7 +79,7 @@ public class PiecesSetup : ManagerHelper
 
         AddVisual(piece);
 
-        AddPieceToList(piece);
+        board.piecesHolder.AddPiece(piece);
     }
 
     public void InstantiatePiece<TPiece>(Tile tile, PieceColor color) where TPiece : Piece
@@ -93,7 +93,7 @@ public class PiecesSetup : ManagerHelper
 
         AddVisual(piece);
 
-        AddPieceToList(piece);
+        board.piecesHolder.AddPiece(piece);
     }
 
     public void AddVisual(Piece piece)
@@ -105,15 +105,5 @@ public class PiecesSetup : ManagerHelper
 
         piece.visualPiece = visualPiece;
         visualPiece.SetTilePosition(piece.GetTile());
-    }
-
-    private void AddPieceToList(Piece piece) 
-    {
-        board.pieces.Add(piece);
-
-        if (piece.pieceColor == PieceColor.White)
-            board.whitePieces.Add(piece);
-        else
-            board.blackPieces.Add(piece);
     }
 }

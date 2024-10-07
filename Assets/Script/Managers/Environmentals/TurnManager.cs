@@ -81,19 +81,8 @@ public class TurnManager
 
         move.from.DeOccupy();
 
-        board.pieces.Remove(pawn);
-        board.pieces.Add(promotedPiece);
-
-        if(pawn.pieceColor == PieceColor.White)
-        {
-            board.whitePieces.Add(promotedPiece);
-            board.whitePieces.Remove(pawn);
-        }
-        else
-        {
-            board.blackPieces.Add(promotedPiece);
-            board.blackPieces.Remove(pawn);
-        }
+        board.piecesHolder.RemovePiece(pawn);
+        board.piecesHolder.AddPiece(promotedPiece);
 
         board.events?.onPromotionMade?.Invoke(move);
     }
@@ -117,13 +106,7 @@ public class TurnManager
         {
             capturedPiece.GetTile().DeOccupy();
 
-            Predicate<Piece> predicate = p => p.name.Equals(capturedPiece.name);
-            board.pieces.RemoveAll(predicate);
-            if (capturedPiece.pieceColor == PieceColor.White)
-                board.whitePieces.RemoveAll(predicate);
-            else
-                board.blackPieces.RemoveAll(predicate);
-
+            board.piecesHolder.RemovePiece(capturedPiece);
             board.events?.onPieceCaptured?.Invoke(capturedPiece);
         }
     }
@@ -181,19 +164,8 @@ public class TurnManager
         move.from.Occupy(pawn);
         pawn.SetTile(move.from);
 
-        board.pieces.Add(pawn);
-        board.pieces.Remove(promotedPiece);
-
-        if (pawn.pieceColor == PieceColor.White)
-        {
-            board.whitePieces.Remove(promotedPiece);
-            board.whitePieces.Add(pawn);
-        }
-        else
-        {
-            board.blackPieces.Remove(promotedPiece);
-            board.blackPieces.Add(pawn);
-        }
+        board.piecesHolder.AddPiece(pawn);
+        board.piecesHolder.RemovePiece(promotedPiece);
 
         board.events.onPromotionUnmade?.Invoke(move);
     }
@@ -215,13 +187,7 @@ public class TurnManager
             move.to.Occupy(capturedPiece);
             capturedPiece.SetTile(move.to);
 
-            board.pieces.Add(capturedPiece);
-
-            if (capturedPiece.pieceColor == PieceColor.White)
-                board.whitePieces.Add(capturedPiece);
-            else
-                board.blackPieces.Add(capturedPiece);
-
+            board.piecesHolder.AddPiece(capturedPiece);
             board.events.onPieceUncaptured?.Invoke(capturedPiece);
         }
     }

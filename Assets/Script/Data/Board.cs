@@ -7,9 +7,7 @@ public class Board
     public int BoardColumnSize;
 
     public List<List<Tile>> tiles;
-    public List<Piece> pieces;
-    public List<Piece> whitePieces;
-    public List<Piece> blackPieces;
+    public PiecesHolder piecesHolder;
 
     public EspecialRules rules;
     public BoardEvents events;
@@ -28,9 +26,7 @@ public class Board
         BoardRowSize = row;
         BoardColumnSize = column;
         tiles = new();
-        pieces = new();
-        whitePieces = new();
-        blackPieces = new();
+        piecesHolder = new();
         events = new BoardEvents();
         rules = new EspecialRules(this);
         FENManager = new FENManager(this);
@@ -39,7 +35,7 @@ public class Board
     public Board Copy()
     {
         List<List<Tile>> virtualTiles = new List<List<Tile>>();
-        List<Piece> pieces = new List<Piece>();
+        PiecesHolder pieces = new PiecesHolder();
         List<Piece> whitePieces = new List<Piece>();
         List<Piece> blackPieces = new List<Piece>();
         Board board = new Board(BoardRowSize, BoardColumnSize);
@@ -57,7 +53,7 @@ public class Board
                 if (tile.IsOccupied)
                 {
                     Piece piece = copyTile.OccupiedBy;
-                    pieces.Add(piece);
+                    pieces.AddPiece(piece);
 
                     if (piece.pieceColor == PieceColor.White)
                         whitePieces.Add(piece);
@@ -70,9 +66,7 @@ public class Board
         }
 
         board.tiles = virtualTiles;
-        board.pieces = pieces;
-        board.whitePieces = whitePieces;
-        board.blackPieces = blackPieces;
+        board.piecesHolder = pieces;
         board.rules = rules.Copy(board);
         board.ActualTurn = ActualTurn;
         board.ActualHash = ActualHash;

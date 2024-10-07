@@ -25,7 +25,7 @@ public abstract class AIPlayer : Player
     protected List<Move> GetAllMoves(Board board, PieceColor color)
     {
         List<Move> possibleMoves = new List<Move>();
-        List<Piece> pieces = (color == PieceColor.White) ? board.whitePieces : board.blackPieces;
+        List<Piece> pieces = (color == PieceColor.White) ? board.piecesHolder.whitePieces : board.piecesHolder.blackPieces;
 
         for(int i = 0; i < pieces.Count; i++)
         {

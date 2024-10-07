@@ -95,13 +95,13 @@ public class EndGameChecker
 
     private bool IsInsuficcientMaterialDraw(Board board) 
     {
-        if (board.pieces.Count == 2) return true;
+        if (board.piecesHolder.pieces.Count == 2) return true;
 
-        var notKingWhitePieces = board.whitePieces.Where(x => x is not King);
-        var notKingBlackPieces = board.blackPieces.Where(x => x is not King);
+        if (board.piecesHolder.whitePawns.Count > 0 || board.piecesHolder.blackPawns.Count > 0
+            || board.piecesHolder.blackQueens.Count > 0 || board.piecesHolder.whiteQueens.Count > 0
+            || board.piecesHolder.whiteRooks.Count > 0 || board.piecesHolder.blackRooks.Count > 0) return false;
 
-        if (notKingWhitePieces.Any(x => x is Pawn || x is Queen || x is Rook) || notKingBlackPieces.Any(x => x is Pawn || x is Queen || x is Rook)) return false;
-
-        return notKingWhitePieces.Count() <= 2 && notKingBlackPieces.Count() <= 2;
+        return (board.piecesHolder.whiteKnights.Count + board.piecesHolder.whiteBishops.Count <= 2) 
+            && (board.piecesHolder.blackKnights.Count + board.piecesHolder.blackBishops.Count <= 2);
     }
 }
