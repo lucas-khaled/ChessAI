@@ -1,5 +1,3 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -34,7 +32,7 @@ public class BoardStarter : ManagerHelper
                 VisualTile visualTile = Instantiate(tileprefab, new Vector3(x, y, z), Quaternion.identity);
                 visualTile.transform.SetParent(transform);
 
-                int index = row + column;
+                int index = row * board.BoardRowSize + column;
                 bool isLightSquare = index % 2 == 0;
                 if (isLightSquare)
                     visualTile.SetLightColor();
