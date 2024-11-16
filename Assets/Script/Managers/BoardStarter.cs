@@ -34,7 +34,8 @@ public class BoardStarter : ManagerHelper
                 VisualTile visualTile = Instantiate(tileprefab, new Vector3(x, y, z), Quaternion.identity);
                 visualTile.transform.SetParent(transform);
 
-                bool isLightSquare = (row + column) % 2 == 0;
+                int index = row + column;
+                bool isLightSquare = index % 2 == 0;
                 if (isLightSquare)
                     visualTile.SetLightColor();
                 else
@@ -42,9 +43,9 @@ public class BoardStarter : ManagerHelper
 
                 visualTile.name = $"Tile({row},{column})";
 
-
                 Tile tile = new(board);
                 tile.TilePosition = new TileCoordinates(row, column);
+                tile.Bitboard = new Bitboard(index);
                 tile.SetVisual(visualTile);
 
                 tileRow.Add(tile);

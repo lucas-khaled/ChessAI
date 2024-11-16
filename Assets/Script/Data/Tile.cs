@@ -7,6 +7,7 @@ public class Tile
     public Piece OccupiedBy { get; private set; }
     public bool IsOccupied => OccupiedBy != null;
 
+    public Bitboard Bitboard { get; set; }
     public TileCoordinates TilePosition { get; set; }
     public Board Board { get; private set; }
 
@@ -50,6 +51,7 @@ public class Tile
         var tile = new Tile(board)
         {
             TilePosition = this.TilePosition,
+            Bitboard = Bitboard,
             visualTile = null
         };
 
