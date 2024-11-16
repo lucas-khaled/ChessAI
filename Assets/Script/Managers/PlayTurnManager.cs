@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using UnityEngine;
 
@@ -11,7 +12,7 @@ public class PlayTurnManager : ManagerHelper
 
     public void SetPlayers(IPlayer whitePlayer, IPlayer blackPlayer, PieceColor startTurn) 
     {
-        int random = Random.Range(0, 100);
+        int random = UnityEngine.Random.Range(0, 100);
 
         this.whitePlayer = whitePlayer;
         this.blackPlayer = blackPlayer;
@@ -26,10 +27,17 @@ public class PlayTurnManager : ManagerHelper
 
     public void PlayerMove(PieceColor turn) 
     {
-        if (turn == PieceColor.White)
-            whitePlayer.StartTurn(OnMove);
-        else
-            blackPlayer.StartTurn(OnMove);
+        try
+        {
+            if (turn == PieceColor.White)
+                whitePlayer.StartTurn(OnMove);
+            else
+                blackPlayer.StartTurn(OnMove);
+        }
+        catch(Exception e) 
+        {
+            Debug.LogError($"Was not able to do Turn\n{e}");
+        }
     }
 
     private void OnMove(Move move) 
