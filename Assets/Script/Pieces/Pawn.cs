@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-public class Pawn : BlockableMovesPiece
+public class Pawn : SlidingPieces
 {
     public Pawn(Board board) : base(board)
     {

@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Queen : BlockableMovesPiece
+public class Queen : SlidingPieces
 {
     public Queen(Board board) : base(board)
     {

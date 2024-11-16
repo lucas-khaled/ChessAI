@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Rook : BlockableMovesPiece
+public class Rook : SlidingPieces
 {
     public Rook(Board board) : base(board)
     {

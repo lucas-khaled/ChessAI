@@ -2,9 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class BlockableMovesPiece : Piece
+public abstract class SlidingPieces : Piece
 {
-    protected BlockableMovesPiece(Board board) : base(board)
+    protected SlidingPieces(Board board) : base(board)
     {
     }
 
