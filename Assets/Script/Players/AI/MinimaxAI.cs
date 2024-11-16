@@ -18,6 +18,8 @@ public class MinimaxAI : AIPlayer
     private int evalCount = 0;
     private int timeLimit = -1;
 
+    private Stopwatch timeLimitChecker;
+
     public MinimaxAI(GameManager manager, int depth = 2, int timeLimit = 60000) : base(manager) 
     {
         maxDepth = depth;
@@ -46,7 +48,7 @@ public class MinimaxAI : AIPlayer
         Stopwatch moveChoiceStopWatch = Stopwatch.StartNew();
         moveChoiceStopWatch.Start();
 
-        Stopwatch timeLimitChecker = Stopwatch.StartNew();
+        timeLimitChecker = Stopwatch.StartNew();
         timeLimitChecker.Start();
         for (int depth = 1; depth < maxDepth; depth++)
         {
@@ -142,6 +144,9 @@ public class MinimaxAI : AIPlayer
         var moves = SortMoves(GetAllMoves(board, color));
         foreach (var move in moves) 
         {
+            if (timeLimit > 0 && timeLimitChecker.ElapsedMilliseconds >= timeLimit)
+                break;
+
             manager.TurnManager.DoMove(move, board);
 
             float score = 0;
