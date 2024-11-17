@@ -32,14 +32,15 @@ public class BoardStarter : ManagerHelper
                 VisualTile visualTile = Instantiate(tileprefab, new Vector3(x, y, z), Quaternion.identity);
                 visualTile.transform.SetParent(transform);
 
-                int index = row * board.BoardRowSize + column;
-                bool isLightSquare = index % 2 == 0;
+                bool isLightSquare = (row + column) % 2 == 0;
                 if (isLightSquare)
                     visualTile.SetLightColor();
                 else
                     visualTile.SetDarkColor();
 
                 visualTile.name = $"Tile({row},{column})";
+
+                int index = row * board.BoardRowSize + column;
 
                 Tile tile = new(board);
                 tile.TilePosition = new TileCoordinates(row, column);
