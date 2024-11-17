@@ -36,7 +36,7 @@ public class FENManager
         this.board = board;
     }
 
-    public void SetupByFEN(FEN fen, InstantiateCallback instantiateCallback, GameManager manager)
+    public void SetupByFEN(FEN fen, InstantiateCallback instantiateCallback, IGameManager manager)
     {
         Turn turn = new Turn();
 
