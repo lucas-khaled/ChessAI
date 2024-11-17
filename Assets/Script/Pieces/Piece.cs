@@ -88,7 +88,7 @@ public abstract class Piece
 
     protected Bitboard AddTilesBitBoards(List<Tile> tiles)
     {
-        Bitboard bitBoard = new Bitboard(0);
+        Bitboard bitBoard = new Bitboard();
         foreach (Tile tile in tiles)
             bitBoard.Add(tile.Bitboard);
 

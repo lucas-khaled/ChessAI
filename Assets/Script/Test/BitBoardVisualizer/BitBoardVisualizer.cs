@@ -33,11 +33,17 @@ public class BitBoardVisualizer : MonoBehaviour, IGameManager
     void Start()
     {
         GameBoard = boardStarter.StartNewBoard();
+        GameBoard.FENManager.SetupByFEN(new FEN(FEN), piecesSetup.InstantiatePiece, this);
 
+        InitializeUI();
+    }
+
+    private void InitializeUI() 
+    {
         int index = 0;
-        foreach(var row in GameBoard.GetTiles()) 
+        foreach (var row in GameBoard.GetTiles())
         {
-            foreach(var tile in row) 
+            foreach (var tile in row)
             {
                 var boardUI = Instantiate(this.boardUI);
                 boardUI.Set(tile, index, uiColor);
@@ -46,17 +52,16 @@ public class BitBoardVisualizer : MonoBehaviour, IGameManager
                 bitBoardUIs.Add(boardUI);
             }
         }
-
-        GameBoard.FENManager.SetupByFEN(new FEN(FEN), piecesSetup.InstantiatePiece, this);
     }
 
-    public void SetBitBoard(Bitboard bitboard) 
+    public void SetBitBoard(Bitboard bitboard, Color color) 
     {
         foreach (var bitUI in bitBoardUIs) 
         {
             long operation = bitUI.tile.Bitboard.value & bitboard.value;
             bool isActive = operation > 0;
             bitUI.gameObject.SetActive(isActive);
+            bitUI.SetColor(color);
         }
     }
 }

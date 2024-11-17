@@ -296,6 +296,7 @@ GameObject:
   - component: {fileID: 1140448140}
   - component: {fileID: 1140448139}
   - component: {fileID: 1140448138}
+  - component: {fileID: 1140448141}
   m_Layer: 0
   m_Name: Main Camera (1)
   m_TagString: MainCamera
@@ -377,6 +378,22 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
+--- !u!114 &1140448141
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1140448137}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c49b4cc203aa6414fae5c798d1d0e7d6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_EventMask:
+    serializedVersion: 2
+    m_Bits: 64
+  m_MaxRayIntersections: 0
 --- !u!1 &1968134897
 GameObject:
   m_ObjectHideFlags: 0
@@ -389,6 +406,7 @@ GameObject:
   - component: {fileID: 1968134898}
   - component: {fileID: 1968134900}
   - component: {fileID: 1968134901}
+  - component: {fileID: 1968134902}
   m_Layer: 0
   m_Name: Manager
   m_TagString: Untagged
@@ -408,7 +426,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8a4fdba644487474cbb5a7bfd955ad3c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tileprefab: {fileID: 4533753900456706172, guid: da3ef5a685826e84bb346d8d9e7863b3, type: 3}
+  tileprefab: {fileID: 4533753900456706172, guid: 8589a5bbd3b09be4a9c661e3cf207609, type: 3}
   tilesOffset: {x: 3, y: 3}
 --- !u!4 &1968134899
 Transform:
@@ -439,8 +457,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   boardStarter: {fileID: 1968134898}
   boardUI: {fileID: 5342880040856725119, guid: bfe69815c5bdffd43b390813e09ee5d6, type: 3}
-  uiColor: {r: 0, g: 0, b: 0, a: 1}
-  FEN: rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1
+  uiColor: {r: 1, g: 0, b: 0, a: 1}
+  FEN: 8/4p3/8/4R3/8/8/8/8 w - - 0 1
 --- !u!114 &1968134901
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -454,3 +472,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   config: {fileID: 11400000, guid: 252c3400caa78c84f84518b699243c40, type: 2}
+--- !u!114 &1968134902
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1968134897}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fc966fb1e6921724885e438b633f5b12, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  boardVisualizer: {fileID: 1968134900}
+  showAttackingBoard: 1
+  attackingColor: {r: 1, g: 0, b: 0, a: 1}
+  showKingDangerBoard: 0
+  kingDangerColor: {r: 1, g: 0, b: 1, a: 1}

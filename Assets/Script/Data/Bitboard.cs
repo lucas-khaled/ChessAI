@@ -3,6 +3,11 @@ using UnityEngine;
 public class Bitboard
 {
     public long value;
+    
+    public Bitboard() 
+    {
+        value = 0L;
+    }
 
     public Bitboard(long value)
     {
