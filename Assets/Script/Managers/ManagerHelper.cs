@@ -4,8 +4,8 @@ using UnityEngine;
 
 public abstract class ManagerHelper : MonoBehaviour
 {
-    protected GameManager manager;
-    public virtual void SetManager(GameManager manager) 
+    protected IGameManager manager;
+    public virtual void SetManager(IGameManager manager) 
     {
         this.manager = manager;
     }

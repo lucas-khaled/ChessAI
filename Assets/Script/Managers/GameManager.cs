@@ -2,7 +2,7 @@ using UnityEngine;
 
 [RequireComponent(typeof(PiecesSetup), typeof(PiecesCapturedController), typeof(BoardStarter))]
 [RequireComponent(typeof(PlayTurnManager))]
-public class GameManager : MonoBehaviour
+public class GameManager : MonoBehaviour, IGameManager
 {
     [SerializeField] private UIManager uiManager;
     [SerializeField] private string fen;
