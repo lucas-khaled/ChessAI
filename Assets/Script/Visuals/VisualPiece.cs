@@ -16,6 +16,6 @@ public class VisualPiece : MonoBehaviour
         actualPiece = piece;
         name = piece.name;
 
-        GetComponent<Renderer>().material = (piece.pieceColor == PieceColor.White) ? config.lightMaterial : config.darkMaterial;
+        GetComponent<Renderer>().sharedMaterial = (piece.pieceColor == PieceColor.White) ? config.lightMaterial : config.darkMaterial;
     }
 }
