@@ -86,6 +86,20 @@ public abstract class Piece
         return finalTiles;
     }
 
+    protected List<Tile> GetTilesFromCoordinates(List<TileCoordinates> segment, bool friendlyBlock = true) 
+    {
+        List<Tile> finalTiles = new();
+        foreach (var tileCoord in segment)
+        {
+            Tile tile = Board.tiles[tileCoord.row][tileCoord.column];
+            if (friendlyBlock && tile.IsOccupied && tile.OccupiedBy.pieceColor == pieceColor) break;
+
+            finalTiles.Add(tile);
+        }
+
+        return finalTiles;
+    }
+
     protected Bitboard AddTilesBitBoards(List<Tile> tiles)
     {
         Bitboard bitBoard = new Bitboard();

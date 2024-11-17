@@ -1,7 +1,4 @@
-using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
-using UnityEngine;
 
 public class Rook : SlidingPieces
 {
@@ -10,6 +7,27 @@ public class Rook : SlidingPieces
     }
 
     public override void GenerateBitBoard()
+    {
+        GenerateAttackingSquaresBitBoard();   
+        GenerateKingDangerBitBoard();
+    }
+
+    private void GenerateKingDangerBitBoard()
+    {
+        List<Tile> kingDangerTiles = new List<Tile>();
+        
+        var verticals = actualTile.GetVerticalsByColor(pieceColor);
+        var horizontals = actualTile.GetHorizontalsByColor(pieceColor);
+
+        kingDangerTiles.AddRange(GetTilesFromCoordinates(verticals.backVerticals));
+        kingDangerTiles.AddRange(GetTilesFromCoordinates(verticals.frontVerticals));
+        kingDangerTiles.AddRange(GetTilesFromCoordinates(horizontals.leftHorizontals));
+        kingDangerTiles.AddRange(GetTilesFromCoordinates(horizontals.rightHorizontals));
+
+        KingDangerSquares = AddTilesBitBoards(kingDangerTiles);
+    }
+
+    private void GenerateAttackingSquaresBitBoard() 
     {
         List<Tile> attackingTiles = new List<Tile>();
 
