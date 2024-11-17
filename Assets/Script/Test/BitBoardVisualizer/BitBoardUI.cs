@@ -10,6 +10,8 @@ public class BitBoardUI : MonoBehaviour
     [SerializeField] private TMP_Text bitNumber;
     [SerializeField] private float tileOffset;
 
+    public Tile tile { get; private set; }
+
     public void Set(Tile tile, int index, Color color) 
     {
         Vector3 pos = tile.visualTile.transform.position;

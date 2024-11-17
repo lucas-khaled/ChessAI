@@ -23,6 +23,20 @@ public abstract class SlidingPieces : Piece
         return moves;
     }
 
+    protected List<Tile> GetVerticalBlockedSquares(int range = 8) 
+    {
+        List<Tile> tiles = new();
+        var verticals = actualTile.GetVerticalsByColor(pieceColor);
+
+        var checkedFrontBlockingSquares = CheckForBlockingSquares(verticals.frontVerticals.GetRange(0, Mathf.Min(range, verticals.frontVerticals.Count)));
+        var checkedBackBlockingSquares = CheckForBlockingSquares(verticals.backVerticals.GetRange(0, Mathf.Min(range, verticals.backVerticals.Count)));
+
+        tiles.AddRange(checkedFrontBlockingSquares);
+        tiles.AddRange(checkedBackBlockingSquares);
+
+        return tiles;
+    }
+
     protected List<Move> GetHorizontalMoves(int range = 8)
     {
         List<Move> moves = new();
@@ -36,6 +50,20 @@ public abstract class SlidingPieces : Piece
         moves.AddRange(CreateMovesFromSegment(checkedRightBlockingSquares));
 
         return moves;
+    }
+
+    protected List<Tile> GetHorizontalBlockedSquares(int range = 8)
+    {
+        List<Tile> tiles = new();
+        var horizontals = actualTile.GetHorizontalsByColor(pieceColor);
+
+        var checkedLeftBlockingSquares = CheckForBlockingSquares(horizontals.leftHorizontals.GetRange(0, Mathf.Min(range, horizontals.leftHorizontals.Count)));
+        var checkedRightBlockingSquares = CheckForBlockingSquares(horizontals.rightHorizontals.GetRange(0, Mathf.Min(range, horizontals.rightHorizontals.Count)));
+
+        tiles.AddRange(checkedLeftBlockingSquares);
+        tiles.AddRange(checkedRightBlockingSquares);
+
+        return tiles;
     }
 
     protected List<Move> GetDiagonalMoves(int range = 8) 
@@ -55,5 +83,24 @@ public abstract class SlidingPieces : Piece
         moves.AddRange(CreateMovesFromSegment(checkedDownRightBlockingSquares));
 
         return moves;
+    }
+
+    protected List<Tile> GetDiagonalBlockedSquares(int range = 8) 
+    {
+        List<Tile> tiles = new();
+
+        var diagonals = actualTile.GetDiagonalsByColor(pieceColor);
+
+        var checkedTopLeftBlockingSquares = CheckForBlockingSquares(diagonals.topLeftDiagonals.GetRange(0, Mathf.Min(range, diagonals.topLeftDiagonals.Count)));
+        var checkedTopRightBlockingSquares = CheckForBlockingSquares(diagonals.topRightDiagonals.GetRange(0, Mathf.Min(range, diagonals.topRightDiagonals.Count)));
+        var checkedDownLeftBlockingSquares = CheckForBlockingSquares(diagonals.downLeftDiagonals.GetRange(0, Mathf.Min(range, diagonals.downLeftDiagonals.Count)));
+        var checkedDownRightBlockingSquares = CheckForBlockingSquares(diagonals.downRightDiagonals.GetRange(0, Mathf.Min(range, diagonals.downRightDiagonals.Count)));
+
+        tiles.AddRange(checkedTopLeftBlockingSquares);
+        tiles.AddRange(checkedTopRightBlockingSquares);
+        tiles.AddRange(checkedDownLeftBlockingSquares);
+        tiles.AddRange(checkedDownRightBlockingSquares);
+
+        return tiles;
     }
 }

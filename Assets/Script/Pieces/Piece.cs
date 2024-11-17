@@ -22,6 +22,10 @@ public abstract class Piece
 
     public Board Board { get; }
 
+    public Bitboard AttackingSquares { get; set; }
+    public Bitboard KingDangerSquares { get; set; }
+
+    public abstract void GenerateBitBoard();
     public abstract Move[] GetMoves();
 
     public Piece(Board board) 
@@ -80,6 +84,15 @@ public abstract class Piece
         }
 
         return finalTiles;
+    }
+
+    protected Bitboard AddTilesBitBoards(List<Tile> tiles)
+    {
+        Bitboard bitBoard = new Bitboard(0);
+        foreach (Tile tile in tiles)
+            bitBoard.Add(tile.Bitboard);
+
+        return bitBoard;
     }
 
     public Piece Copy(Tile tile) 

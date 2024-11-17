@@ -1,6 +1,4 @@
-using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 
 public class Knight : Piece
 {
@@ -90,5 +88,10 @@ public class Knight : Piece
         }
 
         return moves;
+    }
+
+    public override void GenerateBitBoard()
+    {
+        throw new System.NotImplementedException();
     }
 }

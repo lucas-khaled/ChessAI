@@ -124,4 +124,9 @@ public class Pawn : SlidingPieces
             new Move(actualTile, diagonalTile, this, diagonalTile.OccupiedBy) :
             new Move(actualTile, diagonalTile, this, Board.rules.enPassantPawn);
     }
+
+    public override void GenerateBitBoard()
+    {
+        throw new NotImplementedException();
+    }
 }

@@ -1,11 +1,14 @@
-using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 
 public class Queen : SlidingPieces
 {
     public Queen(Board board) : base(board)
     {
+    }
+
+    public override void GenerateBitBoard()
+    {
+        throw new System.NotImplementedException();
     }
 
     public override Move[] GetMoves()

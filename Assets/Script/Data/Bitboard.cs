@@ -15,6 +15,11 @@ public class Bitboard
         this.value = 1L << index;
     }
 
+    public void Add(Bitboard bitboard) 
+    {
+        Add(bitboard.value);
+    }
+
     public void Add(long value) 
     {
         this.value = this.value | value;

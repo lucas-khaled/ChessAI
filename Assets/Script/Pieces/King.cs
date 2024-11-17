@@ -1,7 +1,4 @@
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using UnityEngine;
 
 public class King : SlidingPieces
 {
@@ -73,5 +70,10 @@ public class King : SlidingPieces
         Tile toTile = Board.GetTiles()[Row][Column + iterator * 2];
 
         return new CastleMove(actualTile, toTile, this, rookMove);
+    }
+
+    public override void GenerateBitBoard()
+    {
+        throw new System.NotImplementedException();
     }
 }
