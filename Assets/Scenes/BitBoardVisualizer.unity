@@ -388,6 +388,7 @@ GameObject:
   - component: {fileID: 1968134899}
   - component: {fileID: 1968134898}
   - component: {fileID: 1968134900}
+  - component: {fileID: 1968134901}
   m_Layer: 0
   m_Name: Manager
   m_TagString: Untagged
@@ -439,3 +440,17 @@ MonoBehaviour:
   boardStarter: {fileID: 1968134898}
   boardUI: {fileID: 5342880040856725119, guid: bfe69815c5bdffd43b390813e09ee5d6, type: 3}
   uiColor: {r: 0, g: 0, b: 0, a: 1}
+  FEN: rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1
+--- !u!114 &1968134901
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1968134897}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a622581f906021c4fa282e3227f13669, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  config: {fileID: 11400000, guid: 979293963c97a2244b31c44e955c927d, type: 2}
