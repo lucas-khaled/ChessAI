@@ -74,6 +74,12 @@ public class King : SlidingPieces
 
     public override void GenerateBitBoard()
     {
-        throw new System.NotImplementedException();
+        List<Tile> attackingTiles = new List<Tile>();
+
+        attackingTiles.AddRange(GetDiagonalBlockedSquares(1));
+        attackingTiles.AddRange(GetVerticalBlockedSquares(1));
+        attackingTiles.AddRange(GetHorizontalBlockedSquares(1));
+
+        AttackingSquares = KingDangerSquares = AddTilesBitBoards(attackingTiles);
     }
 }
