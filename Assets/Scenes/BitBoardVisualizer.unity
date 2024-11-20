@@ -458,7 +458,7 @@ MonoBehaviour:
   boardStarter: {fileID: 1968134898}
   boardUI: {fileID: 5342880040856725119, guid: bfe69815c5bdffd43b390813e09ee5d6, type: 3}
   uiColor: {r: 1, g: 0, b: 0, a: 1}
-  FEN: 8/8/8/2b1pP2/4P1B1/2B2b2/7r/7R w - - 0 1
+  FEN: 8/8/6q1/2bQpP2/4P1B1/2B2b2/7r/7R w - - 0 1
 --- !u!114 &1968134901
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -485,6 +485,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   boardVisualizer: {fileID: 1968134900}
-  visualizationType: 0
+  visualizationType: 1
   attackingColor: {r: 1, g: 0, b: 0, a: 1}
   kingDangerColor: {r: 1, g: 0, b: 1, a: 1}
