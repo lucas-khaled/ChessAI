@@ -127,6 +127,32 @@ public class Pawn : SlidingPieces
 
     public override void GenerateBitBoard()
     {
-        throw new NotImplementedException();
+        List<Tile> tiles = new List<Tile>();
+        int range = IsOnInitialRow() ? 2 : 1;
+
+        var verticals = actualTile.GetVerticalsByColor(pieceColor);
+        var checkingBlockVerticals = CheckForBlockingSquares(verticals.frontVerticals.GetRange(0, range), false);
+
+        tiles.AddRange(checkingBlockVerticals);
+
+        Bitboard bitboard = AddTilesBitBoards(tiles);
+
+        Diagonals diagonals = actualTile.GetDiagonalsByColor(pieceColor);
+
+        if (diagonals.topLeftDiagonals.Count > 0)
+        {
+            var topLeftCoord = diagonals.topLeftDiagonals[0];
+            if (CanMoveToDiagonal(diagonals.topLeftDiagonals))
+                bitboard.Add(Board.GetTiles()[topLeftCoord.row][topLeftCoord.column].Bitboard);
+        }
+
+        if (diagonals.topRightDiagonals.Count > 0)
+        {
+            var topRightCoord = diagonals.topRightDiagonals[0];
+            if (CanMoveToDiagonal(diagonals.topRightDiagonals))
+                bitboard.Add(Board.GetTiles()[topRightCoord.row][topRightCoord.column].Bitboard);
+        }
+
+        AttackingSquares = KingDangerSquares = bitboard;
     }
 }
