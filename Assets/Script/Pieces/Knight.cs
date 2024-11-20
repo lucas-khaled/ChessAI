@@ -92,57 +92,56 @@ public class Knight : Piece
 
     public override void GenerateBitBoard()
     {
-        List<Tile> tiles = new();
-
         int currentIndex = actualTile.Index;
+        Bitboard bitboard = new Bitboard();
 
         //topLeft move
         int topLeftIndex = currentIndex + 15;
         if (currentIndex % 8 > 0 && topLeftIndex < 64)
-            AddToListIfNotOccupiedByFriend(ref tiles, Board.GetTileByIndex(topLeftIndex));
+            AddToBitboardIfNotOccupiedByFriend(ref bitboard, Board.GetTileByIndex(topLeftIndex));
 
         //topRight move
         int topRightIndex = currentIndex + 17;
         if (currentIndex % 8 < 7 && topRightIndex < 64)
-            AddToListIfNotOccupiedByFriend(ref tiles, Board.GetTileByIndex(topRightIndex));
+            AddToBitboardIfNotOccupiedByFriend(ref bitboard, Board.GetTileByIndex(topRightIndex));
 
         //leftTop move
         int leftTopIndex = currentIndex + 6;
         if (currentIndex % 8 > 1 && leftTopIndex < 64)
-            AddToListIfNotOccupiedByFriend(ref tiles, Board.GetTileByIndex(leftTopIndex));
+            AddToBitboardIfNotOccupiedByFriend(ref bitboard, Board.GetTileByIndex(leftTopIndex));
 
         //leftDown move
         int leftDownIndex = currentIndex - 10;
         if (currentIndex % 8 > 1 && leftDownIndex >= 0)
-            AddToListIfNotOccupiedByFriend(ref tiles, Board.GetTileByIndex(leftDownIndex));
+            AddToBitboardIfNotOccupiedByFriend(ref bitboard, Board.GetTileByIndex(leftDownIndex));
 
         //rightTop move
         int rightTopIndex = currentIndex + 10;
         if (currentIndex % 8 < 6 && rightTopIndex < 64)
-            AddToListIfNotOccupiedByFriend(ref tiles, Board.GetTileByIndex(rightTopIndex));
+            AddToBitboardIfNotOccupiedByFriend(ref bitboard, Board.GetTileByIndex(rightTopIndex));
 
         //rightDown move
         int rightDownIndex = currentIndex - 6;
         if (currentIndex % 8 < 6 && rightDownIndex >= 0)
-            AddToListIfNotOccupiedByFriend(ref tiles, Board.GetTileByIndex(rightDownIndex));
+            AddToBitboardIfNotOccupiedByFriend(ref bitboard, Board.GetTileByIndex(rightDownIndex));
 
         //DownLeft move
         int downLeftIndex = currentIndex - 17;
         if (currentIndex % 8 > 0 && downLeftIndex >= 0)
-            AddToListIfNotOccupiedByFriend(ref tiles, Board.GetTileByIndex(downLeftIndex));
+            AddToBitboardIfNotOccupiedByFriend(ref bitboard, Board.GetTileByIndex(downLeftIndex));
 
         //DownLeft move
         int downRightIndex = currentIndex - 15;
         if (currentIndex % 8 < 7 && downRightIndex >= 0)
-            AddToListIfNotOccupiedByFriend(ref tiles, Board.GetTileByIndex(downRightIndex));
+            AddToBitboardIfNotOccupiedByFriend(ref bitboard, Board.GetTileByIndex(downRightIndex));
 
-        AttackingSquares = KingDangerSquares = AddTilesBitBoards(tiles);
+        AttackingSquares = KingDangerSquares = bitboard;
     }
 
-    private void AddToListIfNotOccupiedByFriend(ref List<Tile> tiles, Tile tile) 
+    private void AddToBitboardIfNotOccupiedByFriend(ref Bitboard bitboard, Tile tile) 
     {
         if (tile.IsOccupied && tile.OccupiedBy.pieceColor == pieceColor) return;
 
-        tiles.Add(tile);
+        bitboard.Add(tile.Bitboard);
     }
 }
