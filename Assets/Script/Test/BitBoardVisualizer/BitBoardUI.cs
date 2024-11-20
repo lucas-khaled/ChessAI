@@ -32,9 +32,9 @@ public class BitBoardUI : MonoBehaviour
         number.color = bitNumber.color = color;
     }
 
-    private string ConvertToBinaryString(long value, bool pad = false) 
+    private string ConvertToBinaryString(ulong value, bool pad = false) 
     {
-        string binary = Convert.ToString(value, 2);
+        string binary = Convert.ToString((long)value, 2);
 
         return (pad) ? binary.PadLeft(64, '0') : binary;
     }

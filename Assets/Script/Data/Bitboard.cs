@@ -2,14 +2,14 @@ using UnityEngine;
 
 public class Bitboard
 {
-    public long value;
+    public ulong value;
     
     public Bitboard() 
     {
         value = 0L;
     }
 
-    public Bitboard(long value)
+    public Bitboard(ulong value)
     {
         this.value = value;
     }
@@ -17,7 +17,7 @@ public class Bitboard
     public Bitboard(int index)
     {
         index = Mathf.Clamp(index, 0, 63);
-        this.value = 1L << index;
+        this.value = 1ul << index;
     }
 
     public void Add(Bitboard bitboard) 
@@ -25,12 +25,12 @@ public class Bitboard
         Add(bitboard.value);
     }
 
-    public void Add(long value) 
+    public void Add(ulong value) 
     {
         this.value = this.value | value;
     }
 
-    public void Remove(long value) 
+    public void Remove(ulong value) 
     {
         this.value = ~(~this.value | value);
     }

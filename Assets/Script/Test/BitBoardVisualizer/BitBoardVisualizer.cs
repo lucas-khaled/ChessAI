@@ -56,7 +56,7 @@ public class BitBoardVisualizer : MonoBehaviour, IGameManager
     {
         foreach (var bitUI in bitBoardUIs) 
         {
-            long operation = bitUI.tile.Bitboard.value & bitboard.value;
+            ulong operation = bitUI.tile.Bitboard.value & bitboard.value;
             bool isActive = operation > 0;
             bitUI.gameObject.SetActive(isActive);
             bitUI.SetColor(color);
