@@ -370,14 +370,14 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1140448137}
-  m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 10, y: 17.03, z: 10.5}
+  m_LocalRotation: {x: 0.45196772, y: 0, z: 0, w: 0.89203435}
+  m_LocalPosition: {x: 10, y: 16, z: 0.6}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 3
-  m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 53.74, y: 0, z: 0}
 --- !u!114 &1140448141
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -458,7 +458,7 @@ MonoBehaviour:
   boardStarter: {fileID: 1968134898}
   boardUI: {fileID: 5342880040856725119, guid: bfe69815c5bdffd43b390813e09ee5d6, type: 3}
   uiColor: {r: 1, g: 0, b: 0, a: 1}
-  FEN: N6N/1N1p2N1/2N2N2/2pNN3/3NN1p1/1pN2Np1/1N3pN1/N6N w - - 0 1
+  FEN: 8/8/8/2b1pP2/4P1B1/2B2b2/7r/7R w - - 0 1
 --- !u!114 &1968134901
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -485,6 +485,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   boardVisualizer: {fileID: 1968134900}
-  visualizationType: 1
+  visualizationType: 0
   attackingColor: {r: 1, g: 0, b: 0, a: 1}
   kingDangerColor: {r: 1, g: 0, b: 1, a: 1}
