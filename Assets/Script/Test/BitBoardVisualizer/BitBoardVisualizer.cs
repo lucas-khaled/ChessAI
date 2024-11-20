@@ -40,14 +40,12 @@ public class BitBoardVisualizer : MonoBehaviour, IGameManager
 
     private void InitializeUI() 
     {
-        int index = 0;
         foreach (var row in GameBoard.GetTiles())
         {
             foreach (var tile in row)
             {
                 var boardUI = Instantiate(this.boardUI);
-                boardUI.Set(tile, index, uiColor);
-                index++;
+                boardUI.Set(tile, uiColor);
 
                 bitBoardUIs.Add(boardUI);
             }

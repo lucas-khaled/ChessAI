@@ -12,7 +12,7 @@ public class BitBoardUI : MonoBehaviour
 
     public Tile tile { get; private set; }
 
-    public void Set(Tile tile, int index, Color color) 
+    public void Set(Tile tile, Color color) 
     {
         this.tile = tile;
 
@@ -21,7 +21,7 @@ public class BitBoardUI : MonoBehaviour
         transform.position = pos;
         transform.parent = tile.visualTile.transform;
 
-        number.text = index.ToString();
+        number.text = tile.Index.ToString();
         bitNumber.text = ConvertToBinaryString(tile.Bitboard.value);
 
         SetColor(color);

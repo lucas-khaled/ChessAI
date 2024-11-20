@@ -7,7 +7,8 @@ public class Tile
     public Piece OccupiedBy { get; private set; }
     public bool IsOccupied => OccupiedBy != null;
 
-    public Bitboard Bitboard { get; set; }
+    public int Index { get; private set; }
+    public Bitboard Bitboard { get; private set; }
     public TileCoordinates TilePosition { get; set; }
     public Board Board { get; private set; }
 
@@ -23,6 +24,12 @@ public class Tile
     public Tile(Board board) 
     {
         Board = board;
+    }
+
+    public void SetIndex(int index) 
+    {
+        Index = index;
+        Bitboard = new Bitboard(index);
     }
 
     public void SetVisual(VisualTile visualTile)
@@ -51,10 +58,10 @@ public class Tile
         var tile = new Tile(board)
         {
             TilePosition = this.TilePosition,
-            Bitboard = Bitboard,
             visualTile = null
         };
 
+        tile.SetIndex(Index);
         tile.Diagonals = Diagonals;
         tile.InvertedDiagonals = InvertedDiagonals;
         tile.Verticals = Verticals;

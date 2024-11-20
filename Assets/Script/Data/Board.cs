@@ -1,5 +1,7 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 
 public class Board
 {
@@ -77,6 +79,18 @@ public class Board
     public List<List<Tile>> GetTiles()
     {
         return tiles;
+    }
+
+    public Tile GetTileByIndex(int index) 
+    {
+        double division = index / BoardRowSize;
+        int row = (int)Math.Floor(division);
+
+        int column = index - row * BoardColumnSize;
+
+        Debug.Log($"Row: {row} - Column: {column}");
+
+        return tiles[row][column];
     }
 
     public Tile GetKingTile(PieceColor color)

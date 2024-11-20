@@ -44,7 +44,7 @@ public class BoardStarter : ManagerHelper
 
                 Tile tile = new(board);
                 tile.TilePosition = new TileCoordinates(row, column);
-                tile.Bitboard = new Bitboard(index);
+                tile.SetIndex(index);
                 tile.SetVisual(visualTile);
 
                 tileRow.Add(tile);

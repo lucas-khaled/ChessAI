@@ -28,3 +28,4 @@ MonoBehaviour:
       data:
         selected: 0
         depth: 4
+        maxTimePerChoice: 60000
