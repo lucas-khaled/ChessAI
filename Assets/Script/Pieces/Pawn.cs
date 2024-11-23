@@ -153,6 +153,6 @@ public class Pawn : SlidingPieces
                 bitboard.Add(Board.GetTiles()[topRightCoord.row][topRightCoord.column].Bitboard);
         }
 
-        AttackingSquares = KingDangerSquares = bitboard;
+        AttackingSquares = bitboard;
     }
 }

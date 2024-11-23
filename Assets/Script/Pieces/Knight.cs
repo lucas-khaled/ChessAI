@@ -135,7 +135,7 @@ public class Knight : Piece
         if (currentIndex % 8 < 7 && downRightIndex >= 0)
             AddToBitboardIfNotOccupiedByFriend(ref bitboard, Board.GetTileByIndex(downRightIndex));
 
-        AttackingSquares = KingDangerSquares = bitboard;
+        AttackingSquares = bitboard;
     }
 
     private void AddToBitboardIfNotOccupiedByFriend(ref Bitboard bitboard, Tile tile) 

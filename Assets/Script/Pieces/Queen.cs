@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-public class Queen : SlidingPieces
+public class Queen : PinnerPiece
 {
     public Queen(Board board) : base(board)
     {
