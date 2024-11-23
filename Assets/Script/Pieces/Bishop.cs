@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-public class Bishop : PinnerPiece
+public class Bishop : SlidingPieces
 {
     public Bishop(Board board) : base(board)
     {

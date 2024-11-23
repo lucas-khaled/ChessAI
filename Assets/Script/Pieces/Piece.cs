@@ -23,6 +23,7 @@ public abstract class Piece
     public Board Board { get; }
 
     public Bitboard AttackingSquares { get; set; }
+    public Bitboard KingDangerSquares { get; set; }
 
     public abstract void GenerateBitBoard();
     public abstract Move[] GetMoves();

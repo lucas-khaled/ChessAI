@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-public class Rook : PinnerPiece
+public class Rook : SlidingPieces
 {
     public Rook(Board board) : base(board)
     {
