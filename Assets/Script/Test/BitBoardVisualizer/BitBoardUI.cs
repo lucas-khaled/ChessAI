@@ -22,7 +22,7 @@ public class BitBoardUI : MonoBehaviour
         transform.parent = tile.visualTile.transform;
 
         number.text = tile.Index.ToString();
-        bitNumber.text = ConvertToBinaryString(tile.Bitboard.value);
+        bitNumber.text = tile.Bitboard.value.ConvertToBinaryString();
 
         SetColor(color);
     }
@@ -30,12 +30,5 @@ public class BitBoardUI : MonoBehaviour
     public void SetColor(Color color) 
     {
         number.color = bitNumber.color = color;
-    }
-
-    private string ConvertToBinaryString(ulong value, bool pad = false) 
-    {
-        string binary = Convert.ToString((long)value, 2);
-
-        return (pad) ? binary.PadLeft(64, '0') : binary;
     }
 }

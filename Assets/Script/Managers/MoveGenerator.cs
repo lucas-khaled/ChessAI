@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -11,8 +12,10 @@ public class MoveGenerator
     private Bitboard enemiesAttackingSquares;
     private Bitboard enemiesKingDangerSquares;
 
+    private Bitboard kingAttackersSquaresBitboard;
     private List<Piece> kingAttackers;
     private Piece kingPiece;
+    private PieceColor actualColor;
 
     public MoveGenerator(Board board) 
     {
@@ -22,67 +25,88 @@ public class MoveGenerator
     public List<Move> GenerateMoves(PieceColor color) 
     {
         List<Move> moves = new List<Move>();
-
+        
         Initialize(color);
-        GenerateBitboards(color);
+        GenerateBitboards();
 
         if (IsCheck())
         {
-            if (IsDoubleCheck() is false)
-            {
-                moves.AddRange(GenerateKingMoves(color));
+            moves.AddRange(GenerateKingMoves());
+            if (IsDoubleCheck())
                 return moves;
-            }
 
-            //calculate captures
+            moves.AddRange(GenerateKingAttackersCapture());
             //calculate blocks
             //calculate Pins
+
+            return moves;
         }
         else 
         {
             // calculate Pins
             // generate other moves
+
+            return moves;
+        }
+    }
+
+    private List<Move> GenerateKingAttackersCapture()
+    {
+        List<Move> moves = new();
+        if ((kingAttackersSquaresBitboard.value & attackingSquares.value) <= 0) return moves;
+
+        foreach (var piece in board.GetAllPieces(actualColor)) 
+        {
+            var squareIndex = (piece.AttackingSquares.value & kingAttackersSquaresBitboard.value);
+            if (squareIndex <= 0) continue;
+
+            var toTile = board.GetTileByIndex(squareIndex.ConvertToIndex());
+            Move move = new Move(piece.GetTile(), toTile, piece, kingAttackers.First());
+            moves.Add(move);
         }
 
-
-
-
-        return null;
+        return moves;
     }
 
     private void Initialize(PieceColor color)
     {
+        actualColor = color;
         kingPiece = board.GetKingTile(color).OccupiedBy;
         kingAttackers = new();
     }
 
-    private void GenerateBitboards(PieceColor color)
+    private void GenerateBitboards()
     {
         attackingSquares = new Bitboard();
         kingDangerSquares = new Bitboard();
 
         enemiesAttackingSquares = new Bitboard();
         enemiesKingDangerSquares = new Bitboard();
-        GenerateMyBitboards(color);
-        GenerateEnemyBitboards(color);
+        GenerateMyBitboards();
+        GenerateEnemyBitboards();
     }
 
-    private void GenerateEnemyBitboards(PieceColor color)
+    private void GenerateEnemyBitboards()
     {
-        foreach (var piece in board.GetAllPieces(color.GetOppositeColor()))
+        kingAttackersSquaresBitboard = new Bitboard();
+        foreach (var piece in board.GetAllPieces(actualColor.GetOppositeColor()))
         {
             piece.GenerateBitBoard();
             enemiesAttackingSquares.Add(piece.AttackingSquares);
             enemiesKingDangerSquares.Add(piece.KingDangerSquares);
 
             if ((piece.AttackingSquares.value & kingPiece.GetTile().Bitboard.value) > 0)
+            {
+                kingAttackersSquaresBitboard.Add(piece.GetTile().Bitboard);
                 kingAttackers.Add(piece);
+            }
         }
     }
 
-    private void GenerateMyBitboards(PieceColor color)
+    private void GenerateMyBitboards()
     {
-        foreach (var piece in board.GetAllPieces(color))
+        
+        foreach (var piece in board.GetAllPieces(actualColor))
         {
             piece.GenerateBitBoard();
             attackingSquares.Add(piece.AttackingSquares);
@@ -100,15 +124,15 @@ public class MoveGenerator
         return kingAttackers.Count > 1;
     }
 
-    private List<Move> GenerateKingMoves(PieceColor color) 
+    private List<Move> GenerateKingMoves() 
     {
         var moves = new List<Move>();
         var possibleTiles = new List<TileCoordinates>();
 
         var kingTile = kingPiece.GetTile();
-        var verticals = kingTile.GetVerticalsByColor(color);
-        var horizontals = kingTile.GetHorizontalsByColor(color);
-        var diagonals = kingTile.GetDiagonalsByColor(color);
+        var verticals = kingTile.GetVerticalsByColor(actualColor);
+        var horizontals = kingTile.GetHorizontalsByColor(actualColor);
+        var diagonals = kingTile.GetDiagonalsByColor(actualColor);
 
         if(verticals.frontVerticals.Count>0) possibleTiles.Add(verticals.frontVerticals.First());
         if(verticals.backVerticals.Count > 0) possibleTiles.Add(verticals.backVerticals.First());
@@ -119,13 +143,13 @@ public class MoveGenerator
         if (diagonals.downLeftDiagonals.Count > 0) possibleTiles.Add(diagonals.downLeftDiagonals.First());
         if (diagonals.downRightDiagonals.Count > 0) possibleTiles.Add(diagonals.downRightDiagonals.First());
 
-
+        var impossibleSquares = (enemiesKingDangerSquares.value | enemiesAttackingSquares.value);
         foreach (var tileCoord in possibleTiles) 
         {
             var tile = board.GetTiles()[tileCoord.row][tileCoord.column];
-            if ((enemiesKingDangerSquares.value & tile.Bitboard.value) > 0) continue;
+            if ((impossibleSquares & tile.Bitboard.value) > 0) continue;
 
-            if (tile.IsOccupied is false || (tile.OccupiedBy.pieceColor != color))
+            if (tile.IsOccupied is false || (tile.OccupiedBy.pieceColor != actualColor))
                 moves.Add(new Move(kingTile, tile, kingPiece, tile.OccupiedBy));
         }
 
