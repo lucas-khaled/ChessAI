@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class BitboardSelector : MonoBehaviour
@@ -14,9 +15,16 @@ public class BitboardSelector : MonoBehaviour
     [SerializeField] private Color attackingColor = Color.red;
     [SerializeField] private Color kingDangerColor = Color.magenta;
 
+    MoveGenerator generator;
+
     private void Awake()
     {
         VisualTile.onTileSelected += OnTileSelected;
+    }
+
+    private void Start()
+    {
+        generator = new MoveGenerator(boardVisualizer.GameBoard);
     }
 
     private void OnTileSelected(Tile tile)
@@ -24,7 +32,9 @@ public class BitboardSelector : MonoBehaviour
         Debug.Log("Tile selected: " + tile.visualTile.name);
         if (tile.IsOccupied is false) return;
 
-        tile.OccupiedBy.GenerateBitBoard();
+        var moves = generator.GenerateMoves(tile.OccupiedBy.pieceColor);
+        boardVisualizer.SetBitBoard(moves.GetBitboard(), attackingColor);
+        /*tile.OccupiedBy.GenerateBitBoard();
 
         switch (visualizationType) 
         {
@@ -34,6 +44,8 @@ public class BitboardSelector : MonoBehaviour
             case VisualizationType.Attacking:
                 boardVisualizer.SetBitBoard(tile.OccupiedBy.AttackingSquares, attackingColor);
                 break;
-        }
+        }*/
+
+
     }
 }
