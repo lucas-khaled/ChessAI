@@ -20,15 +20,37 @@ public class Queen : SlidingPieces
         var verticals = actualTile.GetVerticalsByColor(pieceColor);
         var horizontals = actualTile.GetHorizontalsByColor(pieceColor);
 
-        kingDangerTiles.AddRange(GetTilesFromCoordinates(diagonals.topRightDiagonals));
-        kingDangerTiles.AddRange(GetTilesFromCoordinates(diagonals.topLeftDiagonals));
-        kingDangerTiles.AddRange(GetTilesFromCoordinates(diagonals.downRightDiagonals));
-        kingDangerTiles.AddRange(GetTilesFromCoordinates(diagonals.downLeftDiagonals));
+        var backVerticalDanger = GetTilesIfThereIsKing(verticals.backVerticals);
+        if (backVerticalDanger != null)
+            kingDangerTiles.AddRange(backVerticalDanger);
 
-        kingDangerTiles.AddRange(GetTilesFromCoordinates(verticals.backVerticals));
-        kingDangerTiles.AddRange(GetTilesFromCoordinates(verticals.frontVerticals));
-        kingDangerTiles.AddRange(GetTilesFromCoordinates(horizontals.leftHorizontals));
-        kingDangerTiles.AddRange(GetTilesFromCoordinates(horizontals.rightHorizontals));
+        var frontVerticalDanger = GetTilesIfThereIsKing(verticals.frontVerticals);
+        if (frontVerticalDanger != null)
+            kingDangerTiles.AddRange(frontVerticalDanger);
+
+        var leftHorizontalDanger = GetTilesIfThereIsKing(horizontals.leftHorizontals);
+        if (frontVerticalDanger != null)
+            kingDangerTiles.AddRange(leftHorizontalDanger);
+
+        var rightHorizontalDanger = GetTilesIfThereIsKing(horizontals.rightHorizontals);
+        if (rightHorizontalDanger != null)
+            kingDangerTiles.AddRange(rightHorizontalDanger);
+
+        var topRightDanger = GetTilesIfThereIsKing(diagonals.topRightDiagonals);
+        if (topRightDanger != null)
+            kingDangerTiles.AddRange(topRightDanger);
+
+        var topLeftDanger = GetTilesIfThereIsKing(diagonals.topLeftDiagonals);
+        if (topLeftDanger != null)
+            kingDangerTiles.AddRange(GetTilesFromCoordinates(diagonals.topLeftDiagonals));
+
+        var downRightDanger = GetTilesIfThereIsKing(diagonals.downRightDiagonals);
+        if (downRightDanger != null)
+            kingDangerTiles.AddRange(GetTilesFromCoordinates(diagonals.downRightDiagonals));
+
+        var downLeftDanger = GetTilesIfThereIsKing(diagonals.downLeftDiagonals);
+        if (downLeftDanger != null)
+            kingDangerTiles.AddRange(GetTilesFromCoordinates(diagonals.downLeftDiagonals));
 
         KingDangerSquares = AddTilesBitBoards(kingDangerTiles);
     }

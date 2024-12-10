@@ -122,4 +122,22 @@ public abstract class SlidingPieces : Piece
 
         return tiles;
     }
+
+    protected List<Tile> GetTilesIfThereIsKing(List<TileCoordinates> segment) 
+    {
+        List<Tile> finalTiles = new();
+        bool hasKing = false;
+        foreach (var tileCoord in segment)
+        {
+            Tile tile = Board.tiles[tileCoord.row][tileCoord.column];
+            if (tile.IsOccupied && tile.OccupiedBy.pieceColor == pieceColor) break;
+            
+            if(tile.IsOccupied && tile.OccupiedBy is King) 
+                hasKing = true;
+
+            finalTiles.Add(tile);
+        }
+
+        return hasKing ? finalTiles : null;
+    }
 }
