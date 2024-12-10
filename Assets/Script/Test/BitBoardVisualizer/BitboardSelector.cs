@@ -10,7 +10,14 @@ public class BitboardSelector : MonoBehaviour
         Attacking
     }
 
+    enum VisualizationMode 
+    {
+        Piece,
+        AllMoves
+    }
+
     [SerializeField] private BitBoardVisualizer boardVisualizer;
+    [SerializeField] private VisualizationMode visualizationMode;
     [SerializeField] private VisualizationType visualizationType = VisualizationType.Attacking;
     [SerializeField] private Color attackingColor = Color.red;
     [SerializeField] private Color kingDangerColor = Color.magenta;
@@ -32,11 +39,22 @@ public class BitboardSelector : MonoBehaviour
         Debug.Log("Tile selected: " + tile.visualTile.name);
         if (tile.IsOccupied is false) return;
 
-        var moves = generator.GenerateMoves(tile.OccupiedBy.pieceColor);
-        boardVisualizer.SetBitBoard(moves.GetBitboard(), attackingColor);
-        /*tile.OccupiedBy.GenerateBitBoard();
+        switch (visualizationMode) 
+        {
+            case VisualizationMode.AllMoves:
+                ShowAllMoves(tile);
+                break;
+            case VisualizationMode.Piece:
+                ShowPieceMoves(tile);
+                break;
+        }
+    }
 
-        switch (visualizationType) 
+    private void ShowPieceMoves(Tile tile)
+    {
+        tile.OccupiedBy.GenerateBitBoard();
+
+        switch (visualizationType)
         {
             case VisualizationType.KingDanger:
                 boardVisualizer.SetBitBoard(tile.OccupiedBy.KingDangerSquares, kingDangerColor);
@@ -44,8 +62,14 @@ public class BitboardSelector : MonoBehaviour
             case VisualizationType.Attacking:
                 boardVisualizer.SetBitBoard(tile.OccupiedBy.AttackingSquares, attackingColor);
                 break;
-        }*/
-
-
+        }
     }
+
+    private void ShowAllMoves(Tile tile)
+    {
+        var moves = generator.GenerateMoves(tile.OccupiedBy.pieceColor);
+        boardVisualizer.SetBitBoard(moves.GetBitboard(), attackingColor);
+    }
+
+
 }
