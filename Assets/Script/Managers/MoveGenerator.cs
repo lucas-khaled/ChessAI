@@ -64,9 +64,12 @@ public class MoveGenerator
             var squareIndex = (piece.MovingSquares.value & (kingAttackersSquaresBitboard.value | inBetweenKingAndAttackersBitboard.value));
             if (squareIndex <= 0) continue;
 
-            var toTile = board.GetTileByIndex(squareIndex.ConvertToIndex());
-            Move move = new Move(piece.GetTile(), toTile, piece, kingAttackers.First());
-            moves.Add(move);
+            foreach (var index in squareIndex.ConvertToIndexes())
+            {
+                var toTile = board.GetTileByIndex(index);
+                Move move = new Move(piece.GetTile(), toTile, piece, kingAttackers.First());
+                moves.Add(move);
+            }
         }
 
         return moves;
