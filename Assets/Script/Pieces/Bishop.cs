@@ -18,19 +18,19 @@ public class Bishop : SlidingPieces
 
         var diagonals = actualTile.GetDiagonalsByColor(pieceColor);
 
-        var topRightDanger = GetTilesIfThereIsKing(diagonals.topRightDiagonals);
+        var topRightDanger = GetKingDangerValidSegment(diagonals.topRightDiagonals);
         if(topRightDanger != null)
             kingDangerTiles.AddRange(topRightDanger);
 
-        var topLeftDanger = GetTilesIfThereIsKing(diagonals.topLeftDiagonals);
+        var topLeftDanger = GetKingDangerValidSegment(diagonals.topLeftDiagonals);
         if(topLeftDanger != null)
             kingDangerTiles.AddRange(GetTilesFromCoordinates(diagonals.topLeftDiagonals));
 
-        var downRightDanger = GetTilesIfThereIsKing(diagonals.downRightDiagonals);
+        var downRightDanger = GetKingDangerValidSegment(diagonals.downRightDiagonals);
         if(downRightDanger != null)
             kingDangerTiles.AddRange(GetTilesFromCoordinates(diagonals.downRightDiagonals));
 
-        var downLeftDanger = GetTilesIfThereIsKing(diagonals.downLeftDiagonals);
+        var downLeftDanger = GetKingDangerValidSegment(diagonals.downLeftDiagonals);
         if(downLeftDanger != null)
             kingDangerTiles.AddRange(GetTilesFromCoordinates(diagonals.downLeftDiagonals));
 

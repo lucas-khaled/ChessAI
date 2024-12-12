@@ -20,35 +20,35 @@ public class Queen : SlidingPieces
         var verticals = actualTile.GetVerticalsByColor(pieceColor);
         var horizontals = actualTile.GetHorizontalsByColor(pieceColor);
 
-        var backVerticalDanger = GetTilesIfThereIsKing(verticals.backVerticals);
+        var backVerticalDanger = GetKingDangerValidSegment(verticals.backVerticals);
         if (backVerticalDanger != null)
             kingDangerTiles.AddRange(backVerticalDanger);
 
-        var frontVerticalDanger = GetTilesIfThereIsKing(verticals.frontVerticals);
+        var frontVerticalDanger = GetKingDangerValidSegment(verticals.frontVerticals);
         if (frontVerticalDanger != null)
             kingDangerTiles.AddRange(frontVerticalDanger);
 
-        var leftHorizontalDanger = GetTilesIfThereIsKing(horizontals.leftHorizontals);
-        if (frontVerticalDanger != null)
+        var leftHorizontalDanger = GetKingDangerValidSegment(horizontals.leftHorizontals);
+        if (leftHorizontalDanger != null)
             kingDangerTiles.AddRange(leftHorizontalDanger);
 
-        var rightHorizontalDanger = GetTilesIfThereIsKing(horizontals.rightHorizontals);
+        var rightHorizontalDanger = GetKingDangerValidSegment(horizontals.rightHorizontals);
         if (rightHorizontalDanger != null)
             kingDangerTiles.AddRange(rightHorizontalDanger);
 
-        var topRightDanger = GetTilesIfThereIsKing(diagonals.topRightDiagonals);
+        var topRightDanger = GetKingDangerValidSegment(diagonals.topRightDiagonals);
         if (topRightDanger != null)
             kingDangerTiles.AddRange(topRightDanger);
 
-        var topLeftDanger = GetTilesIfThereIsKing(diagonals.topLeftDiagonals);
+        var topLeftDanger = GetKingDangerValidSegment(diagonals.topLeftDiagonals);
         if (topLeftDanger != null)
             kingDangerTiles.AddRange(GetTilesFromCoordinates(diagonals.topLeftDiagonals));
 
-        var downRightDanger = GetTilesIfThereIsKing(diagonals.downRightDiagonals);
+        var downRightDanger = GetKingDangerValidSegment(diagonals.downRightDiagonals);
         if (downRightDanger != null)
             kingDangerTiles.AddRange(GetTilesFromCoordinates(diagonals.downRightDiagonals));
 
-        var downLeftDanger = GetTilesIfThereIsKing(diagonals.downLeftDiagonals);
+        var downLeftDanger = GetKingDangerValidSegment(diagonals.downLeftDiagonals);
         if (downLeftDanger != null)
             kingDangerTiles.AddRange(GetTilesFromCoordinates(diagonals.downLeftDiagonals));
 

@@ -19,19 +19,19 @@ public class Rook : SlidingPieces
         var verticals = actualTile.GetVerticalsByColor(pieceColor);
         var horizontals = actualTile.GetHorizontalsByColor(pieceColor);
 
-        var backVerticalDanger = GetTilesIfThereIsKing(verticals.backVerticals);
+        var backVerticalDanger = GetKingDangerValidSegment(verticals.backVerticals);
         if(backVerticalDanger != null)
             kingDangerTiles.AddRange(backVerticalDanger);
 
-        var frontVerticalDanger = GetTilesIfThereIsKing(verticals.frontVerticals);
+        var frontVerticalDanger = GetKingDangerValidSegment(verticals.frontVerticals);
         if (frontVerticalDanger != null)
             kingDangerTiles.AddRange(frontVerticalDanger);
 
-        var leftHorizontalDanger = GetTilesIfThereIsKing(horizontals.leftHorizontals);
+        var leftHorizontalDanger = GetKingDangerValidSegment(horizontals.leftHorizontals);
         if (leftHorizontalDanger != null)
             kingDangerTiles.AddRange(leftHorizontalDanger);
 
-        var rightHorizontalDanger = GetTilesIfThereIsKing(horizontals.rightHorizontals);
+        var rightHorizontalDanger = GetKingDangerValidSegment(horizontals.rightHorizontals);
         if (rightHorizontalDanger != null)
             kingDangerTiles.AddRange(rightHorizontalDanger);
 
