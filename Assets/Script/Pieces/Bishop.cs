@@ -43,7 +43,7 @@ public class Bishop : SlidingPieces
 
         attackingTiles.AddRange(GetDiagonalBlockedSquares());
 
-        AttackingSquares = AddTilesBitBoards(attackingTiles);
+        MovingSquares = AttackingSquares = AddTilesBitBoards(attackingTiles);
     }
 
     public override Move[] GetMoves()

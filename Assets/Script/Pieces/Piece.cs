@@ -22,6 +22,7 @@ public abstract class Piece
 
     public Board Board { get; }
 
+    public Bitboard MovingSquares { get; set; }
     public Bitboard AttackingSquares { get; set; }
     public Bitboard KingDangerSquares { get; set; }
 

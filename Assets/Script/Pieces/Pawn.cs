@@ -127,36 +127,43 @@ public class Pawn : SlidingPieces
 
     public override void GenerateBitBoard()
     {
+        AttackingSquares = new Bitboard();
+        MovingSquares = new Bitboard();
+
         List<Tile> tiles = new List<Tile>();
-        /*int range = IsOnInitialRow() ? 2 : 1;
+        int range = IsOnInitialRow() ? 2 : 1;
 
         var verticals = actualTile.GetVerticalsByColor(pieceColor);
         var checkingBlockVerticals = CheckForBlockingSquares(verticals.frontVerticals.GetRange(0, range), false);
 
         tiles.AddRange(checkingBlockVerticals);
 
-        Bitboard bitboard = AddTilesBitBoards(tiles);*/
-
-        Bitboard bitboard = new Bitboard();
+        MovingSquares = AddTilesBitBoards(tiles);
 
         Diagonals diagonals = actualTile.GetDiagonalsByColor(pieceColor);
 
         if (diagonals.topLeftDiagonals.Count > 0)
         {
             var topLeftCoord = diagonals.topLeftDiagonals[0];
-            //if (CanMoveToDiagonal(diagonals.topLeftDiagonals))
-                bitboard.Add(Board.GetTiles()[topLeftCoord.row][topLeftCoord.column].Bitboard);
+            var bitboard = Board.GetTiles()[topLeftCoord.row][topLeftCoord.column].Bitboard;
+
+            if (CanMoveToDiagonal(diagonals.topLeftDiagonals))
+                MovingSquares.Add(bitboard);
+
+            AttackingSquares.Add(bitboard);
         }
 
         if (diagonals.topRightDiagonals.Count > 0)
         {
             var topRightCoord = diagonals.topRightDiagonals[0];
-            //if (CanMoveToDiagonal(diagonals.topRightDiagonals))
-                bitboard.Add(Board.GetTiles()[topRightCoord.row][topRightCoord.column].Bitboard);
+            var bitboard = Board.GetTiles()[topRightCoord.row][topRightCoord.column].Bitboard;
 
+            if (CanMoveToDiagonal(diagonals.topRightDiagonals))
+                MovingSquares.Add(bitboard);
 
+            AttackingSquares.Add(bitboard);
         }
 
-        AttackingSquares = KingDangerSquares = bitboard;
+       KingDangerSquares = AttackingSquares;
     }
 }

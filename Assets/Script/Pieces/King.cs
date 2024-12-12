@@ -80,6 +80,6 @@ public class King : SlidingPieces
         attackingTiles.AddRange(GetVerticalBlockedSquares(1));
         attackingTiles.AddRange(GetHorizontalBlockedSquares(1));
 
-        AttackingSquares = KingDangerSquares = AddTilesBitBoards(attackingTiles);
+        MovingSquares = AttackingSquares = KingDangerSquares = AddTilesBitBoards(attackingTiles);
     }
 }

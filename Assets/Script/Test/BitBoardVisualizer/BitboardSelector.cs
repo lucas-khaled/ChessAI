@@ -1,13 +1,15 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class BitboardSelector : MonoBehaviour
 {
-    enum VisualizationType 
+    enum PieceVisualizationType 
     {
         KingDanger,
-        Attacking
+        Attacking,
+        Move
     }
 
     enum VisualizationMode 
@@ -18,11 +20,15 @@ public class BitboardSelector : MonoBehaviour
 
     [SerializeField] private BitBoardVisualizer boardVisualizer;
     [SerializeField] private VisualizationMode visualizationMode;
-    [SerializeField] private VisualizationType visualizationType = VisualizationType.Attacking;
+    [SerializeField] private PieceVisualizationType visualizationType = PieceVisualizationType.Attacking;
     [SerializeField] private Color attackingColor = Color.red;
     [SerializeField] private Color kingDangerColor = Color.magenta;
+    [SerializeField] private Color movesColor = Color.green;
 
     MoveGenerator generator;
+
+    List<Move> whiteMoves;
+    List<Move> blackMoves;
 
     private void Awake()
     {
@@ -32,6 +38,8 @@ public class BitboardSelector : MonoBehaviour
     private void Start()
     {
         generator = new MoveGenerator(boardVisualizer.GameBoard);
+        whiteMoves = generator.GenerateMoves(PieceColor.White);
+        blackMoves = generator.GenerateMoves(PieceColor.Black);
     }
 
     private void OnTileSelected(Tile tile)
@@ -52,17 +60,32 @@ public class BitboardSelector : MonoBehaviour
 
     private void ShowPieceMoves(Tile tile)
     {
-        tile.OccupiedBy.GenerateBitBoard();
-
         switch (visualizationType)
         {
-            case VisualizationType.KingDanger:
+            case PieceVisualizationType.KingDanger:
+                tile.OccupiedBy.GenerateBitBoard();
                 boardVisualizer.SetBitBoard(tile.OccupiedBy.KingDangerSquares, kingDangerColor);
                 break;
-            case VisualizationType.Attacking:
+            case PieceVisualizationType.Attacking:
+                tile.OccupiedBy.GenerateBitBoard();
                 boardVisualizer.SetBitBoard(tile.OccupiedBy.AttackingSquares, attackingColor);
                 break;
+
+            case PieceVisualizationType.Move:
+                var allMoves = (tile.OccupiedBy.pieceColor == PieceColor.White) ? whiteMoves : blackMoves;
+                var pieceMoves = allMoves.Where(m => m.piece.Equals(tile.OccupiedBy)).ToList();
+                boardVisualizer.SetBitBoard(GenerateBitboardFromMoves(pieceMoves), movesColor);
+                break;
         }
+    }
+
+    private Bitboard GenerateBitboardFromMoves(List<Move> moves) 
+    {
+        Bitboard bitboard = new Bitboard();
+        foreach(var move in moves) 
+            bitboard.Add(move.to.Bitboard);
+
+        return bitboard;
     }
 
     private void ShowAllMoves(Tile tile)

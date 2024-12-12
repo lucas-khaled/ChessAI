@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 
 public class MoveGenerator
 {
@@ -13,6 +14,8 @@ public class MoveGenerator
     private Bitboard enemiesKingDangerSquares;
 
     private Bitboard kingAttackersSquaresBitboard;
+    public Bitboard inBetweenKingAndAttackersBitboard;
+
     private List<Piece> kingAttackers;
     private Piece kingPiece;
     private PieceColor actualColor;
@@ -35,9 +38,9 @@ public class MoveGenerator
             if (IsDoubleCheck())
                 return moves;
 
-            moves.AddRange(GenerateKingAttackersCapture());
-            //calculate blocks
             //calculate Pins
+            moves.AddRange(GenerateCapturesAndBlocks());
+            
 
             return moves;
         }
@@ -50,14 +53,15 @@ public class MoveGenerator
         }
     }
 
-    private List<Move> GenerateKingAttackersCapture()
+    private List<Move> GenerateCapturesAndBlocks()
     {
         List<Move> moves = new();
-        if ((kingAttackersSquaresBitboard.value & attackingSquares.value) <= 0) return moves;
 
         foreach (var piece in board.GetAllPieces(actualColor)) 
         {
-            var squareIndex = (piece.AttackingSquares.value & kingAttackersSquaresBitboard.value);
+            if (piece is King) continue;
+
+            var squareIndex = (piece.MovingSquares.value & (kingAttackersSquaresBitboard.value | inBetweenKingAndAttackersBitboard.value));
             if (squareIndex <= 0) continue;
 
             var toTile = board.GetTileByIndex(squareIndex.ConvertToIndex());
@@ -79,9 +83,10 @@ public class MoveGenerator
     {
         attackingSquares = new Bitboard();
         kingDangerSquares = new Bitboard();
-
+        inBetweenKingAndAttackersBitboard = new Bitboard();
         enemiesAttackingSquares = new Bitboard();
         enemiesKingDangerSquares = new Bitboard();
+
         GenerateMyBitboards();
         GenerateEnemyBitboards();
     }
@@ -99,7 +104,72 @@ public class MoveGenerator
             {
                 kingAttackersSquaresBitboard.Add(piece.GetTile().Bitboard);
                 kingAttackers.Add(piece);
+
+                GenerateInBetwwen(piece);
             }
+        }
+    }
+
+    private void GenerateInBetwwen(Piece piece)
+    {
+        TileCoordinates coord = piece.Coordinates;
+        TileCoordinates kingCoord = kingPiece.Coordinates;
+
+        int pieceIndex = piece.GetTile().Index;
+        int kingIndex = kingPiece.GetTile().Index;
+        
+        /*if(coord.row == kingCoord.row) 
+        {
+            int difference = pieceIndex - kingIndex;
+            if (Mathf.Abs(difference) == 1) return;
+
+            for(int i = 1; Mathf.Abs(i) < Mathf.Abs(difference); i += (int)Mathf.Sign(difference)) 
+            {
+                int column = kingCoord.column + i;
+                Tile tile = board.GetTiles()[kingCoord.row][column];
+
+                inBetweenKingAndAttackersBitboard.Add(tile.Bitboard);
+            }
+        }
+        else if(coord.column == kingCoord.column) 
+        {
+            int difference = (pieceIndex - kingIndex) / 8;
+            if (Mathf.Abs(difference) == 1) return;
+
+            for (int i = 1; Mathf.Abs(i) < Mathf.Abs(difference); i += (int)Mathf.Sign(difference))
+            {
+                int row = kingCoord.row + i;
+                Tile tile = board.GetTiles()[row][kingCoord.column];
+
+                inBetweenKingAndAttackersBitboard.Add(tile.Bitboard);
+            }
+        }
+        else 
+        {
+            
+
+        }*/
+
+        int delta = pieceIndex - kingIndex;
+        int rate = 0;
+
+        if (coord.row == kingCoord.row)
+            rate = 1;
+        if (coord.column == kingCoord.column)
+            rate = 8;
+        else
+            rate = (delta % 9 == 0) ? 9 : 7;
+        
+        int difference = delta / rate;
+
+        if (Mathf.Abs(difference) == 1) return;
+
+        for (int i = 1; Mathf.Abs(i) < Mathf.Abs(difference); i += (int)Mathf.Sign(difference))
+        {
+            int index = kingIndex + i * rate;
+            Tile tile = board.GetTileByIndex(index);
+
+            inBetweenKingAndAttackersBitboard.Add(tile.Bitboard);
         }
     }
 

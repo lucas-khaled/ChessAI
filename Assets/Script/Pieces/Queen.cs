@@ -63,7 +63,7 @@ public class Queen : SlidingPieces
         attackingTiles.AddRange(GetVerticalBlockedSquares());
         attackingTiles.AddRange(GetHorizontalBlockedSquares());
 
-        AttackingSquares = AddTilesBitBoards(attackingTiles);
+        MovingSquares = AttackingSquares = AddTilesBitBoards(attackingTiles);
     }
 
     public override Move[] GetMoves()
