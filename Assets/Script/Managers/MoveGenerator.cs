@@ -59,7 +59,7 @@ public class MoveGenerator
 
         foreach (var piece in board.GetAllPieces(actualColor)) 
         {
-            if (piece is King) continue;
+            if (piece is King || (piece.GetTile().Bitboard.value & enemiesKingDangerSquares.value) > 0) continue;
 
             var squareIndex = (piece.MovingSquares.value & (kingAttackersSquaresBitboard.value | inBetweenKingAndAttackersBitboard.value));
             if (squareIndex <= 0) continue;
