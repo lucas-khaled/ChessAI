@@ -163,7 +163,5 @@ public class Pawn : SlidingPieces
 
             AttackingSquares.Add(bitboard);
         }
-
-       KingDangerSquares = AttackingSquares;
     }
 }
