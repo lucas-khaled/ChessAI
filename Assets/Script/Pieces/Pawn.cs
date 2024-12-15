@@ -3,6 +3,8 @@ using System.Collections.Generic;
 
 public class Pawn : SlidingPieces
 {
+    public Bitboard enPassantPawnBitboard = new Bitboard();
+
     public Pawn(Board board) : base(board)
     {
     }
@@ -56,7 +58,7 @@ public class Pawn : SlidingPieces
         List<PromotionMove> moves = new();
 
         var diagonals = actualTile.GetDiagonalsByColor(pieceColor);
-        
+
         if (CanMoveToDiagonal(diagonals.topLeftDiagonals))
             moves.AddRange(GetPossiblePromotions(diagonals.topLeftDiagonals[0]));
 
@@ -110,11 +112,12 @@ public class Pawn : SlidingPieces
 
     private bool CanMoveToDiagonal(List<TileCoordinates> diagonal) 
     {
-        if (diagonal.Count <= 0) return false;
+        if (diagonal.Count <= 0)
+            return false;
 
         var diagonalTile = Board.tiles[diagonal[0].row][diagonal[0].column];
         return IsEnemyPiece(diagonalTile.OccupiedBy)
-            || (Board.rules.enPassantTile != null && diagonal[0].Equals(Board.rules.enPassantTile.TilePosition));
+            || Board.rules.enPassantTile != null && diagonal[0].Equals(Board.rules.enPassantTile.TilePosition);
     }
 
     private Move CreateDiagonalMove(TileCoordinates diagonalTileCoord) 
@@ -127,8 +130,7 @@ public class Pawn : SlidingPieces
 
     protected override void GenerateBitBoardMethod()
     {
-        AttackingSquares = new Bitboard();
-        MovingSquares = new Bitboard();
+        enPassantPawnBitboard.Clear();
 
         List<Tile> tiles = new List<Tile>();
         int range = IsOnInitialRow() ? 2 : 1;
@@ -146,9 +148,10 @@ public class Pawn : SlidingPieces
         {
             var topLeftCoord = diagonals.topLeftDiagonals[0];
             var bitboard = Board.GetTiles()[topLeftCoord.row][topLeftCoord.column].Bitboard;
-
             if (CanMoveToDiagonal(diagonals.topLeftDiagonals))
+            {
                 MovingSquares.Add(bitboard);
+            }
 
             AttackingSquares.Add(bitboard);
         }

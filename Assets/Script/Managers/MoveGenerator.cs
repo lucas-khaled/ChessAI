@@ -67,9 +67,11 @@ public class MoveGenerator
         {
             if (piece is King || IsPinned(piece)) continue;
 
-            var squareIndex = (piece.MovingSquares & (kingAttackersSquaresBitboard | inBetweenKingAndAttackersBitboard));
-            if (squareIndex <= 0) continue;
-            FillMovesFromPiece(moves, piece, squareIndex);
+            var enPassantBitboard = (piece is Pawn && board.rules.enPassantTile is not null) ? board.rules.enPassantTile.Bitboard : new Bitboard(0);
+            var validBitboard = piece.MovingSquares & (kingAttackersSquaresBitboard | inBetweenKingAndAttackersBitboard | enPassantBitboard);
+
+            if (validBitboard <= 0) continue;
+            FillMovesFromPiece(moves, piece, validBitboard);
         }
 
         return moves;
@@ -110,6 +112,10 @@ public class MoveGenerator
                 moves.Add(castleMove);
                 return;
             }
+        }
+        else if(piece is Pawn pawn) 
+        {
+            //check promotion
         }
 
         Move move = new Move(piece.GetTile(), toTile, piece, toTile.OccupiedBy);
