@@ -26,12 +26,21 @@ public abstract class Piece
     public Bitboard AttackingSquares { get; set; } = new Bitboard();
     public Bitboard KingDangerSquares { get; set; } = new Bitboard();
 
-    public abstract void GenerateBitBoard();
+    protected abstract void GenerateBitBoardMethod();
     public abstract Move[] GetMoves();
 
     public Piece(Board board) 
     {
         Board = board;
+    }
+
+    public void GenerateBitBoard() 
+    {
+        MovingSquares.Clear();
+        AttackingSquares.Clear();
+        KingDangerSquares.Clear();
+
+        GenerateBitBoardMethod();
     }
 
     public void SetTile(Tile tile) 

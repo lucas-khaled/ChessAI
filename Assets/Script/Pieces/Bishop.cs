@@ -6,7 +6,7 @@ public class Bishop : SlidingPieces
     {
     }
 
-    public override void GenerateBitBoard()
+    protected override void GenerateBitBoardMethod()
     {
         GenerateAttackingSquaresBitBoard();
         GenerateKingDangerBitBoard();

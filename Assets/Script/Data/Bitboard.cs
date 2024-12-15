@@ -39,4 +39,9 @@ public class Bitboard
     {
         this.value = ~(~this.value | value);
     }
+
+    public void Clear() 
+    {
+        this.value = 0L;
+    }
 }

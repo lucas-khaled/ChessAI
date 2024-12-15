@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 public class King : SlidingPieces
@@ -28,7 +29,6 @@ public class King : SlidingPieces
     private List<CastleMove> GetCastleMoves() 
     {
         List<CastleMove> moves = new List<CastleMove>();
-
 
         if (Board.rules.HasCastledAllSides(pieceColor) || checkChecker.IsCheck(Board, pieceColor)) return moves;
         
@@ -72,7 +72,7 @@ public class King : SlidingPieces
         return new CastleMove(actualTile, toTile, this, rookMove);
     }
 
-    public override void GenerateBitBoard()
+    protected override void GenerateBitBoardMethod()
     {
         List<Tile> attackingTiles = new List<Tile>();
 
@@ -80,6 +80,23 @@ public class King : SlidingPieces
         attackingTiles.AddRange(GetVerticalBlockedSquares(1));
         attackingTiles.AddRange(GetHorizontalBlockedSquares(1));
 
-        MovingSquares = AttackingSquares = AddTilesBitBoards(attackingTiles);
+        AttackingSquares = AddTilesBitBoards(attackingTiles);
+        MovingSquares.Add(AttackingSquares);
+
+        Bitboard castleBitboard = GetCastleBitboard();
+        MovingSquares.Add(castleBitboard);
+    }
+
+    private Bitboard GetCastleBitboard()
+    {
+        Bitboard bitboard = new Bitboard();
+        int initialRow = (pieceColor == PieceColor.White) ? 0 : 7;
+
+        if(Coordinates.column != 4 || Coordinates.row != initialRow) return bitboard;
+
+        bitboard.Add(Board.GetTiles()[initialRow][Coordinates.column + 2].Bitboard);
+        bitboard.Add(Board.GetTiles()[initialRow][Coordinates.column - 2].Bitboard);
+
+        return bitboard;
     }
 }

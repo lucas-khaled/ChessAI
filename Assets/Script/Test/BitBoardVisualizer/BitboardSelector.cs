@@ -50,7 +50,6 @@ public class BitboardSelector : MonoBehaviour
 
     private void OnTileSelected(Tile tile)
     {
-        Debug.Log("Tile selected: " + tile.visualTile.name);
         if (tile.IsOccupied is false) return;
 
         HandlePieceVisual(tile.OccupiedBy.visualPiece);

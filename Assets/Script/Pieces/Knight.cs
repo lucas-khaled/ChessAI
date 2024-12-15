@@ -90,7 +90,7 @@ public class Knight : Piece
         return moves;
     }
 
-    public override void GenerateBitBoard()
+    protected override void GenerateBitBoardMethod()
     {
         int currentIndex = actualTile.Index;
         Bitboard bitboard = new Bitboard();

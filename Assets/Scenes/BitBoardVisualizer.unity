@@ -486,7 +486,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   boardVisualizer: {fileID: 1968134900}
   visualizationMode: 0
-  visualizationType: 2
+  visualizationType: 1
   attackingColor: {r: 1, g: 0, b: 0, a: 1}
   kingDangerColor: {r: 1, g: 0, b: 1, a: 1}
   movesColor: {r: 0, g: 1, b: 0, a: 1}
