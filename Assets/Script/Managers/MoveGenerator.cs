@@ -38,9 +38,7 @@ public class MoveGenerator
             if (IsDoubleCheck())
                 return moves;
 
-            //calculate Pins
             moves.AddRange(GenerateCapturesAndBlocks());
-            
 
             return moves;
         }
@@ -59,7 +57,7 @@ public class MoveGenerator
 
         foreach (var piece in board.GetAllPieces(actualColor)) 
         {
-            if (piece is King || (piece.GetTile().Bitboard.value & enemiesKingDangerSquares.value) > 0) continue;
+            if (piece is King || IsPinned(piece)) continue;
 
             var squareIndex = (piece.MovingSquares.value & (kingAttackersSquaresBitboard.value | inBetweenKingAndAttackersBitboard.value));
             if (squareIndex <= 0) continue;
@@ -73,6 +71,11 @@ public class MoveGenerator
         }
 
         return moves;
+    }
+
+    private bool IsPinned(Piece piece) 
+    {
+        return (piece.GetTile().Bitboard.value & enemiesKingDangerSquares.value) > 0;
     }
 
     private void Initialize(PieceColor color)
@@ -115,46 +118,16 @@ public class MoveGenerator
 
     private void GenerateInBetwwen(Piece piece)
     {
+        if (piece is not SlidingPieces || piece is Pawn) return;
+
         TileCoordinates coord = piece.Coordinates;
         TileCoordinates kingCoord = kingPiece.Coordinates;
 
         int pieceIndex = piece.GetTile().Index;
         int kingIndex = kingPiece.GetTile().Index;
-        
-        /*if(coord.row == kingCoord.row) 
-        {
-            int difference = pieceIndex - kingIndex;
-            if (Mathf.Abs(difference) == 1) return;
-
-            for(int i = 1; Mathf.Abs(i) < Mathf.Abs(difference); i += (int)Mathf.Sign(difference)) 
-            {
-                int column = kingCoord.column + i;
-                Tile tile = board.GetTiles()[kingCoord.row][column];
-
-                inBetweenKingAndAttackersBitboard.Add(tile.Bitboard);
-            }
-        }
-        else if(coord.column == kingCoord.column) 
-        {
-            int difference = (pieceIndex - kingIndex) / 8;
-            if (Mathf.Abs(difference) == 1) return;
-
-            for (int i = 1; Mathf.Abs(i) < Mathf.Abs(difference); i += (int)Mathf.Sign(difference))
-            {
-                int row = kingCoord.row + i;
-                Tile tile = board.GetTiles()[row][kingCoord.column];
-
-                inBetweenKingAndAttackersBitboard.Add(tile.Bitboard);
-            }
-        }
-        else 
-        {
-            
-
-        }*/
 
         int delta = pieceIndex - kingIndex;
-        int rate = 0;
+        int rate;
 
         if (coord.row == kingCoord.row)
             rate = 1;
@@ -167,7 +140,7 @@ public class MoveGenerator
 
         if (Mathf.Abs(difference) == 1) return;
 
-        for (int i = 1; Mathf.Abs(i) < Mathf.Abs(difference); i += (int)Mathf.Sign(difference))
+        for (int i = (int)Mathf.Sign(difference); Mathf.Abs(i) < Mathf.Abs(difference); i += (int)Mathf.Sign(difference))
         {
             int index = kingIndex + i * rate;
             Tile tile = board.GetTileByIndex(index);
@@ -178,7 +151,6 @@ public class MoveGenerator
 
     private void GenerateMyBitboards()
     {
-        
         foreach (var piece in board.GetAllPieces(actualColor))
         {
             piece.GenerateBitBoard();
