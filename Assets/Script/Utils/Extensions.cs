@@ -30,24 +30,4 @@ public static class Extensions
 
         return (pad) ? binary.PadLeft(64, '0') : binary;
     }
-
-    public static List<int> ConvertToIndexes(this ulong value)
-    {
-        string binary = value.ConvertToBinaryString();
-        List<int> indexes = new List<int>();
-        int lenght = binary.Length;
-
-        while (true) 
-        {
-            int index = binary.IndexOf('1');
-            if (index <= -1) break;
-
-            indexes.Add(lenght-index-1);
-            binary = binary.Remove(index, 1);
-            binary = binary.Insert(index, "0");
-        }
-
-        return indexes;
-    }
-
 }

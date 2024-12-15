@@ -8,16 +8,22 @@ public class MoveGenerator
 {
     private Board board;
 
-    private Bitboard attackingSquares;
-    private Bitboard kingDangerSquares;
+    private Bitboard attackingSquares = new Bitboard();
+    private Bitboard kingDangerSquares = new Bitboard();
 
-    private Bitboard enemiesAttackingSquares;
-    private Bitboard enemiesKingDangerSquares;
+    private Bitboard enemiesAttackingSquares = new Bitboard();
+    private Bitboard enemiesKingDangerSquares = new Bitboard();
 
-    private Bitboard kingAttackersSquaresBitboard;
-    public Bitboard inBetweenKingAndAttackersBitboard;
+    private Bitboard kingAttackersSquaresBitboard = new Bitboard();
+    public Bitboard inBetweenKingAndAttackersBitboard = new Bitboard();
 
-    private Bitboard piecesPositionBitboard;
+    private Bitboard piecesPositionBitboard = new Bitboard();
+    private Bitboard enemyPiecesPositionBitboard = new Bitboard();
+
+    private Bitboard queenSideCastleWhiteBitboard = new Bitboard(14L);
+    private Bitboard kingSideCastleWhiteBitboard = new Bitboard(96L);
+    private Bitboard queenSideCastleBlackBitboard = new Bitboard(1008806316530991104L);
+    private Bitboard kingSideCastleBlackBitboard = new Bitboard(6917529027641081856L);
 
     private List<Piece> kingAttackers;
     private Piece kingPiece;
@@ -61,7 +67,7 @@ public class MoveGenerator
         {
             if (piece is King || IsPinned(piece)) continue;
 
-            var squareIndex = (piece.MovingSquares.value & (kingAttackersSquaresBitboard.value | inBetweenKingAndAttackersBitboard.value));
+            var squareIndex = (piece.MovingSquares & (kingAttackersSquaresBitboard | inBetweenKingAndAttackersBitboard));
             if (squareIndex <= 0) continue;
             FillMovesFromPiece(moves, piece, squareIndex);
         }
@@ -69,9 +75,9 @@ public class MoveGenerator
         return moves;
     }
 
-    private void FillMovesFromPiece(List<Move> moves, Piece piece, ulong movementIndexes)
+    private void FillMovesFromPiece(List<Move> moves, Piece piece, Bitboard movesBitboard)
     {
-        foreach (var index in movementIndexes.ConvertToIndexes())
+        foreach (var index in movesBitboard.ConvertToIndexes())
         {
             var toTile = board.GetTileByIndex(index);
             GeneratePieceMove(moves, piece, toTile);
@@ -80,19 +86,53 @@ public class MoveGenerator
 
     private void GeneratePieceMove(List<Move> moves, Piece piece, Tile toTile)
     {
-        if(piece is King) 
+        if(piece is King king) 
         {
             if (IsImpossibleForKing(toTile)) return;
-            //check for castle
+
+            int columnDiff = king.Coordinates.column - toTile.TilePosition.column;
+            if (Mathf.Abs(columnDiff) == 2)
+            {
+                int columnDeltaSign = (int)Mathf.Sign(columnDiff);
+                bool isQueenSide = columnDeltaSign > 0;
+                bool canCastle = (isQueenSide) ? board.rules.CanCastleQueenSide(piece.pieceColor) : board.rules.CanCastleKingSide(piece.pieceColor);
+                if (!canCastle) return;
+
+                Bitboard checkBitboard = GetCastleCheckBitboard(piece.pieceColor, isQueenSide);
+                if (HasAnyPieceOrAnyAttackIn(checkBitboard)) return;
+
+                var rookCoord = EspecialRules.GetRookCoordinates(isQueenSide, piece.pieceColor);
+                Piece rookPiece = board.GetTiles()[rookCoord.row][rookCoord.column].OccupiedBy;
+                if (rookPiece is null || rookPiece is not Rook rook) return;
+
+                Move rookMove = new Move(rook.GetTile(), board.GetTiles()[king.Coordinates.row][king.Coordinates.column - columnDeltaSign], rook);
+                CastleMove castleMove = new CastleMove(king.GetTile(), toTile, king, rookMove);
+                moves.Add(castleMove);
+                return;
+            }
         }
 
         Move move = new Move(piece.GetTile(), toTile, piece, toTile.OccupiedBy);
         moves.Add(move);
     }
 
+    private bool HasAnyPieceOrAnyAttackIn(Bitboard checkBitboard)
+    {
+        return ((enemyPiecesPositionBitboard | piecesPositionBitboard | enemiesAttackingSquares) & checkBitboard) > 0;
+    }
+
+    private Bitboard GetCastleCheckBitboard(PieceColor pieceColor, bool isQueenSide)
+    {
+        return (pieceColor == PieceColor.White)
+            ? (isQueenSide)
+                ? queenSideCastleWhiteBitboard : kingSideCastleWhiteBitboard
+            : (isQueenSide)
+                ? queenSideCastleBlackBitboard : kingSideCastleBlackBitboard;
+    }
+
     private bool IsPinned(Piece piece) 
     {
-        return (piece.GetTile().Bitboard.value & enemiesKingDangerSquares.value) > 0;
+        return (piece.GetTile().Bitboard & enemiesKingDangerSquares) > 0;
     }
 
     private void Initialize(PieceColor color)
@@ -104,12 +144,13 @@ public class MoveGenerator
 
     private void GenerateBitboards()
     {
-        attackingSquares = new Bitboard();
-        kingDangerSquares = new Bitboard();
-        inBetweenKingAndAttackersBitboard = new Bitboard();
-        enemiesAttackingSquares = new Bitboard();
-        enemiesKingDangerSquares = new Bitboard();
-        piecesPositionBitboard = new Bitboard();
+        attackingSquares.Clear();
+        kingDangerSquares.Clear();
+        inBetweenKingAndAttackersBitboard.Clear();
+        enemiesAttackingSquares.Clear();
+        enemiesKingDangerSquares.Clear();
+        piecesPositionBitboard.Clear();
+        enemyPiecesPositionBitboard.Clear();
 
         GenerateMyBitboards();
         GenerateEnemyBitboards();
@@ -120,11 +161,13 @@ public class MoveGenerator
         kingAttackersSquaresBitboard = new Bitboard();
         foreach (var piece in board.GetAllPieces(actualColor.GetOppositeColor()))
         {
+            enemyPiecesPositionBitboard.Add(piece.GetTile().Bitboard);
+
             piece.GenerateBitBoard();
             enemiesAttackingSquares.Add(piece.AttackingSquares);
             enemiesKingDangerSquares.Add(piece.KingDangerSquares);
 
-            if ((piece.AttackingSquares.value & kingPiece.GetTile().Bitboard.value) > 0)
+            if ((piece.AttackingSquares & kingPiece.GetTile().Bitboard) > 0)
             {
                 kingAttackersSquaresBitboard.Add(piece.GetTile().Bitboard);
                 kingAttackers.Add(piece);
@@ -223,9 +266,8 @@ public class MoveGenerator
 
     private bool IsImpossibleForKing(Tile tile)
     {
-        var impossibleSquares = enemiesKingDangerSquares.value | enemiesAttackingSquares.value;
-        List<int> indexes = impossibleSquares.ConvertToIndexes();
-        return (impossibleSquares & tile.Bitboard.value) > 0;
+        var impossibleSquares = enemiesKingDangerSquares | enemiesAttackingSquares;
+        return (impossibleSquares & tile.Bitboard) > 0;
     }
 
     private List<Move> GeneratePiecesMove() 
@@ -238,7 +280,7 @@ public class MoveGenerator
             var blockFilteredMoves = new Bitboard(piece.MovingSquares.value);
             blockFilteredMoves.Remove(piecesPositionBitboard);
 
-            FillMovesFromPiece(moves, piece, blockFilteredMoves.value);
+            FillMovesFromPiece(moves, piece, blockFilteredMoves);
         }
 
         return moves;

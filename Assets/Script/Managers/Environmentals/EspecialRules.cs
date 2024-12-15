@@ -37,6 +37,28 @@ public class EspecialRules
         };
     }
 
+    public bool CanCastleQueenSide(PieceColor color) 
+    {
+        if (HasCastledAllSides(color)) return false;
+
+        var castleRights = GetCastleRightsByColor(color);
+        var queensideBool = castleRights.CanCastleQueenSide;
+        var coord = GetRookCoordinates(true, color);
+
+        return queensideBool && Board.GetTiles()[coord.row][coord.column].OccupiedBy is Rook rook && rook.pieceColor == color;
+    }
+
+    public bool CanCastleKingSide(PieceColor color) 
+    {
+        if (HasCastledAllSides(color)) return false;
+
+        var castleRights = GetCastleRightsByColor(color);
+        var kingsideBool = castleRights.CanCastleKingSide;
+        var coord = GetRookCoordinates(false, color);
+
+        return kingsideBool && Board.GetTiles()[coord.row][coord.column].OccupiedBy is Rook rook && rook.pieceColor == color;
+    }
+
     public bool CanCastle(PieceColor color, Rook rook)
     {
         if (HasCastledAllSides(color)) return false;
@@ -64,7 +86,7 @@ public class EspecialRules
         return castleRights.CanCastleKingSide is false && castleRights.CanCastleQueenSide is false;
     }
 
-    private TileCoordinates GetRookCoordinates(bool isQueenSide, PieceColor pieceColor) 
+    public static TileCoordinates GetRookCoordinates(bool isQueenSide, PieceColor pieceColor) 
     {
         bool isWhite = pieceColor == PieceColor.White;
 
