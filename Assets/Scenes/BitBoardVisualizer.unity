@@ -458,7 +458,7 @@ MonoBehaviour:
   boardStarter: {fileID: 1968134898}
   boardUI: {fileID: 5342880040856725119, guid: bfe69815c5bdffd43b390813e09ee5d6, type: 3}
   uiColor: {r: 1, g: 0, b: 0, a: 1}
-  FEN: rnbqkbnr/2p2p1p/1p4p1/3pp3/4P2P/1P4P1/2PP1P2/RNBQKBNR w KQkq - 0 1
+  FEN: r3k2r/1P2P3/8/8/7b/2n1Q3/5P2/R3K2R w KQkq - 0 1
 --- !u!114 &1968134901
 MonoBehaviour:
   m_ObjectHideFlags: 0

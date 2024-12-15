@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class MoveGenerator
@@ -44,8 +45,7 @@ public class MoveGenerator
         }
         else 
         {
-            // calculate Pins
-            // generate other moves
+            moves.AddRange(GeneratePiecesMove());
 
             return moves;
         }
@@ -55,22 +55,37 @@ public class MoveGenerator
     {
         List<Move> moves = new();
 
-        foreach (var piece in board.GetAllPieces(actualColor)) 
+        foreach (var piece in board.GetAllPieces(actualColor))
         {
             if (piece is King || IsPinned(piece)) continue;
 
             var squareIndex = (piece.MovingSquares.value & (kingAttackersSquaresBitboard.value | inBetweenKingAndAttackersBitboard.value));
             if (squareIndex <= 0) continue;
-
-            foreach (var index in squareIndex.ConvertToIndexes())
-            {
-                var toTile = board.GetTileByIndex(index);
-                Move move = new Move(piece.GetTile(), toTile, piece, kingAttackers.First());
-                moves.Add(move);
-            }
+            FillMovesFromPiece(moves, piece, squareIndex);
         }
 
         return moves;
+    }
+
+    private void FillMovesFromPiece(List<Move> moves, Piece piece, ulong movementIndexes)
+    {
+        foreach (var index in movementIndexes.ConvertToIndexes())
+        {
+            var toTile = board.GetTileByIndex(index);
+            GeneratePieceMove(moves, piece, toTile);
+        }
+    }
+
+    private void GeneratePieceMove(List<Move> moves, Piece piece, Tile toTile)
+    {
+        if(piece is King) 
+        {
+            if (IsImpossibleForKing(toTile)) return;
+            //check for castle
+        }
+
+        Move move = new Move(piece.GetTile(), toTile, piece, toTile.OccupiedBy);
+        moves.Add(move);
     }
 
     private bool IsPinned(Piece piece) 
@@ -188,14 +203,34 @@ public class MoveGenerator
         if (diagonals.downLeftDiagonals.Count > 0) possibleTiles.Add(diagonals.downLeftDiagonals.First());
         if (diagonals.downRightDiagonals.Count > 0) possibleTiles.Add(diagonals.downRightDiagonals.First());
 
-        var impossibleSquares = (enemiesKingDangerSquares.value | enemiesAttackingSquares.value);
-        foreach (var tileCoord in possibleTiles) 
+        
+        foreach (var tileCoord in possibleTiles)
         {
             var tile = board.GetTiles()[tileCoord.row][tileCoord.column];
-            if ((impossibleSquares & tile.Bitboard.value) > 0) continue;
+            if (IsImpossibleForKing(tile)) continue;
 
             if (tile.IsOccupied is false || (tile.OccupiedBy.pieceColor != actualColor))
                 moves.Add(new Move(kingTile, tile, kingPiece, tile.OccupiedBy));
+        }
+
+        return moves;
+    }
+
+    private bool IsImpossibleForKing(Tile tile)
+    {
+        var impossibleSquares = enemiesKingDangerSquares.value | enemiesAttackingSquares.value;
+        List<int> indexes = impossibleSquares.ConvertToIndexes();
+        return (impossibleSquares & tile.Bitboard.value) > 0;
+    }
+
+    private List<Move> GeneratePiecesMove() 
+    {
+        List<Move> moves = new();
+        foreach (Piece piece in board.GetAllPieces(actualColor)) 
+        {
+            if (IsPinned(piece)) continue;
+
+            FillMovesFromPiece(moves, piece, piece.MovingSquares.value);
         }
 
         return moves;
