@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -115,11 +116,33 @@ public class MoveGenerator
         }
         else if(piece is Pawn pawn) 
         {
-            //check promotion
+            if (IsPromotion(pawn)) 
+            {
+                PromotionMove[] promotions = GetPossiblePromotions(pawn, toTile);
+                moves.AddRange(promotions);
+                return;
+            }
         }
 
         Move move = new Move(piece.GetTile(), toTile, piece, toTile.OccupiedBy);
         moves.Add(move);
+    }
+
+    private PromotionMove[] GetPossiblePromotions(Pawn pawn, Tile toTile)
+    {
+        return new PromotionMove[4]
+        {
+            new PromotionMove(pawn.GetTile(), toTile, pawn, new Rook(board), toTile.OccupiedBy),
+            new PromotionMove(pawn.GetTile(), toTile, pawn, new Bishop(board), toTile.OccupiedBy),
+            new PromotionMove(pawn.GetTile(), toTile, pawn, new Knight(board), toTile.OccupiedBy),
+            new PromotionMove(pawn.GetTile(), toTile, pawn, new Queen(board), toTile.OccupiedBy)
+        };
+    }
+
+    private bool IsPromotion(Pawn pawn)
+    {
+        return (pawn.Coordinates.row == 6 && pawn.pieceColor == PieceColor.White)
+            || (pawn.Coordinates.row == 1 && pawn.pieceColor == PieceColor.Black);
     }
 
     private bool HasAnyPieceOrAnyAttackIn(Bitboard checkBitboard)
