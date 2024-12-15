@@ -17,6 +17,8 @@ public class MoveGenerator
     private Bitboard kingAttackersSquaresBitboard;
     public Bitboard inBetweenKingAndAttackersBitboard;
 
+    private Bitboard piecesPositionBitboard;
+
     private List<Piece> kingAttackers;
     private Piece kingPiece;
     private PieceColor actualColor;
@@ -107,6 +109,7 @@ public class MoveGenerator
         inBetweenKingAndAttackersBitboard = new Bitboard();
         enemiesAttackingSquares = new Bitboard();
         enemiesKingDangerSquares = new Bitboard();
+        piecesPositionBitboard = new Bitboard();
 
         GenerateMyBitboards();
         GenerateEnemyBitboards();
@@ -168,6 +171,8 @@ public class MoveGenerator
     {
         foreach (var piece in board.GetAllPieces(actualColor))
         {
+            piecesPositionBitboard.Add(piece.GetTile().Bitboard);
+
             piece.GenerateBitBoard();
             attackingSquares.Add(piece.AttackingSquares);
             kingDangerSquares.Add(piece.KingDangerSquares);
@@ -230,7 +235,10 @@ public class MoveGenerator
         {
             if (IsPinned(piece)) continue;
 
-            FillMovesFromPiece(moves, piece, piece.MovingSquares.value);
+            var blockFilteredMoves = new Bitboard(piece.MovingSquares.value);
+            blockFilteredMoves.Remove(piecesPositionBitboard);
+
+            FillMovesFromPiece(moves, piece, blockFilteredMoves.value);
         }
 
         return moves;

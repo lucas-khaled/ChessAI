@@ -26,16 +26,16 @@ public abstract class SlidingPieces : Piece
         return moves;
     }
 
-    protected List<Tile> GetVerticalBlockedSquares(int range = 8) 
+    protected List<Tile> GetVerticalBlockedSquares(int range = 8, bool includeFriendlySquare = true) 
     {
         List<Tile> tiles = new();
         var verticals = actualTile.GetVerticalsByColor(pieceColor);
 
         var rangedFront = verticals.frontVerticals.GetRange(0, Mathf.Min(range, verticals.frontVerticals.Count));
-        var checkedFrontBlockingSquares = CheckForBlockingSquares(rangedFront);
+        var checkedFrontBlockingSquares = CheckForBlockingSquares(rangedFront, includeBlockingPieceSquare: includeFriendlySquare);
 
         var rangedBack = verticals.backVerticals.GetRange(0, Mathf.Min(range, verticals.backVerticals.Count));
-        var checkedBackBlockingSquares = CheckForBlockingSquares(rangedBack);
+        var checkedBackBlockingSquares = CheckForBlockingSquares(rangedBack, includeBlockingPieceSquare: includeFriendlySquare);
 
         tiles.AddRange(checkedFrontBlockingSquares);
         tiles.AddRange(checkedBackBlockingSquares);
@@ -43,7 +43,7 @@ public abstract class SlidingPieces : Piece
         return tiles;
     }
 
-    protected List<Move> GetHorizontalMoves(int range = 8, bool includeFriendlySquare = false)
+    protected List<Move> GetHorizontalMoves(int range = 8, bool includeFriendlySquare = true)
     {
         List<Move> moves = new();
 
@@ -97,7 +97,7 @@ public abstract class SlidingPieces : Piece
         return moves;
     }
 
-    protected List<Tile> GetDiagonalBlockedSquares(int range = 8, bool includeFriendlySquare = false) 
+    protected List<Tile> GetDiagonalBlockedSquares(int range = 8, bool includeFriendlySquare = true) 
     {
         List<Tile> tiles = new();
 

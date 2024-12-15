@@ -30,6 +30,11 @@ public class Bitboard
         this.value = this.value | value;
     }
 
+    public void Remove(Bitboard bitboard) 
+    {
+        Remove(bitboard.value);
+    }
+
     public void Remove(ulong value) 
     {
         this.value = ~(~this.value | value);
