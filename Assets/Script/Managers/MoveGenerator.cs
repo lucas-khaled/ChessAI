@@ -221,7 +221,7 @@ public class MoveGenerator
 
         if (coord.row == kingCoord.row)
             rate = 1;
-        if (coord.column == kingCoord.column)
+        else if (coord.column == kingCoord.column)
             rate = 8;
         else
             rate = (delta % 9 == 0) ? 9 : 7;
