@@ -68,7 +68,7 @@ public class MoveGenerator
         {
             if (piece is King || IsPinned(piece)) continue;
 
-            var enPassantBitboard = (piece is Pawn && board.rules.enPassantTile is not null) ? board.rules.enPassantTile.Bitboard : new Bitboard(0);
+            var enPassantBitboard = (piece is Pawn && board.rules.enPassantTile is not null) ? board.rules.enPassantTile.Bitboard : new Bitboard();
             var validBitboard = piece.MovingSquares & (kingAttackersSquaresBitboard | inBetweenKingAndAttackersBitboard | enPassantBitboard);
 
             if (validBitboard <= 0) continue;
