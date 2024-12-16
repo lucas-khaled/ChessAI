@@ -248,7 +248,7 @@ public class MoveGenerator
         }
     }
 
-    private bool IsCheck()
+    public bool IsCheck()
     {
         return kingAttackers.Count > 0;
     }

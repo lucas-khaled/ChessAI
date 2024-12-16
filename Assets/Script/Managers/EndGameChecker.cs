@@ -25,17 +25,12 @@ public class EndGameChecker
     public EndGameInfo CheckEnd(Board board)
     {
         EndGameInfo info = new EndGameInfo();
-        if (IsCheckMate(board))
+        if (board.IsCheckMate)
             info.hasEnded = info.isCheckMate = true;
         else if (HasDraw(out info.drawType, board)) 
             info.hasEnded = true;
 
         return info;
-    }
-
-    public bool IsCheckMate(Board board) 
-    {
-        return manager.MoveChecker.IsCheckMate(board);
     }
 
     public bool HasDraw(Board board) 
@@ -78,7 +73,7 @@ public class EndGameChecker
 
     private bool IsStaleMateDraw(Board board)
     {
-        return manager.MoveChecker.HasAnyMove(board) is false;
+        return board.HasMoves is false && board.IsCheckMate is false;
     }
 
     private bool IsThreefoldDraw(Board board)

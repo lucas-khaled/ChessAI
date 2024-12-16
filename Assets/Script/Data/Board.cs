@@ -16,13 +16,15 @@ public class Board
 
     public string ActualHash;
 
-    public MoveGenerator moveGenerator;
+    public MoveGenerator moveGenerator { get; private set; }
     public List<Turn> turns { get; private set; } = new List<Turn>();
     public Turn LastTurn => turns.Count > 0 ? turns[turns.Count - 1] : new Turn();
     public PieceColor ActualTurn { get; private set; } = PieceColor.White;
     public FENManager FENManager { get; private set; }
 
     public List<Move> actualTurnMoves { get; private set; }
+    public bool IsCheckMate { get; private set; }
+    public bool HasMoves { get; private set; }
 
     public string Name { get; set; }
 
@@ -77,7 +79,11 @@ public class Board
         board.ActualHash = ActualHash;
         board.ActualTurn = ActualTurn;
         board.turns = turns;
+        
         board.actualTurnMoves = new List<Move>(actualTurnMoves);
+        board.HasMoves = HasMoves;
+        board.IsCheckMate = IsCheckMate;
+
         return board;
     }
 
@@ -159,5 +165,8 @@ public class Board
     {
         ActualTurn = color;
         actualTurnMoves = moveGenerator.GenerateMoves(color);
+
+        HasMoves = actualTurnMoves.Count > 0;
+        IsCheckMate = moveGenerator.IsCheck() && HasMoves is false;
     }
 }
