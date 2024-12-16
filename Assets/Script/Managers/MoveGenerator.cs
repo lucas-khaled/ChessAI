@@ -1,8 +1,5 @@
-using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class MoveGenerator
@@ -306,10 +303,12 @@ public class MoveGenerator
         {
             if (IsPinned(piece)) continue;
 
-            var blockFilteredMoves = new Bitboard(piece.MovingSquares.value);
-            blockFilteredMoves.Remove(piecesPositionBitboard);
+            var notBlockedMoves = new Bitboard(piece.MovingSquares.value);
+            notBlockedMoves.Remove(piecesPositionBitboard);
 
-            FillMovesFromPiece(moves, piece, blockFilteredMoves);
+            if (notBlockedMoves <= 0) continue;
+
+            FillMovesFromPiece(moves, piece, notBlockedMoves);
         }
 
         return moves;

@@ -16,10 +16,13 @@ public class Board
 
     public string ActualHash;
 
+    public MoveGenerator moveGenerator;
     public List<Turn> turns { get; private set; } = new List<Turn>();
     public Turn LastTurn => turns.Count > 0 ? turns[turns.Count - 1] : new Turn();
-    public PieceColor ActualTurn { get; set; } = PieceColor.White;
+    public PieceColor ActualTurn { get; private set; } = PieceColor.White;
     public FENManager FENManager { get; private set; }
+
+    public List<Move> actualTurnMoves { get; private set; }
 
     public string Name { get; set; }
 
@@ -32,6 +35,7 @@ public class Board
         events = new BoardEvents();
         rules = new EspecialRules(this);
         FENManager = new FENManager(this);
+        moveGenerator = new MoveGenerator(this);
     }
 
     public Board Copy()
@@ -70,9 +74,10 @@ public class Board
         board.tiles = virtualTiles;
         board.piecesHolder = pieces;
         board.rules = rules.Copy(board);
-        board.ActualTurn = ActualTurn;
         board.ActualHash = ActualHash;
+        board.ActualTurn = ActualTurn;
         board.turns = turns;
+        board.actualTurnMoves = new List<Move>(actualTurnMoves);
         return board;
     }
 
@@ -87,8 +92,6 @@ public class Board
         int row = (int)Math.Floor(division);
 
         int column = index - row * BoardColumnSize;
-
-        Debug.Log($"Row: {row} - Column: {column}");
 
         return tiles[row][column];
     }
@@ -150,5 +153,11 @@ public class Board
     public override string ToString()
     {
         return Name;
+    }
+
+    public void SetTurn(PieceColor color) 
+    {
+        ActualTurn = color;
+        actualTurnMoves = moveGenerator.GenerateMoves(color);
     }
 }

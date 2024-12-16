@@ -107,7 +107,10 @@ public class GameManager : MonoBehaviour, IGameManager
     private void ChooseSetup() 
     {
         if (string.IsNullOrEmpty(fen) || startWithFen is false)
+        {
             setup.SetInitialPieces();
+            GameBoard.SetTurn(PieceColor.White);
+        }
         else
         {
             GameBoard.FENManager.SetupByFEN(new FEN(fen), setup.InstantiatePiece, this);

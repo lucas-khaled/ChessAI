@@ -99,7 +99,7 @@ public class FENManager
 
     private void SetInitialColor(PieceColor color)
     {
-        board.ActualTurn = color;
+        board.SetTurn(color);
     }
 
     private void SetCastling(string castlingString)

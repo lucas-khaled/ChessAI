@@ -15,17 +15,15 @@ MonoBehaviour:
   whitePlayerInfo:
     rid: 8642854227372671028
   blackPlayerInfo:
-    rid: 8642854227372671033
+    rid: 5352729730512584704
   references:
     version: 2
     RefIds:
+    - rid: 5352729730512584704
+      type: {class: HumanPlayerInfo, ns: , asm: Assembly-CSharp}
+      data:
+        selected: 1
     - rid: 8642854227372671028
       type: {class: HumanPlayerInfo, ns: , asm: Assembly-CSharp}
       data:
         selected: 1
-    - rid: 8642854227372671033
-      type: {class: MinimaxPlayerInfo, ns: , asm: Assembly-CSharp}
-      data:
-        selected: 0
-        depth: 4
-        maxTimePerChoice: 60000
