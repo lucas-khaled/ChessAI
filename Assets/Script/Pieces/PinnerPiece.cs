@@ -52,8 +52,11 @@ public abstract class PinnerPiece : SlidingPieces
 
         if (hasKing) 
         {
-            Pinning = enemieInBetween;
-            Pinning.PinnedBy = this;
+            if (enemieInBetween != null)
+            {
+                Pinning = enemieInBetween;
+                Pinning.PinnedBy = this;
+            }
             return finalTiles;
         }
 
