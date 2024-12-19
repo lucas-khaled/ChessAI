@@ -79,8 +79,14 @@ public class BitboardSelector : MonoBehaviour
         switch (visualizationType)
         {
             case PieceVisualizationType.KingDanger:
-                tile.OccupiedBy.GenerateBitBoard();
-                boardVisualizer.SetBitBoard(tile.OccupiedBy.KingDangerSquares, kingDangerColor);
+                if (tile.OccupiedBy is not PinnerPiece pinner)
+                {
+                    boardVisualizer.SetBitBoard(new Bitboard(), kingDangerColor);
+                    return;
+                }
+
+                pinner.GenerateBitBoard();
+                boardVisualizer.SetBitBoard(pinner.KingDangerSquares, kingDangerColor);
                 break;
             
             case PieceVisualizationType.Attacking:

@@ -21,10 +21,10 @@ public abstract class Piece
     protected bool IsWhite => pieceColor == PieceColor.White;
 
     public Board Board { get; }
+    public Piece PinnedBy { get; set; }
 
     public Bitboard MovingSquares { get; set; } = new Bitboard();
     public Bitboard AttackingSquares { get; set; } = new Bitboard();
-    public Bitboard KingDangerSquares { get; set; } = new Bitboard();
 
     protected abstract void GenerateBitBoardMethod();
     public abstract Move[] GetMoves();
@@ -34,11 +34,11 @@ public abstract class Piece
         Board = board;
     }
 
-    public void GenerateBitBoard() 
+    public virtual void GenerateBitBoard() 
     {
+        PinnedBy = null;
         MovingSquares.Clear();
         AttackingSquares.Clear();
-        KingDangerSquares.Clear();
 
         GenerateBitBoardMethod();
     }

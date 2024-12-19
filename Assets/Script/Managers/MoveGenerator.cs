@@ -63,7 +63,7 @@ public class MoveGenerator
 
         foreach (var piece in board.GetAllPieces(actualColor))
         {
-            if (piece is King || IsPinned(piece)) continue;
+            if (piece is King || piece.PinnedBy != null) continue;
 
             var enPassantBitboard = (piece is Pawn && board.rules.enPassantTile is not null) ? board.rules.enPassantTile.Bitboard : new Bitboard();
             var validBitboard = piece.MovingSquares & (kingAttackersSquaresBitboard | inBetweenKingAndAttackersBitboard | enPassantBitboard);
@@ -156,11 +156,6 @@ public class MoveGenerator
                 ? queenSideCastleBlackBitboard : kingSideCastleBlackBitboard;
     }
 
-    private bool IsPinned(Piece piece) 
-    {
-        return (piece.GetTile().Bitboard & enemiesKingDangerSquares) > 0;
-    }
-
     private void Initialize(PieceColor color)
     {
         actualColor = color;
@@ -191,7 +186,9 @@ public class MoveGenerator
 
             piece.GenerateBitBoard();
             enemiesAttackingSquares.Add(piece.AttackingSquares);
-            enemiesKingDangerSquares.Add(piece.KingDangerSquares);
+
+            if(piece is PinnerPiece pinner)
+                enemiesKingDangerSquares.Add(pinner.KingDangerSquares);
 
             if ((piece.AttackingSquares & kingPiece.GetTile().Bitboard) > 0)
             {
@@ -244,7 +241,9 @@ public class MoveGenerator
 
             piece.GenerateBitBoard();
             attackingSquares.Add(piece.AttackingSquares);
-            kingDangerSquares.Add(piece.KingDangerSquares);
+
+            if(piece is PinnerPiece pinner)
+                kingDangerSquares.Add(pinner.KingDangerSquares);
         }
     }
 
@@ -301,14 +300,15 @@ public class MoveGenerator
         List<Move> moves = new();
         foreach (Piece piece in board.GetAllPieces(actualColor)) 
         {
-            if (IsPinned(piece)) continue;
+            var filteredMoves = new Bitboard(piece.MovingSquares.value);
+            filteredMoves.Remove(piecesPositionBitboard);
 
-            var notBlockedMoves = new Bitboard(piece.MovingSquares.value);
-            notBlockedMoves.Remove(piecesPositionBitboard);
+            if (filteredMoves <= 0) continue;
 
-            if (notBlockedMoves <= 0) continue;
+            if (piece.PinnedBy != null) 
+                filteredMoves &= (enemiesKingDangerSquares | piece.PinnedBy.GetTile().Bitboard);
 
-            FillMovesFromPiece(moves, piece, notBlockedMoves);
+            FillMovesFromPiece(moves, piece, filteredMoves);
         }
 
         return moves;

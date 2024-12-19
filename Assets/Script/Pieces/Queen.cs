@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-public class Queen : SlidingPieces
+public class Queen : PinnerPiece
 {
     public Queen(Board board) : base(board)
     {
@@ -42,15 +42,15 @@ public class Queen : SlidingPieces
 
         var topLeftDanger = GetKingDangerValidSegment(diagonals.topLeftDiagonals);
         if (topLeftDanger != null)
-            kingDangerTiles.AddRange(GetTilesFromCoordinates(diagonals.topLeftDiagonals));
+            kingDangerTiles.AddRange(topLeftDanger);
 
         var downRightDanger = GetKingDangerValidSegment(diagonals.downRightDiagonals);
         if (downRightDanger != null)
-            kingDangerTiles.AddRange(GetTilesFromCoordinates(diagonals.downRightDiagonals));
+            kingDangerTiles.AddRange(downRightDanger);
 
         var downLeftDanger = GetKingDangerValidSegment(diagonals.downLeftDiagonals);
         if (downLeftDanger != null)
-            kingDangerTiles.AddRange(GetTilesFromCoordinates(diagonals.downLeftDiagonals));
+            kingDangerTiles.AddRange(downLeftDanger);
 
         KingDangerSquares = AddTilesBitBoards(kingDangerTiles);
     }

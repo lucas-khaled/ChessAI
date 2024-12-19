@@ -122,29 +122,4 @@ public abstract class SlidingPieces : Piece
 
         return tiles;
     }
-
-    protected List<Tile> GetKingDangerValidSegment(List<TileCoordinates> segment) 
-    {
-        List<Tile> finalTiles = new();
-        bool hasKing = false;
-        int enemiesInBetween = 0;
-        foreach (var tileCoord in segment)
-        {
-            Tile tile = Board.tiles[tileCoord.row][tileCoord.column];
-            if (tile.IsOccupied && tile.OccupiedBy.pieceColor == pieceColor) break;
-
-            if (tile.IsOccupied)
-            {
-                if (tile.OccupiedBy is King)
-                    hasKing = true;
-
-                enemiesInBetween++;
-                if (enemiesInBetween > 1) break;
-            }
-
-            finalTiles.Add(tile);
-        }
-
-        return hasKing ? finalTiles : null;
-    }
 }
