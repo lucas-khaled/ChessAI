@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class TurnManager
 {
-    public GameManager Manager { get; }
+    public IGameManager Manager { get; }
 
-    public TurnManager(GameManager manager) 
+    public TurnManager(IGameManager manager) 
     {
         Manager = manager;
     }

@@ -10,14 +10,14 @@ public struct EndGameInfo
 
 public class EndGameChecker
 {
-    private GameManager manager;
+    private IGameManager manager;
 
-    public EndGameChecker(GameManager manager) 
+    public EndGameChecker(IGameManager manager) 
     {
         SetManager(manager);
     }
 
-    public void SetManager(GameManager manager) 
+    public void SetManager(IGameManager manager) 
     {
         this.manager = manager;
     }
