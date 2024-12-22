@@ -44,7 +44,13 @@ public class PerftManager : MonoBehaviour, IGameManager
     [ContextMenu("Perft it")]
     public async void DoPerft() 
     {
-        ulong nodes = await function.Perft(depth);
+        long nodes = await function.Perft(depth);
+        if(nodes <= 0)
+        {
+            Debug.LogWarning("Is already Perfiting. Wait for completion");
+            return;
+        }
+
         Debug.Log(nodes);
     }
 }

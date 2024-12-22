@@ -20,6 +20,7 @@ public class PerftFunction : MonoBehaviour
 
     private int currentDepth;
     private PieceColor currentColor;
+    private bool isPerfting;
 
     public void Initialize(Board board, PerftManager manager) 
     {
@@ -28,15 +29,24 @@ public class PerftFunction : MonoBehaviour
         this.manager = manager;
     }
 
-    public async Task<ulong> Perft(int depth) 
+    public async Task<long> Perft(int depth) 
     {
+        if (isPerfting)
+        {
+            return -1;
+        }
+
         InvokeRepeating("DoMoveTracking", 0, 0.1f);
 
+        isPerfting = true;
         currentColor = board.ActualTurn;
         currentDepth = depth;
-        ulong count = await Task.Run(PerftTask);
+
+        long count = await Task.Run(PerftTask);
 
         CancelInvoke("DoMoveTracking");
+        isPerfting = false;
+
         return count;
     }
 
@@ -56,12 +66,12 @@ public class PerftFunction : MonoBehaviour
         }
     }
 
-    private async Task<ulong> PerftTask() 
+    private async Task<long> PerftTask() 
     {
         return await Perft(currentDepth, currentColor);
     }
 
-    private async Task<ulong> Perft(int depth, PieceColor color) 
+    private async Task<long> Perft(int depth, PieceColor color) 
     {
         if (depth <= 0)
             return 1;
@@ -69,7 +79,7 @@ public class PerftFunction : MonoBehaviour
         var moves = generator.GenerateMoves(color);
         if (moves == null || moves.Count <= 0) return 1;
 
-        ulong nodes = 0;
+        long nodes = 0;
         foreach(var move in moves)
         {
             AddMoveToQueue(move);
