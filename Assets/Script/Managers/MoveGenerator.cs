@@ -252,7 +252,7 @@ public class MoveGenerator
         return kingAttackers.Count > 0;
     }
 
-    private bool IsDoubleCheck() 
+    public bool IsDoubleCheck() 
     {
         return kingAttackers.Count > 1;
     }

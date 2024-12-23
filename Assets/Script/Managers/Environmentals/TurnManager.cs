@@ -196,7 +196,7 @@ public class TurnManager
     private void SwapTurn(Board board)
     {
         var thisTurn = board.ActualTurn;
-        board.SetTurn((thisTurn == PieceColor.White) ? PieceColor.Black : PieceColor.White);
+        board.SetTurn(thisTurn.GetOppositeColor());
     }
 
     public void DebugAllTurns(Board board) 
