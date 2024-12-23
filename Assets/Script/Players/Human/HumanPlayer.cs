@@ -62,7 +62,7 @@ public class HumanPlayer : Player
 
     private void GetMoves() 
     {
-        actualPossibleMoves = manager.GameBoard.actualTurnMoves.Where(move => move.piece.Equals(selectedTile.OccupiedBy)).ToArray();
+        actualPossibleMoves = manager.GameBoard.currentTurnMoves.Where(move => move.piece.Equals(selectedTile.OccupiedBy)).ToArray();
 
         SetPossibleTilesMaterial(actualPossibleMoves);
     }

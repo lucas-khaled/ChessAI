@@ -32,16 +32,15 @@ public class TaskedPerftFunction : PerftFunction
 
     protected virtual async Task<long> Perft(int depth, Board board) 
     {
-        var moves = new List<Move>(board.actualTurnMoves);
+        var moves = new List<Move>(board.currentTurnMoves);
 
         if (depth == 1)
             return moves.Count;
 
-        long data = 0;
-
         if (moves == null || moves.Count <= 0)
             return 1;
 
+        long data = 0;
         foreach(var move in moves)
         {
             DoMove(move, board);

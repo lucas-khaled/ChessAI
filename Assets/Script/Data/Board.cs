@@ -22,7 +22,7 @@ public class Board
     public PieceColor ActualTurn { get; private set; } = PieceColor.White;
     public FENManager FENManager { get; private set; }
 
-    public List<Move> actualTurnMoves { get; private set; }
+    public List<Move> currentTurnMoves { get; private set; }
     public bool IsCheckMate { get; private set; }
     public bool HasMoves { get; private set; }
 
@@ -80,7 +80,7 @@ public class Board
         board.ActualTurn = ActualTurn;
         board.turns = turns;
         
-        board.actualTurnMoves = new List<Move>(actualTurnMoves);
+        board.currentTurnMoves = new List<Move>(currentTurnMoves);
         board.HasMoves = HasMoves;
         board.IsCheckMate = IsCheckMate;
 
@@ -164,9 +164,9 @@ public class Board
     public void SetTurn(PieceColor color) 
     {
         ActualTurn = color;
-        actualTurnMoves = moveGenerator.GenerateMoves(color);
+        currentTurnMoves = moveGenerator.GenerateMoves(color);
 
-        HasMoves = actualTurnMoves.Count > 0;
+        HasMoves = currentTurnMoves.Count > 0;
         IsCheckMate = moveGenerator.IsCheck() && HasMoves is false;
     }
 }
