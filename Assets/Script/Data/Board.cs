@@ -140,17 +140,7 @@ public class Board
 
     public Piece[] GetAllPieces(PieceColor pieceColor)
     {
-        List<Piece> pieces = new();
-        foreach (var tileList in tiles)
-        {
-            foreach (var tile in tileList)
-            {
-                if (tile.IsOccupied && tile.OccupiedBy.pieceColor == pieceColor)
-                    pieces.Add(tile.OccupiedBy);
-            }
-        }
-
-        return pieces.ToArray();
+        return pieceColor == PieceColor.White ? piecesHolder.whitePieces.ToArray() : piecesHolder.blackPieces.ToArray();
     }
 
     public void Clear()
