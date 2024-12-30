@@ -15,6 +15,7 @@ public abstract class PinnerPiece : SlidingPieces
     {
         PinningIndex = -1;
         KingDangerSquares.Clear();
+        PinSquares.Clear();
         base.GenerateBitBoard();
     }
 
@@ -59,7 +60,7 @@ public abstract class PinnerPiece : SlidingPieces
                 continue;
             }
 
-            if(enemieInBetweenIndex > -1)
+            if(enemieInBetweenIndex == -1)
                 kingDanger.Add(tile.Bitboard);
 
             if (hasKing is false)
