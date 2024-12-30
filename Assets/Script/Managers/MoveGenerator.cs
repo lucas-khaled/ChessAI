@@ -187,8 +187,23 @@ public class MoveGenerator
             piece.GenerateBitBoard();
             enemiesAttackingSquares.Add(piece.AttackingSquares);
 
-            if(piece is PinnerPiece pinner)
+            if (piece is PinnerPiece pinner)
+            {
                 enemiesKingDangerSquares.Add(pinner.KingDangerSquares);
+
+                int pinningIndex = pinner.PinningIndex;
+                if (pinningIndex > -1)
+                {
+                    var tile = board.GetTileByIndex(pinningIndex);
+                    if (tile.IsOccupied is false)
+                    {
+                        Debug.LogError($"A pin was indicated by {pinner} in {pinningIndex} but there was no piece");
+                        continue;
+                    }
+
+                    tile.OccupiedBy.PinnedBy = pinner;
+                }
+            }
 
             if ((piece.AttackingSquares & kingPiece.GetTile().Bitboard) > 0)
             {
@@ -242,8 +257,23 @@ public class MoveGenerator
             piece.GenerateBitBoard();
             attackingSquares.Add(piece.AttackingSquares);
 
-            if(piece is PinnerPiece pinner)
+            if (piece is PinnerPiece pinner)
+            {
                 kingDangerSquares.Add(pinner.KingDangerSquares);
+
+                int pinningIndex = pinner.PinningIndex;
+                if (pinningIndex > -1)
+                {
+                    var tile = board.GetTileByIndex(pinningIndex);
+                    if(tile.IsOccupied is false)
+                    {
+                        Debug.LogError($"A pin was indicated by {pinner} in {pinningIndex} but there was no piece");
+                        continue;
+                    }
+
+                    tile.OccupiedBy.PinnedBy = pinner;
+                }
+            }
         }
     }
 

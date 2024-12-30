@@ -65,6 +65,33 @@ public class Bitboard
         return indexes;
     }
 
+    public string ToVisualString() 
+    {
+        string final = string.Empty;
+        string rowString = string.Empty;
+        for(int i = 0; i <= 63; i++) 
+        {
+            var bitBoard = new Bitboard(i);
+            string tile = (this & bitBoard) > 0 ? "x|" : " |";
+            
+            int mod = i % 8;
+            if (mod == 0)
+                tile = "|" + tile;
+
+            rowString += tile;
+
+            if (mod == 7) 
+            {
+                final = rowString + "\n" + final;
+                rowString = string.Empty;
+            }
+        }
+
+        final = "\n" + final;
+        final += "\n";
+        return final;
+    }
+
     public static Bitboard operator &(Bitboard a, Bitboard b) => new Bitboard(a.value & b.value);
     public static Bitboard operator |(Bitboard a, Bitboard b) => new Bitboard(a.value | b.value);
     public static bool operator >(Bitboard a, Bitboard b) => a.value > b.value;

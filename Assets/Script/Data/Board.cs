@@ -74,13 +74,21 @@ public class Board
         }
 
         board.tiles = virtualTiles;
+
+        board.currentTurnMoves = new List<Move>();
+        for (int i = 0; i<currentTurnMoves.Count; i++) 
+        {
+            var move = currentTurnMoves[i].VirtualizeTo(board);
+            board.currentTurnMoves.Add(move);
+        }
+
         board.piecesHolder = pieces;
         board.rules = rules.Copy(board);
         board.ActualHash = ActualHash;
         board.ActualTurn = ActualTurn;
         board.turns = turns;
         
-        board.currentTurnMoves = new List<Move>(currentTurnMoves);
+        
         board.HasMoves = HasMoves;
         board.IsCheckMate = IsCheckMate;
 

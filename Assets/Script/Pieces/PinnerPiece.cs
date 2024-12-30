@@ -5,7 +5,7 @@ public abstract class PinnerPiece : SlidingPieces
 {
     public Bitboard KingDangerSquares { get; protected set; } = new Bitboard();
     public Bitboard PinSquares { get; protected set; } = new Bitboard();
-    public Piece Pinning { get; protected set; }
+    public int PinningIndex { get; protected set; }
 
     protected PinnerPiece(Board board) : base(board)
     {
@@ -13,7 +13,7 @@ public abstract class PinnerPiece : SlidingPieces
 
     public override void GenerateBitBoard()
     {
-        Pinning = null;
+        PinningIndex = -1;
         KingDangerSquares.Clear();
         base.GenerateBitBoard();
     }
@@ -24,7 +24,7 @@ public abstract class PinnerPiece : SlidingPieces
         Bitboard pinSquares = new();
         bool hasKing = false;
         bool hasPin = false;
-        Piece enemieInBetween = null;
+        int enemieInBetweenIndex = -1;
 
         foreach (var tileCoord in segment)
         {
@@ -38,7 +38,7 @@ public abstract class PinnerPiece : SlidingPieces
                 if (tile.OccupiedBy is King)
                 {
                     hasKing = true;
-                    hasPin = enemieInBetween != null;
+                    hasPin = enemieInBetweenIndex > -1;
 
                     if (hasPin)
                         break;
@@ -47,19 +47,19 @@ public abstract class PinnerPiece : SlidingPieces
                     continue;
                 }
 
-                if (enemieInBetween != null)
+                if (enemieInBetweenIndex > -1)
                 {
                     hasPin = false;
                     break;
                 }
 
-                enemieInBetween = tile.OccupiedBy;
+                enemieInBetweenIndex = tile.Index;
                 kingDanger.Add(tile.Bitboard);
                 pinSquares.Add(tile.Bitboard);
                 continue;
             }
 
-            if(enemieInBetween == null)
+            if(enemieInBetweenIndex > -1)
                 kingDanger.Add(tile.Bitboard);
 
             if (hasKing is false)
@@ -80,8 +80,7 @@ public abstract class PinnerPiece : SlidingPieces
             KingDangerSquares.Add(kingDanger);
             if (hasPin)
             {
-                Pinning = enemieInBetween;
-                Pinning.PinnedBy = this;
+                PinningIndex = enemieInBetweenIndex;
                 PinSquares.Add(pinSquares);
             }
         }
