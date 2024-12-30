@@ -8,6 +8,7 @@ public class BitboardSelector : MonoBehaviour
     enum PieceVisualizationType 
     {
         KingDanger,
+        PinSquares,
         Attacking,
         AspiredMove,
         ValidMove
@@ -26,6 +27,7 @@ public class BitboardSelector : MonoBehaviour
     [Header("Colors")]
     [SerializeField] private Color attackingColor = Color.red;
     [SerializeField] private Color kingDangerColor = Color.magenta;
+    [SerializeField] private Color pinSquaresColor = Color.blue;
     [SerializeField] private Color movesColor = Color.green;
     [SerializeField] private Color selectedPieceColor = Color.yellow;
 
@@ -87,6 +89,17 @@ public class BitboardSelector : MonoBehaviour
 
                 pinner.GenerateBitBoard();
                 boardVisualizer.SetBitBoard(pinner.KingDangerSquares, kingDangerColor);
+                break;
+
+            case PieceVisualizationType.PinSquares:
+                if (tile.OccupiedBy is not PinnerPiece pinner2)
+                {
+                    boardVisualizer.SetBitBoard(new Bitboard(), pinSquaresColor);
+                    return;
+                }
+
+                pinner2.GenerateBitBoard();
+                boardVisualizer.SetBitBoard(pinner2.PinSquares, pinSquaresColor);
                 break;
             
             case PieceVisualizationType.Attacking:

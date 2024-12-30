@@ -14,28 +14,13 @@ public class Rook : PinnerPiece
 
     private void GenerateKingDangerBitBoard()
     {
-        List<Tile> kingDangerTiles = new List<Tile>();
-        
         var verticals = actualTile.GetVerticalsByColor(pieceColor);
         var horizontals = actualTile.GetHorizontalsByColor(pieceColor);
 
-        var backVerticalDanger = GetKingDangerValidSegment(verticals.backVerticals);
-        if(backVerticalDanger != null)
-            kingDangerTiles.AddRange(backVerticalDanger);
-
-        var frontVerticalDanger = GetKingDangerValidSegment(verticals.frontVerticals);
-        if (frontVerticalDanger != null)
-            kingDangerTiles.AddRange(frontVerticalDanger);
-
-        var leftHorizontalDanger = GetKingDangerValidSegment(horizontals.leftHorizontals);
-        if (leftHorizontalDanger != null)
-            kingDangerTiles.AddRange(leftHorizontalDanger);
-
-        var rightHorizontalDanger = GetKingDangerValidSegment(horizontals.rightHorizontals);
-        if (rightHorizontalDanger != null)
-            kingDangerTiles.AddRange(rightHorizontalDanger);
-
-        KingDangerSquares = AddTilesBitBoards(kingDangerTiles);
+        GeneratePinAndKingDangerBySegment(verticals.backVerticals);
+        GeneratePinAndKingDangerBySegment(verticals.frontVerticals);
+        GeneratePinAndKingDangerBySegment(horizontals.leftHorizontals);
+        GeneratePinAndKingDangerBySegment(horizontals.rightHorizontals);
     }
 
     private void GenerateAttackingSquaresBitBoard() 

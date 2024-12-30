@@ -40,7 +40,7 @@ public class MinimaxAI : AIPlayer
         var beta = float.MaxValue;
         evalCount = 0;
 
-        var unsortedMoves = board.actualTurnMoves;
+        var unsortedMoves = board.currentTurnMoves;
         var moves = SortMoves(unsortedMoves);
 
         Debug.Log($"Evaluating {moves.Count} moves");
@@ -57,6 +57,7 @@ public class MinimaxAI : AIPlayer
                 if (timeLimit > 0 && timeLimitChecker.ElapsedMilliseconds >= timeLimit)
                     break;
 
+                evalCount++;
                 manager.TurnManager.DoMove(move, board);
 
                 float score = 0;
@@ -123,6 +124,7 @@ public class MinimaxAI : AIPlayer
 
     private float Minimax(PieceColor color, int depth, float alpha, float beta) 
     {
+        evalCount++;
         var board = manager.TestBoard;
         bool isMaximize = color == PieceColor.White;
 
@@ -135,13 +137,11 @@ public class MinimaxAI : AIPlayer
         if (depth == 0) 
         {
             float heuristicValue = heuristic.GetHeuristic(board);
-
-            evalCount++;
             return heuristicValue;
         }
 
         float bestScore = isMaximize ? float.MinValue : float.MaxValue;
-        var moves = SortMoves(board.actualTurnMoves);
+        var moves = SortMoves(board.currentTurnMoves);
         foreach (var move in moves) 
         {
             if (timeLimit > 0 && timeLimitChecker.ElapsedMilliseconds >= timeLimit)

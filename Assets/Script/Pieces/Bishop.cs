@@ -14,27 +14,12 @@ public class Bishop : PinnerPiece
 
     private void GenerateKingDangerBitBoard()
     {
-        List<Tile> kingDangerTiles = new List<Tile>();
-
         var diagonals = actualTile.GetDiagonalsByColor(pieceColor);
 
-        var topRightDanger = GetKingDangerValidSegment(diagonals.topRightDiagonals);
-        if(topRightDanger != null)
-            kingDangerTiles.AddRange(topRightDanger);
-
-        var topLeftDanger = GetKingDangerValidSegment(diagonals.topLeftDiagonals);
-        if(topLeftDanger != null)
-            kingDangerTiles.AddRange(topLeftDanger);
-
-        var downRightDanger = GetKingDangerValidSegment(diagonals.downRightDiagonals);
-        if(downRightDanger != null)
-            kingDangerTiles.AddRange(downRightDanger);
-
-        var downLeftDanger = GetKingDangerValidSegment(diagonals.downLeftDiagonals);
-        if(downLeftDanger != null)
-            kingDangerTiles.AddRange(downLeftDanger);
-
-        KingDangerSquares = AddTilesBitBoards(kingDangerTiles);
+        GeneratePinAndKingDangerBySegment(diagonals.topRightDiagonals);
+        GeneratePinAndKingDangerBySegment(diagonals.topLeftDiagonals);
+        GeneratePinAndKingDangerBySegment(diagonals.downRightDiagonals);
+        GeneratePinAndKingDangerBySegment(diagonals.downLeftDiagonals);
     }
 
     private void GenerateAttackingSquaresBitBoard()

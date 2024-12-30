@@ -14,5 +14,5 @@ public abstract class PerftFunction : MonoBehaviour
         this.manager = manager;
     }
 
-    public abstract Task<long> Perft(int depth);
+    public abstract Task<long> Perft(int depth, bool divide = true);
 }

@@ -14,45 +14,18 @@ public class Queen : PinnerPiece
 
     private void GenerateKingDangerBitBoard()
     {
-        List<Tile> kingDangerTiles = new List<Tile>();
-
         var diagonals = actualTile.GetDiagonalsByColor(pieceColor);
         var verticals = actualTile.GetVerticalsByColor(pieceColor);
         var horizontals = actualTile.GetHorizontalsByColor(pieceColor);
 
-        var backVerticalDanger = GetKingDangerValidSegment(verticals.backVerticals);
-        if (backVerticalDanger != null)
-            kingDangerTiles.AddRange(backVerticalDanger);
-
-        var frontVerticalDanger = GetKingDangerValidSegment(verticals.frontVerticals);
-        if (frontVerticalDanger != null)
-            kingDangerTiles.AddRange(frontVerticalDanger);
-
-        var leftHorizontalDanger = GetKingDangerValidSegment(horizontals.leftHorizontals);
-        if (leftHorizontalDanger != null)
-            kingDangerTiles.AddRange(leftHorizontalDanger);
-
-        var rightHorizontalDanger = GetKingDangerValidSegment(horizontals.rightHorizontals);
-        if (rightHorizontalDanger != null)
-            kingDangerTiles.AddRange(rightHorizontalDanger);
-
-        var topRightDanger = GetKingDangerValidSegment(diagonals.topRightDiagonals);
-        if (topRightDanger != null)
-            kingDangerTiles.AddRange(topRightDanger);
-
-        var topLeftDanger = GetKingDangerValidSegment(diagonals.topLeftDiagonals);
-        if (topLeftDanger != null)
-            kingDangerTiles.AddRange(topLeftDanger);
-
-        var downRightDanger = GetKingDangerValidSegment(diagonals.downRightDiagonals);
-        if (downRightDanger != null)
-            kingDangerTiles.AddRange(downRightDanger);
-
-        var downLeftDanger = GetKingDangerValidSegment(diagonals.downLeftDiagonals);
-        if (downLeftDanger != null)
-            kingDangerTiles.AddRange(downLeftDanger);
-
-        KingDangerSquares = AddTilesBitBoards(kingDangerTiles);
+        GeneratePinAndKingDangerBySegment(verticals.backVerticals);
+        GeneratePinAndKingDangerBySegment(verticals.frontVerticals);
+        GeneratePinAndKingDangerBySegment(horizontals.leftHorizontals);
+        GeneratePinAndKingDangerBySegment(horizontals.rightHorizontals);
+        GeneratePinAndKingDangerBySegment(diagonals.topRightDiagonals);
+        GeneratePinAndKingDangerBySegment(diagonals.topLeftDiagonals);
+        GeneratePinAndKingDangerBySegment(diagonals.downRightDiagonals);
+        GeneratePinAndKingDangerBySegment(diagonals.downLeftDiagonals);
     }
 
     private void GenerateAttackingSquaresBitBoard()

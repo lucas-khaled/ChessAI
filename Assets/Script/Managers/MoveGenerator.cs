@@ -306,7 +306,7 @@ public class MoveGenerator
             if (filteredMoves <= 0) continue;
 
             if (piece.PinnedBy != null) 
-                filteredMoves &= (enemiesKingDangerSquares | piece.PinnedBy.GetTile().Bitboard);
+                filteredMoves &= (piece.PinnedBy.PinSquares | piece.PinnedBy.GetTile().Bitboard);
 
             FillMovesFromPiece(moves, piece, filteredMoves);
         }

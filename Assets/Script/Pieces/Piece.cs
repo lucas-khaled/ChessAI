@@ -21,7 +21,7 @@ public abstract class Piece
     protected bool IsWhite => pieceColor == PieceColor.White;
 
     public Board Board { get; }
-    public Piece PinnedBy { get; set; }
+    public PinnerPiece PinnedBy { get; set; }
 
     public Bitboard MovingSquares { get; set; } = new Bitboard();
     public Bitboard AttackingSquares { get; set; } = new Bitboard();
