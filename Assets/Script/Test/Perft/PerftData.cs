@@ -34,7 +34,8 @@ public struct PerftData
             promotions = a.promotions + b.promotions,
             checks = a.checks + b.checks,
             checkmates = a.checkmates + b.checkmates,
-            doubleChecks = a.doubleChecks + b.doubleChecks
+            doubleChecks = a.doubleChecks + b.doubleChecks,
+            divideDict = (a.divideDict == null) ? b.divideDict : a.divideDict
         };
     }
 

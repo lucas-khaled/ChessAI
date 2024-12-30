@@ -470,7 +470,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   boardStarter: {fileID: 1968134898}
   FEN: rnbq1k1r/pp1Pbppp/2p5/8/2B5/8/PPP1NnPP/RNBQK2R w KQ - 1 8
-  depth: 2
+  depth: 3
   results: {fileID: 11400000, guid: 7d368177f64036f46b342a6dfc2463af, type: 2}
 --- !u!114 &1968134903
 MonoBehaviour:
