@@ -12,8 +12,6 @@ public class TaskedPerftFunction : PerftFunction
     protected bool isPerfting;
     protected bool divide;
 
-    protected Dictionary<string, long> divideDict = new Dictionary<string, long>();
-
     private Stopwatch doMoveTimer = new();
     private Stopwatch undoMoveTimer = new();
     private Stopwatch perftTimer = new();
@@ -30,7 +28,6 @@ public class TaskedPerftFunction : PerftFunction
         undoMoveTimer.Reset();
 
         this.divide = divide;
-        divideDict.Clear();
 
         isPerfting = true;
         currentDepth = depth;
@@ -59,20 +56,17 @@ public class TaskedPerftFunction : PerftFunction
             $"Undo time: {medianUndoTime}ms\n");
 
         if (divide)
-        {
-            DebugDivide();
-            result.divideDict = new Dictionary<string, long>(divideDict);
-        }
+            DebugDivide(result);
 
         return result;
     }
 
-    private void DebugDivide()
+    private void DebugDivide(PerftData result)
     {
         string debugString = string.Empty;
-        foreach(var keyValuePair in divideDict) 
+        foreach(var divide in result.divideDict) 
         {
-            debugString += $"{keyValuePair.Key}: {keyValuePair.Value}\n";
+            debugString += $"{divide.move}: {divide.nodeCount}\n";
         }
 
         UnityEngine.Debug.Log("Divide:\n"+debugString);
@@ -83,12 +77,7 @@ public class TaskedPerftFunction : PerftFunction
         var moves = new List<Move>(board.currentTurnMoves);
 
         if (depth == 1)
-        {
-            return new PerftData()
-            {
-                nodes = moves.Count
-            };
-        }
+            return new PerftData(moves.Count);
 
         if (moves == null || moves.Count <= 0)
             return PerftData.Single;
@@ -127,7 +116,7 @@ public class TaskedPerftFunction : PerftFunction
             undoMoveTimer.Stop();
 
             if(divide && currentDepth == depth) 
-                divideDict.Add(move.ToUCI(), moveNodeCount.nodes);
+                data.divideDict.Add(new PerftDivide(move.ToUCI(), moveNodeCount.nodes));
 
         }
 

@@ -1,0 +1,210 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8767f4b035f9358499624e147ddbbccb, type: 3}
+  m_Name: Results
+  m_EditorClassIdentifier: 
+  baseText: {fileID: 4900000, guid: 2468d8c134dc2e44c936e9f7ccfcd0e1, type: 3}
+  results:
+  - fenPosition: rnbq1k1r/pp1Pbppp/2p5/8/2B5/8/PPP1NnPP/RNBQK2R w KQ - 1 8
+    depthData:
+    - depth: 1
+      data:
+        nodes: 44
+        captures: 0
+        castles: 0
+        promotions: 0
+        checks: 0
+        checkmates: 0
+        doubleChecks: 0
+        divideDict:
+        - move: a2a3
+          nodeCount: 34
+        - move: b2b3
+          nodeCount: 34
+        - move: c2c3
+          nodeCount: 34
+        - move: g2g3
+          nodeCount: 34
+        - move: h2h3
+          nodeCount: 34
+        - move: a2a4
+          nodeCount: 34
+        - move: b2b4
+          nodeCount: 33
+        - move: g2g4
+          nodeCount: 34
+        - move: h2h4
+          nodeCount: 34
+        - move: d7c8q
+          nodeCount: 31
+        - move: d7c8r
+          nodeCount: 31
+        - move: d7c8b
+          nodeCount: 41
+        - move: d7c8n
+          nodeCount: 41
+        - move: b1d2
+          nodeCount: 34
+        - move: b1a3
+          nodeCount: 34
+        - move: b1c3
+          nodeCount: 34
+        - move: e2g1
+          nodeCount: 34
+        - move: e2c3
+          nodeCount: 34
+        - move: e2g3
+          nodeCount: 34
+        - move: e2d4
+          nodeCount: 34
+        - move: c1d2
+          nodeCount: 34
+        - move: c1e3
+          nodeCount: 34
+        - move: c1f4
+          nodeCount: 34
+        - move: c1g5
+          nodeCount: 32
+        - move: c1h6
+          nodeCount: 31
+        - move: c4b3
+          nodeCount: 34
+        - move: c4d3
+          nodeCount: 34
+        - move: c4b5
+          nodeCount: 34
+        - move: c4d5
+          nodeCount: 35
+        - move: c4a6
+          nodeCount: 33
+        - move: c4e6
+          nodeCount: 35
+        - move: c4f7
+          nodeCount: 32
+        - move: h1f1
+          nodeCount: 34
+        - move: h1g1
+          nodeCount: 34
+        - move: d1d2
+          nodeCount: 34
+        - move: d1d3
+          nodeCount: 34
+        - move: d1d4
+          nodeCount: 34
+        - move: d1d5
+          nodeCount: 35
+        - move: d1d6
+          nodeCount: 28
+        - move: e1f1
+          nodeCount: 34
+        - move: e1d2
+          nodeCount: 34
+        - move: e1f2
+          nodeCount: 28
+        - move: e1g1
+          nodeCount: 34
+    - depth: 2
+      data:
+        nodes: 1486
+        captures: 0
+        castles: 0
+        promotions: 0
+        checks: 0
+        checkmates: 0
+        doubleChecks: 0
+        divideDict:
+        - move: a2a3
+          nodeCount: 34
+        - move: b2b3
+          nodeCount: 34
+        - move: c2c3
+          nodeCount: 34
+        - move: g2g3
+          nodeCount: 34
+        - move: h2h3
+          nodeCount: 34
+        - move: a2a4
+          nodeCount: 34
+        - move: b2b4
+          nodeCount: 33
+        - move: g2g4
+          nodeCount: 34
+        - move: h2h4
+          nodeCount: 34
+        - move: d7c8q
+          nodeCount: 31
+        - move: d7c8r
+          nodeCount: 31
+        - move: d7c8b
+          nodeCount: 41
+        - move: d7c8n
+          nodeCount: 41
+        - move: b1d2
+          nodeCount: 34
+        - move: b1a3
+          nodeCount: 34
+        - move: b1c3
+          nodeCount: 34
+        - move: e2g1
+          nodeCount: 34
+        - move: e2c3
+          nodeCount: 34
+        - move: e2g3
+          nodeCount: 34
+        - move: e2d4
+          nodeCount: 34
+        - move: c1d2
+          nodeCount: 34
+        - move: c1e3
+          nodeCount: 34
+        - move: c1f4
+          nodeCount: 34
+        - move: c1g5
+          nodeCount: 32
+        - move: c1h6
+          nodeCount: 31
+        - move: c4b3
+          nodeCount: 34
+        - move: c4d3
+          nodeCount: 34
+        - move: c4b5
+          nodeCount: 34
+        - move: c4d5
+          nodeCount: 35
+        - move: c4a6
+          nodeCount: 33
+        - move: c4e6
+          nodeCount: 35
+        - move: c4f7
+          nodeCount: 32
+        - move: h1f1
+          nodeCount: 34
+        - move: h1g1
+          nodeCount: 34
+        - move: d1d2
+          nodeCount: 34
+        - move: d1d3
+          nodeCount: 34
+        - move: d1d4
+          nodeCount: 34
+        - move: d1d5
+          nodeCount: 35
+        - move: d1d6
+          nodeCount: 28
+        - move: e1f1
+          nodeCount: 34
+        - move: e1d2
+          nodeCount: 34
+        - move: e1f2
+          nodeCount: 28
+        - move: e1g1
+          nodeCount: 34

@@ -1,5 +1,7 @@
+using System;
 using System.Collections.Generic;
 
+[Serializable]
 public struct PerftData 
 {
     public long nodes;
@@ -9,19 +11,24 @@ public struct PerftData
     public long checks;
     public long checkmates;
     public long doubleChecks;
-    public Dictionary<string, long> divideDict;
+    public List<PerftDivide> divideDict;
 
-    public static PerftData Empty => new PerftData() { nodes = 0};
-    public static PerftData Single => new PerftData() { nodes = 1 }; 
-    public static PerftData NotValid => new PerftData() { nodes = -1 };
+    public static PerftData Empty => new PerftData(0);
+    public static PerftData Single => new PerftData(1);
+    public static PerftData NotValid => new PerftData(-1);
 
     public bool IsValid() => nodes >= 0;
 
+    public PerftData(long nodes) : this()
+    {
+        divideDict = new();
+        this.nodes = nodes;
+    }
+
     public static PerftData operator +(PerftData a, PerftData b)
     {
-        return new PerftData()
+        return new PerftData(a.nodes + b.nodes)
         {
-            nodes = a.nodes + b.nodes,
             captures = a.captures + b.captures,
             castles = a.castles + b.castles,
             promotions = a.promotions + b.promotions,
@@ -40,5 +47,18 @@ public struct PerftData
             $"Checks: {checks}\n" +
             $"Double Checks: {doubleChecks}\n" +
             $"Checkmates: {checkmates}\n";
+    }
+}
+
+[Serializable]
+public struct PerftDivide 
+{
+    public string move;
+    public long nodeCount;
+
+    public PerftDivide(string move, long nodeCount)
+    {
+        this.move = move;
+        this.nodeCount = nodeCount;
     }
 }
