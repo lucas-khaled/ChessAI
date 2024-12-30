@@ -7,6 +7,7 @@ public class PerftManager : MonoBehaviour, IGameManager
     [SerializeField] private BoardStarter boardStarter;
     [SerializeField] private string FEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
     [SerializeField] [Min(1)] private int depth = 1;
+    [SerializeField]
 
     public Board GameBoard { get; private set; }
     public Board TestBoard { get; private set; }
@@ -34,8 +35,10 @@ public class PerftManager : MonoBehaviour, IGameManager
     {
         GameBoard = boardStarter.StartNewBoard();
         GameBoard.FENManager.SetupByFEN(new FEN(FEN), piecesSetup.InstantiatePiece, this);
+        GameBoard.Name = "GameBoard";
 
         TestBoard = GameBoard.Copy();
+        TestBoard.Name = "TestBoard";
 
         TurnManager = new TurnManager(this);
         EndGameChecker = new EndGameChecker(this);
@@ -48,7 +51,7 @@ public class PerftManager : MonoBehaviour, IGameManager
     {
         var depth = this.depth;
         var data = await function.Perft(depth);
-        if (data < 0)//(data == null)
+        if (data.IsValid() is false)
         {
             Debug.LogWarning("Is already Perfiting. Wait for completion");
             return;

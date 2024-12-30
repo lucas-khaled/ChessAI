@@ -1,4 +1,6 @@
-public class PerftData 
+using System.Collections.Generic;
+
+public struct PerftData 
 {
     public long nodes;
     public long captures;
@@ -7,8 +9,13 @@ public class PerftData
     public long checks;
     public long checkmates;
     public long doubleChecks;
+    public Dictionary<string, long> divideDict;
 
-    public static PerftData Empty => new PerftData() { nodes = 1};
+    public static PerftData Empty => new PerftData() { nodes = 0};
+    public static PerftData Single => new PerftData() { nodes = 1 }; 
+    public static PerftData NotValid => new PerftData() { nodes = -1 };
+
+    public bool IsValid() => nodes >= 0;
 
     public static PerftData operator +(PerftData a, PerftData b)
     {

@@ -24,4 +24,26 @@ public class PromotionMove : Move
             $"\n - Capturing Piece {capture}"+
             $"\n - Promoting to {promoteTo}";
     }
+
+    public override string ToUCI()
+    {
+        return base.ToUCI()+GetUCIOfPromotedPiece();
+    }
+
+    private string GetUCIOfPromotedPiece() 
+    {
+        if (promoteTo is Queen)
+            return "q";
+
+        if (promoteTo is Rook)
+            return "r";
+
+        if (promoteTo is Bishop)
+            return "b";
+
+        if (promoteTo is Knight)
+            return "n";
+
+        return "";
+    }
 }
