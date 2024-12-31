@@ -77,7 +77,16 @@ public class TaskedPerftFunction : PerftFunction
         var moves = new List<Move>(board.currentTurnMoves);
 
         if (depth == 1)
-            return new PerftData(moves.Count);
+        {
+            PerftData returnData = new PerftData(moves.Count);
+            if (depth == currentDepth)
+            {
+                foreach(Move move in moves)
+                    returnData.divideDict.Add(new PerftDivide(move.ToUCI(), 1));
+            }
+
+            return returnData;
+        }
 
         if (moves == null || moves.Count <= 0)
             return PerftData.Single;

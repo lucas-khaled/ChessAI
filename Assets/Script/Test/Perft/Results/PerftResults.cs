@@ -9,27 +9,8 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "Chess/Perft/Reuslts")]
 public class PerftResults : ScriptableObject
 {
-    [SerializeField] private TextAsset baseText;
-    [SerializeField] private List<ResultData> results;
-
-    [ContextMenu("Fill from Text")]
-    public void ReadText() 
-    {
-        if (baseText == null) return;
-
-        results = JsonConvert.DeserializeObject<List<ResultData>>(baseText.text);
-    }
-
-    [ContextMenu("Fill Text from object")]
-    public void WriteText() 
-    {
-        if (baseText == null) return;
-
-        string json = JsonConvert.SerializeObject(results, Formatting.Indented);
-        string path = AssetDatabase.GetAssetPath(baseText);
-
-        File.WriteAllText(path, json);
-    }
+    [HideInInspector] public TextAsset baseText;
+    [SerializeField] public List<ResultData> results;
 
     public ResultData GetByFEN(string fen) 
     {

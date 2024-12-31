@@ -1112,8 +1112,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   uiManager: {fileID: 63526791}
-  fen: rnbq1k1r/pp1Pbppp/2p5/8/2B5/8/PPP1NnPP/RNBQK2R w KQ - 1 8
-  startWithFen: 0
+  fen: 'rnbq1k1r/pp1Pbppp/2p5/8/2B5/8/PPP1NnPP/RNBQK2R w KQ - 1 8  '
+  startWithFen: 1
   playersConfig: {fileID: 11400000, guid: b904c340980b78e4187b2dbeb29bdcc3, type: 2}
 --- !u!114 &1722630695
 MonoBehaviour:

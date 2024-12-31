@@ -573,5 +573,216 @@
         }
       }
     ]
+  },
+  {
+    "fenPosition": "r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 0",
+    "depthData": [
+      {
+        "depth": 2,
+        "data": {
+          "nodes": 2039,
+          "captures": 351,
+          "castles": 91,
+          "promotions": 0,
+          "checks": 3,
+          "checkmates": 0,
+          "doubleChecks": 0,
+          "divideDict": [
+            {
+              "move": "a2a3",
+              "nodeCount": 44
+            },
+            {
+              "move": "b2b3",
+              "nodeCount": 42
+            },
+            {
+              "move": "g2g3",
+              "nodeCount": 42
+            },
+            {
+              "move": "d5d6",
+              "nodeCount": 41
+            },
+            {
+              "move": "a2a4",
+              "nodeCount": 44
+            },
+            {
+              "move": "g2g4",
+              "nodeCount": 42
+            },
+            {
+              "move": "g2h3",
+              "nodeCount": 43
+            },
+            {
+              "move": "d5e6",
+              "nodeCount": 46
+            },
+            {
+              "move": "c3b1",
+              "nodeCount": 42
+            },
+            {
+              "move": "c3d1",
+              "nodeCount": 42
+            },
+            {
+              "move": "c3a4",
+              "nodeCount": 42
+            },
+            {
+              "move": "c3b5",
+              "nodeCount": 39
+            },
+            {
+              "move": "e5d3",
+              "nodeCount": 43
+            },
+            {
+              "move": "e5c4",
+              "nodeCount": 42
+            },
+            {
+              "move": "e5g4",
+              "nodeCount": 44
+            },
+            {
+              "move": "e5c6",
+              "nodeCount": 41
+            },
+            {
+              "move": "e5g6",
+              "nodeCount": 42
+            },
+            {
+              "move": "e5d7",
+              "nodeCount": 45
+            },
+            {
+              "move": "e5f7",
+              "nodeCount": 44
+            },
+            {
+              "move": "d2c1",
+              "nodeCount": 43
+            },
+            {
+              "move": "d2e3",
+              "nodeCount": 43
+            },
+            {
+              "move": "d2f4",
+              "nodeCount": 43
+            },
+            {
+              "move": "d2g5",
+              "nodeCount": 42
+            },
+            {
+              "move": "d2h6",
+              "nodeCount": 41
+            },
+            {
+              "move": "e2d1",
+              "nodeCount": 44
+            },
+            {
+              "move": "e2f1",
+              "nodeCount": 44
+            },
+            {
+              "move": "e2d3",
+              "nodeCount": 42
+            },
+            {
+              "move": "e2c4",
+              "nodeCount": 41
+            },
+            {
+              "move": "e2b5",
+              "nodeCount": 39
+            },
+            {
+              "move": "e2a6",
+              "nodeCount": 36
+            },
+            {
+              "move": "a1b1",
+              "nodeCount": 43
+            },
+            {
+              "move": "a1c1",
+              "nodeCount": 43
+            },
+            {
+              "move": "a1d1",
+              "nodeCount": 43
+            },
+            {
+              "move": "h1f1",
+              "nodeCount": 43
+            },
+            {
+              "move": "h1g1",
+              "nodeCount": 43
+            },
+            {
+              "move": "f3d3",
+              "nodeCount": 42
+            },
+            {
+              "move": "f3e3",
+              "nodeCount": 43
+            },
+            {
+              "move": "f3g3",
+              "nodeCount": 43
+            },
+            {
+              "move": "f3h3",
+              "nodeCount": 43
+            },
+            {
+              "move": "f3f4",
+              "nodeCount": 43
+            },
+            {
+              "move": "f3g4",
+              "nodeCount": 43
+            },
+            {
+              "move": "f3f5",
+              "nodeCount": 45
+            },
+            {
+              "move": "f3h5",
+              "nodeCount": 43
+            },
+            {
+              "move": "f3f6",
+              "nodeCount": 39
+            },
+            {
+              "move": "e1d1",
+              "nodeCount": 43
+            },
+            {
+              "move": "e1f1",
+              "nodeCount": 43
+            },
+            {
+              "move": "e1g1",
+              "nodeCount": 43
+            },
+            {
+              "move": "e1c1",
+              "nodeCount": 43
+            }
+          ]
+        }
+      }
+    ]
   }
 ]
