@@ -43,7 +43,7 @@ public class TurnManager
 
     private void ComputeMove(Move move, Board board) 
     {
-        EspecialRules oldRules = board.rules.Copy(board, false);
+        EspecialRules oldRules = board.rules.Copy(board);
         string oldHash = board.ActualHash;
 
         if (move is CastleMove castleMove)
@@ -53,8 +53,7 @@ public class TurnManager
         else
             ComputeSimpleMove(move, board);
 
-        board.events?.onMoveMade?.Invoke(move);
-
+        board.rules.OnPieceMoved(move);
         
         long hash = Manager.HashManager.GetNewHashFromMove(Convert.ToInt64(oldHash), move, board.rules, oldRules);
         board.ActualHash = hash.ToString();
@@ -138,7 +137,7 @@ public class TurnManager
         else
             UndoSimpleMove(lastMove, board);
 
-        board.events.onMoveUnmade?.Invoke(lastMove);
+        board.rules.OnPieceUnmoved(lastMove);
 
         board.ActualHash = hash;
 

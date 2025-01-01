@@ -12,23 +12,17 @@ public class EspecialRules
 
     public Board Board { get; private set; }
 
-    public EspecialRules(Board board, bool listenToEvents = true) 
+    public EspecialRules(Board board) 
     {
         whiteCastleRights = new();
         blackCastleRights = new();
 
-        if (listenToEvents)
-        {
-            board.events.onMoveMade += OnPieceMoved;
-            board.events.onMoveUnmade += OnPieceUnmoved;
-        }
-
         Board = board;
     }
 
-    public EspecialRules Copy(Board board, bool listenToEvents = true)
+    public EspecialRules Copy(Board board)
     {
-        return new EspecialRules(board, listenToEvents)
+        return new EspecialRules(board)
         {
             whiteCastleRights = this.whiteCastleRights,
             blackCastleRights = this.blackCastleRights,
@@ -96,7 +90,7 @@ public class EspecialRules
             return isWhite ? new TileCoordinates(0, 7) : new TileCoordinates(7, 7);
     }
 
-    private void OnPieceMoved(Move move) 
+    public void OnPieceMoved(Move move) 
     {
         if (move.piece is Pawn)
         {
@@ -202,7 +196,7 @@ public class EspecialRules
         }
     }
 
-    private void OnPieceUnmoved(Move move)
+    public void OnPieceUnmoved(Move move)
     {
         enPassantPawn = null;
         enPassantTile = null;
