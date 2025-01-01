@@ -18,10 +18,10 @@ public class MoveGenerator
     private Bitboard piecesPositionBitboard = new Bitboard();
     private Bitboard enemyPiecesPositionBitboard = new Bitboard();
 
-    private Bitboard queenSideCastleWhiteBitboard = new Bitboard(14L);
-    private Bitboard kingSideCastleWhiteBitboard = new Bitboard(96L);
-    private Bitboard queenSideCastleBlackBitboard = new Bitboard(1008806316530991104L);
-    private Bitboard kingSideCastleBlackBitboard = new Bitboard(6917529027641081856L);
+    private Bitboard queenSideCastleWhiteBitboard = new Bitboard(2) | new Bitboard(3);
+    private Bitboard kingSideCastleWhiteBitboard = new Bitboard(5) | new Bitboard(6);
+    private Bitboard queenSideCastleBlackBitboard = new Bitboard(58) | new Bitboard(59);
+    private Bitboard kingSideCastleBlackBitboard = new Bitboard(61) | new Bitboard(62);
 
     private List<Piece> kingAttackers;
     private Piece kingPiece;
