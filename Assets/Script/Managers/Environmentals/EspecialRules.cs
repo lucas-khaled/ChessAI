@@ -24,8 +24,8 @@ public class EspecialRules
     {
         return new EspecialRules(board)
         {
-            whiteCastleRights = this.whiteCastleRights,
-            blackCastleRights = this.blackCastleRights,
+            whiteCastleRights = this.whiteCastleRights.Copy(),
+            blackCastleRights = this.blackCastleRights.Copy(),
             enPassantPawn = this.enPassantPawn,
             enPassantTile = this.enPassantTile
         };
@@ -247,6 +247,19 @@ public class EspecialRules
         {
             CanCastleKingSide = true;
             CanCastleQueenSide = true;
+        }
+
+        public CastleRights Copy() 
+        {
+            return new CastleRights()
+            {
+                WasSetByFEN = false,
+                CanCastleKingSide = CanCastleKingSide,
+                CanCastleQueenSide = CanCastleQueenSide,
+                KingFirstMove = KingFirstMove,
+                QueenRookFirstMove = QueenRookFirstMove,
+                KingRookFirstMove = KingRookFirstMove
+            };
         }
 
         public void SetCastleOnBothSides(bool canCastle) 
