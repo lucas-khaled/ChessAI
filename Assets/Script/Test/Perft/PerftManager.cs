@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 
@@ -94,18 +95,30 @@ public class PerftManager : MonoBehaviour, IGameManager
     private void ValidateDivides(PerftData data, PerftData resultData)
     {
         string debugString = string.Empty;
-        foreach (var divide in data.divideDict) 
+        List<PerftDivide> generatedDivides = new List<PerftDivide>(data.divideDict);
+
+        for(int i = 0; i<resultData.divideDict.Count; i++)
         {
-            var resultDivide = resultData.divideDict.Find(d => d.move == divide.move);
-            if(string.IsNullOrEmpty(resultDivide.move)) 
+            var divide = resultData.divideDict[i];
+            var correspondingDivide = generatedDivides.Find(d => d.move == divide.move);
+
+            if(string.IsNullOrEmpty(correspondingDivide.move)) 
             {
-                debugString += $"<color=red>  {divide.move} does not exist in the result</color>\n";
+                debugString += $"<color=red>  {divide.move} does not exist in generated divide</color>\n";
                 continue;
             }
 
-            debugString += (resultDivide.nodeCount == divide.nodeCount)
-                ? $"<color=green>  {divide.move} -> has the exact count of {divide.nodeCount}</color>\n"
-                : $"<color=red>  {divide.move} -> has not the same count of result: Yours {divide.nodeCount} - Result {resultDivide.nodeCount}</color>\n";
+            debugString += (divide.nodeCount == correspondingDivide.nodeCount)
+                ? $"<color=green>  {correspondingDivide.move} -> has the exact count of {correspondingDivide.nodeCount}</color>\n"
+                : $"<color=red>  {correspondingDivide.move} -> has not the same count of result: Yours {correspondingDivide.nodeCount} - Result {divide.nodeCount}</color>\n";
+
+            generatedDivides.Remove(correspondingDivide);
+        }
+
+        if(generatedDivides.Count > 0) 
+        {
+            foreach(var divide in generatedDivides) 
+                debugString += $"<color=red>  Generated divide {divide.move} with {divide.nodeCount} nodes that not exists in result</color>";
         }
 
         Debug.Log(debugString);
