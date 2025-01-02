@@ -10,7 +10,7 @@ public class EspecialRules
 
     public Board Board { get; private set; }
 
-    public bool HasEnPassant => enPassantTileCoordinates.column >= 0 && enPassantTileCoordinates.row >= 0;
+    public bool HasEnPassant => enPassantTileCoordinates.IsValid();
 
     public EspecialRules(Board board) 
     {
@@ -89,8 +89,9 @@ public class EspecialRules
             return isWhite ? new TileCoordinates(0, 7) : new TileCoordinates(7, 7);
     }
 
-    public void OnPieceMoved(Move move) 
+    public void OnMoveMade(Move move) 
     {
+        SetEnPassant(new TileCoordinates(-1, -1));
         if (move.piece is Pawn)
         {
             CheckEnPassant(move);
@@ -101,8 +102,6 @@ public class EspecialRules
             SetKingMove(move);
         else if (move.piece is Rook)
             RookMoved(move);
-
-        enPassantTileCoordinates = new TileCoordinates(-1, -1);
     }
 
     private void SetKingMove(Move move)
@@ -115,17 +114,14 @@ public class EspecialRules
 
     private void CheckEnPassant(Move move)
     {
-        TileCoordinates toCoord = move.to.TilePosition;
         var moveRange = Mathf.Abs(move.from.TilePosition.row - move.to.TilePosition.row);
         if (moveRange < 2)
-        {
-            enPassantTileCoordinates = new TileCoordinates(-1, -1);
             return;
-        }
 
-        var row = (move.piece.pieceColor == PieceColor.White) ? toCoord.row - 1 : toCoord.row + 1;
-        Tile tile = Board.GetTiles()[row][toCoord.column];
-        SetEnPassant(tile.TilePosition);
+        TileCoordinates toCoord = move.to.TilePosition;
+        toCoord.row += (move.piece.pieceColor == PieceColor.White) ? -1 : 1;
+
+        SetEnPassant(toCoord);
     }
 
     public void SetEnPassant(TileCoordinates tile) 
@@ -192,14 +188,14 @@ public class EspecialRules
         }
     }
 
-    public void OnPieceUnmoved(Move move)
+    public void OnTurnUnmade(Turn turn)
     {
-        enPassantTileCoordinates = new TileCoordinates(-1, -1);
+        SetEnPassant(turn.enPassant);
 
-        if (move is CastleMove || move.piece is King)
-            UndoKingMove(move);
-        if (move.piece is Rook)
-            UndoRookMove(move);
+        if (turn.move is CastleMove || turn.move.piece is King)
+            UndoKingMove(turn.move);
+        if (turn.move.piece is Rook)
+            UndoRookMove(turn.move);
     }
 
     private void UndoKingMove(Move move)

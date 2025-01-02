@@ -10,6 +10,7 @@ public class PerftManager : MonoBehaviour, IGameManager
     [SerializeField] private string FEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
     [SerializeField] [Min(1)] private int depth = 1;
     [SerializeField] private PerftResults results;
+    [SerializeField] private bool debugAllPerft = true;
 
     public Board GameBoard { get; private set; }
     public Board TestBoard { get; private set; }
@@ -52,7 +53,7 @@ public class PerftManager : MonoBehaviour, IGameManager
     public async void DoPerft()
     {
         var depth = this.depth;
-        var data = await function.Perft(depth);
+        var data = await function.Perft(depth, debugAll: debugAllPerft);
         if (data.IsValid() is false)
         {
             Debug.LogWarning("Is already Perfiting. Wait for completion");
@@ -89,7 +90,43 @@ public class PerftManager : MonoBehaviour, IGameManager
             ? $"<color=green>There are the same amount of nodes: {data.nodes}</color>" 
             : $"<color=red>There are not the same amount of nodes: Yours {data.nodes} - Result {perftData.nodes} </color>");
 
+        if(debugAllPerft)
+        {
+            ValidateAllData(data, perftData);
+        }
+
         ValidateDivides(data, perftData);
+    }
+
+    private void ValidateAllData(PerftData data, PerftData perftData)
+    {
+        string debugString = string.Empty;
+
+        debugString += (data.checkmates == perftData.checkmates) 
+            ? $"<color=green> - Checkmates are the same {data.checkmates}</color>\n" 
+            : $"<color=red> - Checkmates are not the same: Yours {data.checkmates} - Result: {perftData.checkmates}</color>\n";
+
+        debugString += (data.checks == perftData.checks)
+           ? $"<color=green> - Checks are the same {data.checks}</color>\n"
+           : $"<color=red> - Checks are not the same: Yours {data.checks} - Result: {perftData.checks}</color>\n";
+
+        debugString += (data.doubleChecks == perftData.doubleChecks)
+           ? $"<color=green> - Double Checks are the same {data.doubleChecks}</color>\n"
+           : $"<color=red> - Double Checks are not the same: Yours {data.doubleChecks} - Result: {perftData.doubleChecks}</color>\n";
+
+        debugString += (data.castles == perftData.castles)
+           ? $"<color=green> - Castles are the same {data.castles}</color>\n"
+           : $"<color=red> - Castles are not the same: Yours {data.castles} - Result: {perftData.castles}</color>\n";
+
+        debugString += (data.captures == perftData.captures)
+           ? $"<color=green> - Captures are the same {data.captures}</color>\n"
+           : $"<color=red> - Captures are not the same: Yours {data.captures} - Result: {perftData.captures}</color>\n";
+
+        debugString += (data.promotions == perftData.promotions)
+           ? $"<color=green> - Promotions are the same {data.promotions}</color>\n"
+           : $"<color=red> - Promotions are not the same: Yours {data.promotions} - Result: {perftData.promotions}</color>\n";
+
+        Debug.Log(debugString);
     }
 
     private void ValidateDivides(PerftData data, PerftData resultData)

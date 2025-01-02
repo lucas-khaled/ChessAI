@@ -33,6 +33,11 @@ public struct TileCoordinates
 
     public override string ToString()
     {
-        return $"{columnNames[column]}{row+1}";
+        return IsValid() ? $"{columnNames[column]}{row+1}" : "Not Valid Coordinates";
+    }
+
+    public bool IsValid() 
+    {
+        return (column >= 0 && row >= 0);
     }
 }

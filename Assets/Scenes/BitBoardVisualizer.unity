@@ -458,7 +458,7 @@ MonoBehaviour:
   boardStarter: {fileID: 1968134898}
   boardUI: {fileID: 5342880040856725119, guid: bfe69815c5bdffd43b390813e09ee5d6, type: 3}
   uiColor: {r: 1, g: 0, b: 0, a: 1}
-  FEN: 8/1P6/p1k5/p7/R3b3/5B2/8/3K4 w - - 0 1
+  FEN: r3k2r/p2pqpb1/bn2pnp1/1NpPN3/1p2P3/5Q1p/PPPBBPPP/R3K2R w KQkq c6 0 2
 --- !u!114 &1968134901
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -486,8 +486,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   boardVisualizer: {fileID: 1968134900}
   visualizationMode: 0
-  visualizationType: 0
+  visualizationType: 4
   attackingColor: {r: 1, g: 0, b: 0, a: 1}
   kingDangerColor: {r: 1, g: 0, b: 1, a: 1}
+  pinSquaresColor: {r: 1, g: 0.34803367, b: 0, a: 1}
   movesColor: {r: 0, g: 1, b: 0, a: 1}
   selectedPieceColor: {r: 1, g: 0.9477562, b: 0.3443396, a: 0.39215687}

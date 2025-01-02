@@ -356,4 +356,9 @@ public class MoveGenerator
 
         return moves;
     }
+
+    public Bitboard GetActualBoardBitboard() 
+    {
+        return piecesPositionBitboard | enemyPiecesPositionBitboard;
+    }
 }

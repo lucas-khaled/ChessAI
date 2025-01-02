@@ -414,8 +414,8 @@ MonoBehaviour:
     - depth: 1
       data:
         nodes: 48
-        captures: 0
-        castles: 0
+        captures: 8
+        castles: 2
         promotions: 0
         checks: 0
         checkmates: 0
@@ -520,10 +520,10 @@ MonoBehaviour:
     - depth: 2
       data:
         nodes: 2039
-        captures: 0
-        castles: 0
+        captures: 351
+        castles: 91
         promotions: 0
-        checks: 0
+        checks: 3
         checkmates: 0
         doubleChecks: 0
         divideDict:
@@ -626,11 +626,11 @@ MonoBehaviour:
     - depth: 3
       data:
         nodes: 97862
-        captures: 0
-        castles: 0
+        captures: 17102
+        castles: 3162
         promotions: 0
-        checks: 0
-        checkmates: 0
+        checks: 993
+        checkmates: 1
         doubleChecks: 0
         divideDict:
         - move: a2a3
