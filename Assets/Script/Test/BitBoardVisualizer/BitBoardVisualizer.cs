@@ -36,8 +36,6 @@ public class BitBoardVisualizer : MonoBehaviour, IGameManager
         GameBoard.FENManager.SetupByFEN(new FEN(FEN), piecesSetup.InstantiatePiece, this);
 
         InitializeUI();
-        /*MoveGenerator generator = new MoveGenerator(GameBoard);
-        SetBitBoard(generator.kingSideCastleBlackBitboard, Color.red);*/
     }
 
     private void InitializeUI() 

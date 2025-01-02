@@ -117,7 +117,7 @@ public class Pawn : SlidingPieces
 
         var diagonalTile = Board.tiles[diagonal[0].row][diagonal[0].column];
         return IsEnemyPiece(diagonalTile.OccupiedBy)
-            || Board.rules.enPassantTile != null && diagonal[0].Equals(Board.rules.enPassantTile.TilePosition);
+            || Board.rules.HasEnPassant && diagonal[0].Equals(Board.rules.enPassantTileCoordinates);
     }
 
     private Move CreateDiagonalMove(TileCoordinates diagonalTileCoord) 
@@ -125,7 +125,7 @@ public class Pawn : SlidingPieces
         Tile diagonalTile = Board.tiles[diagonalTileCoord.row][diagonalTileCoord.column];
         return diagonalTile.IsOccupied ?
             new Move(actualTile, diagonalTile, this, diagonalTile.OccupiedBy) :
-            new Move(actualTile, diagonalTile, this, Board.GetTileByIndex(Board.rules.enPassantTile.Index).OccupiedBy);
+            new Move(actualTile, diagonalTile, this, Board.GetTiles()[Board.rules.enPassantTileCoordinates.row][Board.rules.enPassantTileCoordinates.column].OccupiedBy);
     }
 
     protected override void GenerateBitBoardMethod()

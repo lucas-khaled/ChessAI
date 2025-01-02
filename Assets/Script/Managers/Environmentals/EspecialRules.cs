@@ -6,11 +6,11 @@ public class EspecialRules
     public CastleRights whiteCastleRights { get; private set; }
     public CastleRights blackCastleRights { get; private set; }
 
-    public Tile enPassantTile { get; private set; }
+    public TileCoordinates enPassantTileCoordinates { get; private set; }
 
     public Board Board { get; private set; }
 
-    private bool HasEnPassant => enPassantTile != null;
+    public bool HasEnPassant => enPassantTileCoordinates.column >= 0 && enPassantTileCoordinates.row >= 0;
 
     public EspecialRules(Board board) 
     {
@@ -22,12 +22,11 @@ public class EspecialRules
 
     public EspecialRules Copy(Board board)
     {
-        var tile = (HasEnPassant) ? this.enPassantTile.Copy(board) : null;
         return new EspecialRules(board)
         {
             whiteCastleRights = this.whiteCastleRights.Copy(),
             blackCastleRights = this.blackCastleRights.Copy(),
-            enPassantTile = tile,
+            enPassantTileCoordinates = this.enPassantTileCoordinates,
         };
     }
 
@@ -103,7 +102,7 @@ public class EspecialRules
         else if (move.piece is Rook)
             RookMoved(move);
 
-        enPassantTile = null;
+        enPassantTileCoordinates = new TileCoordinates(-1, -1);
     }
 
     private void SetKingMove(Move move)
@@ -120,18 +119,18 @@ public class EspecialRules
         var moveRange = Mathf.Abs(move.from.TilePosition.row - move.to.TilePosition.row);
         if (moveRange < 2)
         {
-            enPassantTile = null;
+            enPassantTileCoordinates = new TileCoordinates(-1, -1);
             return;
         }
 
         var row = (move.piece.pieceColor == PieceColor.White) ? toCoord.row - 1 : toCoord.row + 1;
         Tile tile = Board.GetTiles()[row][toCoord.column];
-        SetEnPassant(tile, move.piece as Pawn);
+        SetEnPassant(tile.TilePosition);
     }
 
-    public void SetEnPassant(Tile tile, Pawn pawn) 
+    public void SetEnPassant(TileCoordinates tile) 
     {
-        enPassantTile = tile;
+        enPassantTileCoordinates = tile;
     }
 
     private void RookMoved(Move rookMove)
@@ -195,7 +194,7 @@ public class EspecialRules
 
     public void OnPieceUnmoved(Move move)
     {
-        enPassantTile = null;
+        enPassantTileCoordinates = new TileCoordinates(-1, -1);
 
         if (move is CastleMove || move.piece is King)
             UndoKingMove(move);

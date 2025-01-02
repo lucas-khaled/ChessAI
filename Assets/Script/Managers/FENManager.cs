@@ -41,9 +41,9 @@ public class FENManager
         Turn turn = new Turn();
 
         SetPiecesPosition(fen.positions, instantiateCallback);
-        SetInitialColor(fen.pieceColor);
         SetCastling(fen.castlingString);
         SetEnPassant(fen.enPassantString);
+        SetInitialColor(fen.pieceColor);
 
         turn.halfMoves = GetHalfMoves(fen.halfMovesString);
         turn.fullMoves = GetFullMoves(fen.fullMovesString);
@@ -56,7 +56,6 @@ public class FENManager
 
     private int GetFullMoves(string fullMovesString)
     {
-        
         return Convert.ToInt32(fullMovesString) - 1;
     }
 
@@ -125,11 +124,9 @@ public class FENManager
         int columnIndex = letterColumnToIndex[column];
         int rowIndex = Convert.ToInt32(row.ToString()) - 1;
 
-        var tile = board.GetTiles()[rowIndex][columnIndex];
-        var offset = (board.ActualTurn == PieceColor.White) ? -1 : 1;
-        var pawn = board.GetTiles()[rowIndex + offset][columnIndex].OccupiedBy as Pawn;
+        var tile = new TileCoordinates(rowIndex,columnIndex);
 
-        board.rules.SetEnPassant(tile, pawn);
+        board.rules.SetEnPassant(tile);
     }
 
     public FEN GetFEN() 
@@ -218,9 +215,9 @@ public class FENManager
 
     private string GetFENEnPassant(EspecialRules rules)
     {
-        if(rules.enPassantTile == null) return "-";
+        if(rules.HasEnPassant) return "-";
 
-        var pos = rules.enPassantTile.TilePosition;
+        var pos = rules.enPassantTileCoordinates;
         return GetTileStringPosition(pos);
     }
 

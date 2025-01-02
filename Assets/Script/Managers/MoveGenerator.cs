@@ -65,7 +65,10 @@ public class MoveGenerator
         {
             if (piece is King || piece.PinnedBy != null) continue;
 
-            var enPassantBitboard = (piece is Pawn && board.rules.enPassantTile is not null) ? board.rules.enPassantTile.Bitboard : new Bitboard();
+            var enPassantBitboard = (piece is Pawn && board.rules.HasEnPassant) 
+                ? new Bitboard(board.rules.enPassantTileCoordinates.row * board.BoardRowSize + board.rules.enPassantTileCoordinates.column) 
+                : new Bitboard();
+
             var validBitboard = piece.MovingSquares & (kingAttackersSquaresBitboard | inBetweenKingAndAttackersBitboard | enPassantBitboard);
 
             if (validBitboard <= 0) continue;
@@ -117,6 +120,16 @@ public class MoveGenerator
             {
                 PromotionMove[] promotions = GetPossiblePromotions(pawn, toTile);
                 moves.AddRange(promotions);
+                return;
+            }
+
+            if (board.rules.HasEnPassant && board.rules.enPassantTileCoordinates.Equals(toTile.TilePosition)) 
+            {
+                int offset = (piece.pieceColor == PieceColor.White) ? -1 : 1;
+                Piece enPassantPiece = board.GetTiles()[toTile.TilePosition.row+offset][toTile.TilePosition.column].OccupiedBy;
+                
+                Move enPassantCapture = new Move(piece.GetTile(), toTile, pawn, enPassantPiece);
+                moves.Add(enPassantCapture);
                 return;
             }
         }

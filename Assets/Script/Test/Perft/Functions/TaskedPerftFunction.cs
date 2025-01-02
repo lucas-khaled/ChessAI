@@ -98,25 +98,6 @@ public class TaskedPerftFunction : PerftFunction
             DoMove(move, board);
             doMoveTimer.Stop();
 
-            /*if (move.ToUCI() == "d7c8r" || move.ToUCI() == "d7c8q") 
-            {
-                foreach (var inMove in board.currentTurnMoves)
-                {
-                    if (inMove.piece is Queen queen)
-                    {
-                        PinnerPiece pinner = (PinnerPiece)board.GetTileByIndex(58).OccupiedBy;
-                        UnityEngine.Debug.Log("! " + move.ToUCI() 
-                            + "\nBitboard: " + pinner.PinSquares.ToVisualString()
-                            + "\n" + inMove 
-                            + "\nMove piece Board: " + move.piece.Board.Name 
-                            + "\n InMove piece Board: " + inMove.piece.Board.Name
-                            + "\n Pinning: " + pinner.PinningIndex
-                            + "\n Hashs: " + pinner.PinningIndex.GetHashCode() + " - " + queen.GetHashCode()
-                            + "\nPinnedBy: " + queen.PinnedBy);
-                    }
-                }
-            }*/
-
             PerftData moveNodeCount = await Perft(depth - 1, board);
             data += moveNodeCount;
 

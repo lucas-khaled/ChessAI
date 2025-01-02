@@ -95,9 +95,9 @@ public class ZobristHashManager
         if (board.ActualTurn == PieceColor.Black)
             hash = hash ^ isBlackMoveHash;
 
-        if (board.rules.enPassantTile != null)
+        if (board.rules.HasEnPassant)
         {
-            int column = board.rules.enPassantTile.TilePosition.column;  
+            int column = board.rules.enPassantTileCoordinates.column;  
             hash = hash ^ enPassantHashes[column];
         }
 
@@ -149,11 +149,11 @@ public class ZobristHashManager
         if (actualRules.whiteCastleRights.CanCastleQueenSide != oldRules.whiteCastleRights.CanCastleQueenSide)
             newHash = newHash ^ castlingHashes.whiteQueensideCastleHash;
 
-        if (oldRules.enPassantTile != null)
-            newHash = newHash ^ enPassantHashes[oldRules.enPassantTile.TilePosition.column];
+        if (oldRules.HasEnPassant)
+            newHash = newHash ^ enPassantHashes[oldRules.enPassantTileCoordinates.column];
 
-        if(actualRules.enPassantTile != null)
-            newHash = newHash ^ enPassantHashes[actualRules.enPassantTile.TilePosition.column];
+        if(actualRules.HasEnPassant)
+            newHash = newHash ^ enPassantHashes[actualRules.enPassantTileCoordinates.column];
 
         return newHash;
     }
