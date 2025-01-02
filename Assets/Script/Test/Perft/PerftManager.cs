@@ -122,6 +122,10 @@ public class PerftManager : MonoBehaviour, IGameManager
            ? $"<color=green> - Captures are the same {data.captures}</color>\n"
            : $"<color=red> - Captures are not the same: Yours {data.captures} - Result: {perftData.captures}</color>\n";
 
+        debugString += (data.enPassants == perftData.enPassants)
+          ? $"<color=green> - EnPassants are the same {data.enPassants}</color>\n"
+          : $"<color=red> - EnPassants are not the same: Yours {data.enPassants} - Result: {perftData.enPassants}</color>\n";
+
         debugString += (data.promotions == perftData.promotions)
            ? $"<color=green> - Promotions are the same {data.promotions}</color>\n"
            : $"<color=red> - Promotions are not the same: Yours {data.promotions} - Result: {perftData.promotions}</color>\n";

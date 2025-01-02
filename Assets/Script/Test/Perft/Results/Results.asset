@@ -20,6 +20,7 @@ MonoBehaviour:
       data:
         nodes: 44
         captures: 0
+        enPassants: 0
         castles: 0
         promotions: 0
         checks: 0
@@ -118,6 +119,7 @@ MonoBehaviour:
       data:
         nodes: 1486
         captures: 0
+        enPassants: 0
         castles: 0
         promotions: 0
         checks: 0
@@ -216,6 +218,7 @@ MonoBehaviour:
       data:
         nodes: 62379
         captures: 0
+        enPassants: 0
         castles: 0
         promotions: 0
         checks: 0
@@ -314,6 +317,7 @@ MonoBehaviour:
       data:
         nodes: 2103487
         captures: 0
+        enPassants: 0
         castles: 0
         promotions: 0
         checks: 0
@@ -415,6 +419,7 @@ MonoBehaviour:
       data:
         nodes: 48
         captures: 8
+        enPassants: 0
         castles: 2
         promotions: 0
         checks: 0
@@ -521,6 +526,7 @@ MonoBehaviour:
       data:
         nodes: 2039
         captures: 351
+        enPassants: 1
         castles: 91
         promotions: 0
         checks: 3
@@ -627,6 +633,7 @@ MonoBehaviour:
       data:
         nodes: 97862
         captures: 17102
+        enPassants: 45
         castles: 3162
         promotions: 0
         checks: 993
@@ -733,6 +740,7 @@ MonoBehaviour:
       data:
         nodes: 4085603
         captures: 0
+        enPassants: 0
         castles: 0
         promotions: 0
         checks: 0
@@ -842,6 +850,7 @@ MonoBehaviour:
       data:
         nodes: 45
         captures: 0
+        enPassants: 0
         castles: 0
         promotions: 0
         checks: 0
@@ -942,6 +951,7 @@ MonoBehaviour:
       data:
         nodes: 2124
         captures: 0
+        enPassants: 0
         castles: 0
         promotions: 0
         checks: 0
@@ -1042,6 +1052,7 @@ MonoBehaviour:
       data:
         nodes: 93913
         captures: 0
+        enPassants: 0
         castles: 0
         promotions: 0
         checks: 0
@@ -1142,6 +1153,7 @@ MonoBehaviour:
       data:
         nodes: 4404043
         captures: 0
+        enPassants: 0
         castles: 0
         promotions: 0
         checks: 0

@@ -6,6 +6,7 @@ public struct PerftData
 {
     public long nodes;
     public long captures;
+    public long enPassants;
     public long castles;
     public long promotions;
     public long checks;
@@ -30,6 +31,7 @@ public struct PerftData
         return new PerftData(a.nodes + b.nodes)
         {
             captures = a.captures + b.captures,
+            enPassants = a.enPassants + b.enPassants,
             castles = a.castles + b.castles,
             promotions = a.promotions + b.promotions,
             checks = a.checks + b.checks,
@@ -43,6 +45,7 @@ public struct PerftData
     {
         return $"Nodes: {nodes}\n" +
             $"Captures: {captures}\n" +
+            $"EnPassants: {enPassants}\n" +
             $"Castles: {castles}\n" +
             $"Promotions: {promotions}\n" +
             $"Checks: {checks}\n" +

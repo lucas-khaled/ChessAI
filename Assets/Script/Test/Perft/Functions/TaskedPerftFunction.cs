@@ -109,6 +109,10 @@ public class TaskedPerftFunction : PerftFunction
                     returnData.doubleChecks = 1;
 
                 returnData.captures = board.LastTurn.move.capture != null ? 1 : 0;
+                returnData.enPassants = board.LastTurn.move.capture != null
+                    && board.LastTurn.move.to.TilePosition.Equals(board.LastTurn.enPassant)
+                    ? 1 : 0;
+
                 returnData.castles = board.LastTurn.move is CastleMove ? 1 : 0;
                 returnData.promotions = board.LastTurn.move is PromotionMove ? 1 : 0;
                    
