@@ -125,7 +125,7 @@ public class Pawn : SlidingPieces
         Tile diagonalTile = Board.tiles[diagonalTileCoord.row][diagonalTileCoord.column];
         return diagonalTile.IsOccupied ?
             new Move(actualTile, diagonalTile, this, diagonalTile.OccupiedBy) :
-            new Move(actualTile, diagonalTile, this, Board.rules.enPassantPawn);
+            new Move(actualTile, diagonalTile, this, Board.GetTileByIndex(Board.rules.enPassantTile.Index).OccupiedBy);
     }
 
     protected override void GenerateBitBoardMethod()

@@ -6,11 +6,11 @@ public class EspecialRules
     public CastleRights whiteCastleRights { get; private set; }
     public CastleRights blackCastleRights { get; private set; }
 
-
     public Tile enPassantTile { get; private set; }
-    public Pawn enPassantPawn { get; private set; }
 
     public Board Board { get; private set; }
+
+    private bool HasEnPassant => enPassantTile != null;
 
     public EspecialRules(Board board) 
     {
@@ -22,12 +22,12 @@ public class EspecialRules
 
     public EspecialRules Copy(Board board)
     {
+        var tile = (HasEnPassant) ? this.enPassantTile.Copy(board) : null;
         return new EspecialRules(board)
         {
             whiteCastleRights = this.whiteCastleRights.Copy(),
             blackCastleRights = this.blackCastleRights.Copy(),
-            enPassantPawn = this.enPassantPawn,
-            enPassantTile = this.enPassantTile
+            enPassantTile = tile,
         };
     }
 
@@ -104,7 +104,6 @@ public class EspecialRules
             RookMoved(move);
 
         enPassantTile = null;
-        enPassantPawn = null;
     }
 
     private void SetKingMove(Move move)
@@ -122,7 +121,6 @@ public class EspecialRules
         if (moveRange < 2)
         {
             enPassantTile = null;
-            enPassantPawn = null;
             return;
         }
 
@@ -134,7 +132,6 @@ public class EspecialRules
     public void SetEnPassant(Tile tile, Pawn pawn) 
     {
         enPassantTile = tile;
-        enPassantPawn = pawn;
     }
 
     private void RookMoved(Move rookMove)
@@ -198,7 +195,6 @@ public class EspecialRules
 
     public void OnPieceUnmoved(Move move)
     {
-        enPassantPawn = null;
         enPassantTile = null;
 
         if (move is CastleMove || move.piece is King)
