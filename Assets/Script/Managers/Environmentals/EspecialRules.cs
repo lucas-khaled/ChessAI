@@ -6,7 +6,7 @@ public class EspecialRules
     public CastleRights whiteCastleRights { get; private set; }
     public CastleRights blackCastleRights { get; private set; }
 
-    public TileCoordinates enPassantTileCoordinates { get; private set; }
+    public TileCoordinates enPassantTileCoordinates { get; private set; } = new TileCoordinates(-1, -1);
 
     public Board Board { get; private set; }
 
