@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using UnityEngine;
 
@@ -34,7 +35,7 @@ public class MoveGenerator
 
     public List<Move> GenerateMoves(PieceColor color) 
     {
-        List<Move> moves = new List<Move>();
+        List <Move> moves = new List<Move>();
         
         Initialize(color);
         GenerateBitboards();
@@ -128,7 +129,7 @@ public class MoveGenerator
                 int offset = (piece.pieceColor == PieceColor.White) ? -1 : 1;
                 Piece enPassantPiece = board.GetTiles()[toTile.TilePosition.row+offset][toTile.TilePosition.column].OccupiedBy;
                 
-                Move enPassantCapture = new Move(piece.GetTile(), toTile, pawn, enPassantPiece);
+                EnPassantMove enPassantCapture = new EnPassantMove(piece.GetTile(), toTile, pawn, enPassantPiece);
                 moves.Add(enPassantCapture);
                 return;
             }
@@ -357,8 +358,18 @@ public class MoveGenerator
         return moves;
     }
 
-    public Bitboard GetActualBoardBitboard() 
+    public Bitboard GetCurrentBoardBitboard() 
     {
-        return piecesPositionBitboard | enemyPiecesPositionBitboard;
+        return GetCurrentPiecesBitboard() | GetEnemyPiecesBitboard();
+    }
+
+    public Bitboard GetCurrentPiecesBitboard() 
+    {
+        return piecesPositionBitboard;
+    }
+
+    public Bitboard GetEnemyPiecesBitboard()
+    {
+        return enemyPiecesPositionBitboard;
     }
 }

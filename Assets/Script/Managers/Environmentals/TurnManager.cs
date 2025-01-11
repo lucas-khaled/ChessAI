@@ -135,6 +135,8 @@ public class TurnManager
             UndoCastleMove(castleMove, board);
         else if (lastMove is PromotionMove promotionMove)
             UndoPromotionMove(promotionMove, board);
+        else if (lastMove is EnPassantMove enPassantMove)
+            UndoEnPassant(enPassantMove, board);
         else
             UndoSimpleMove(lastMove, board);
 
@@ -169,6 +171,20 @@ public class TurnManager
         board.piecesHolder.RemovePiece(promotedPiece);
 
         board.events.onPromotionUnmade?.Invoke(move);
+    }
+
+    private void UndoEnPassant(EnPassantMove lastMove, Board board)
+    {
+        lastMove.from.Occupy(lastMove.piece);
+        lastMove.piece.SetTile(lastMove.from);
+        lastMove.to.DeOccupy();
+
+        Piece capturedPiece = lastMove.capture;
+        lastMove.capturedTile.Occupy(capturedPiece);
+        capturedPiece.SetTile(lastMove.capturedTile);
+
+        board.piecesHolder.AddPiece(capturedPiece);
+        board.events.onPieceUncaptured?.Invoke(capturedPiece);
     }
 
     private void UndoSimpleMove(Move lastMove, Board board)

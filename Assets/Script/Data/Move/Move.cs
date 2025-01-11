@@ -1,6 +1,3 @@
-using System;
-using UnityEngine;
-
 public class Move 
 {
     public Tile from;
