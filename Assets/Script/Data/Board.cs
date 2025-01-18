@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Profiling;
 
 public class Board
 {
@@ -162,7 +163,10 @@ public class Board
     public void SetTurn(PieceColor color) 
     {
         ActualTurn = color;
+
+        Profiler.BeginSample("Move Generation");
         currentTurnMoves = moveGenerator.GenerateMoves(color);
+        Profiler.EndSample();
 
         HasMoves = currentTurnMoves.Count > 0;
         IsCheckMate = moveGenerator.IsCheck() && HasMoves is false;

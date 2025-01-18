@@ -4,9 +4,7 @@ using UnityEngine;
 public abstract class PinnerPiece : SlidingPieces
 {
     public Bitboard KingDangerSquares { get; protected set; } = new Bitboard();
-    public Bitboard PinSquares { get; protected set; } = new Bitboard();
     public Bitboard InBetweenSquares { get; protected set; } = new Bitboard();
-    public int PinningIndex { get; protected set; }
 
     protected PinnerPiece(Board board) : base(board)
     {
@@ -14,9 +12,7 @@ public abstract class PinnerPiece : SlidingPieces
 
     public override void GenerateBitBoard()
     {
-        PinningIndex = -1;
         KingDangerSquares.Clear();
-        PinSquares.Clear();
         InBetweenSquares.Clear();
         base.GenerateBitBoard();
     }
@@ -24,82 +20,47 @@ public abstract class PinnerPiece : SlidingPieces
     protected void GeneratePinAndKingDangerBySegment(List<TileCoordinates> segment)
     {
         Bitboard kingDanger = new();
-        Bitboard pinSquares = new();
-        Bitboard inBetween = new();
+        Bitboard inBetween = new(actualTile.Bitboard);
 
-        int friendlyPieces = 0;
         bool hasKing = false;
-        bool hasPin = false;
-        int enemieInBetweenIndex = -1;
+        bool hasSomethingBetween = false;
+        bool hasSomethingElseThenKingInSegment = false;
 
         foreach (var tileCoord in segment)
         {
             Tile tile = Board.tiles[tileCoord.row][tileCoord.column];
 
-            if(hasKing is false)
-                inBetween.Add(tile.Bitboard);
+            if(hasSomethingElseThenKingInSegment is false)
+                kingDanger.Add(tile.Bitboard);
 
             if (tile.IsOccupied)
             {
-                if (tile.OccupiedBy.pieceColor == pieceColor) 
+                if(tile.OccupiedBy.IsEnemyPiece(this) is false || tile.OccupiedBy is not King) 
                 {
-                    if (hasKing)
-                    {
-                        if (friendlyPieces <= 0)
-                            kingDanger.Add(tile.Bitboard);
+                    if(hasKing is false)
+                        hasSomethingBetween = true;
 
-                        inBetween.Remove(tile.Bitboard);
-                        break;
-                    }
-
-
-                    friendlyPieces++;
-                    continue;
+                    hasSomethingElseThenKingInSegment = true;
                 }
-
-                if (tile.OccupiedBy is King)
+                else
                 {
                     hasKing = true;
-                    hasPin = (enemieInBetweenIndex > -1) && friendlyPieces <= 0;
-                    inBetween.Remove(tile.Bitboard);
-
-                    if (hasPin || friendlyPieces > 0)
-                        break;
-
-                    kingDanger.Add(tile.Bitboard);
                     continue;
                 }
-
-                if (friendlyPieces > 0) continue;
-
-                if (enemieInBetweenIndex > -1)
-                {
-                    hasPin = false;
-                    break;
-                }
-
-                enemieInBetweenIndex = tile.Index;
-                kingDanger.Add(tile.Bitboard);
-                pinSquares.Add(tile.Bitboard);
-                continue;
             }
 
-            if(enemieInBetweenIndex == -1 && friendlyPieces <= 0)
-                kingDanger.Add(tile.Bitboard);
-
             if (hasKing is false)
-                pinSquares.Add(tile.Bitboard);
+                inBetween.Add(tile.Bitboard);
+
+            if (hasKing && hasSomethingBetween && hasSomethingElseThenKingInSegment) break;
         }
 
         if (hasKing) 
         {
             InBetweenSquares = inBetween;
-            KingDangerSquares.Add(kingDanger);
-            if (hasPin)
-            {
-                PinningIndex = enemieInBetweenIndex;
-                PinSquares.Add(pinSquares);
-            }
+
+            if(hasSomethingBetween is false)
+                KingDangerSquares.Add(kingDanger);
         }
     }
 }

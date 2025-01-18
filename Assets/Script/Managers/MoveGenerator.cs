@@ -16,7 +16,7 @@ public class MoveGenerator
     private Bitboard kingAttackersSquaresBitboard = new Bitboard();
     private Bitboard inBetweenKingAndAttackersBitboard = new Bitboard();
 
-    private List<Bitboard> enemyInBetweenPinners = new List<Bitboard>();
+    private Dictionary<PinnerPiece, Bitboard> enemyInBetweenPinners = new Dictionary<PinnerPiece, Bitboard>();
 
     private Bitboard piecesPositionBitboard = new Bitboard();
     private Bitboard enemyPiecesPositionBitboard = new Bitboard();
@@ -95,6 +95,9 @@ public class MoveGenerator
 
     private void GeneratePieceMove(List<Move> moves, Piece piece, Tile toTile)
     {
+        if (WillRevealAttack(piece.GetTile().Bitboard, toTile.Bitboard)) 
+            return;
+
         if(piece is King king) 
         {
             if (IsImpossibleForKing(toTile)) return;
@@ -135,7 +138,7 @@ public class MoveGenerator
                 int offset = (piece.pieceColor == PieceColor.White) ? -1 : 1;
                 Piece enPassantPiece = board.GetTiles()[toTile.TilePosition.row+offset][toTile.TilePosition.column].OccupiedBy;
 
-                if (WillRevealAttack(piece.GetTile().Bitboard, enPassantPiece.GetTile().Bitboard)) return;
+                if (WillRevealAttack(piece.GetTile().Bitboard | enPassantPiece.GetTile().Bitboard, toTile.Bitboard)) return;
                 
                 EnPassantMove enPassantCapture = new EnPassantMove(piece.GetTile(), toTile, pawn, enPassantPiece);
                 moves.Add(enPassantCapture);
@@ -147,16 +150,15 @@ public class MoveGenerator
         moves.Add(move);
     }
 
-    private bool WillRevealAttack(Bitboard bitboard1, Bitboard bitboard2)
+    private bool WillRevealAttack(Bitboard willLeave, Bitboard willGo)
     {
-        var pieces = GetCurrentBoardBitboard();
         foreach (var inBetween in enemyInBetweenPinners) 
         {
-            Bitboard testBoard = new Bitboard(inBetween);
-            testBoard.Remove(bitboard1);
-            testBoard.Remove(bitboard2);
+            Bitboard afterLeaveBoard = new Bitboard(inBetween.Value);
+            afterLeaveBoard.Remove(willLeave);
+            afterLeaveBoard.Remove(inBetween.Key.GetTile().Bitboard);
 
-            if ((testBoard & pieces) == 0) return true;
+            if ((HasAnyPieceIn(afterLeaveBoard) is false) && ((willGo & inBetween.Value) <= 0)) return true;
         }
 
         return false;
@@ -241,23 +243,9 @@ public class MoveGenerator
             if (piece is PinnerPiece pinner)
             {
                 if(pinner.InBetweenSquares > 0)
-                    enemyInBetweenPinners.Add(pinner.InBetweenSquares);
+                    enemyInBetweenPinners.Add(pinner, pinner.InBetweenSquares);
 
                 enemiesKingDangerSquares.Add(pinner.KingDangerSquares);
-
-                int pinningIndex = pinner.PinningIndex;
-                if (pinningIndex > -1)
-                {
-                    var tile = board.GetTileByIndex(pinningIndex);
-                    if (tile.IsOccupied is false)
-                    {
-                        Debug.LogError($"A pin was indicated by {pinner} in {pinningIndex} but there was no piece");
-                        continue;
-                    }
-
-                    tile.OccupiedBy.PinnedBy = pinner;
-                }
-
             }
 
             if ((piece.AttackingSquares & kingPiece.GetTile().Bitboard) > 0)
@@ -371,9 +359,6 @@ public class MoveGenerator
             filteredMoves.Remove(piecesPositionBitboard);
 
             if (filteredMoves <= 0) continue;
-            
-            if (piece.PinnedBy != null) 
-                filteredMoves &= (piece.PinnedBy.PinSquares | piece.PinnedBy.GetTile().Bitboard);
 
             FillMovesFromPiece(moves, piece, filteredMoves);
         }
