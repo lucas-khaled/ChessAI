@@ -21,22 +21,19 @@ public class Pawn : SlidingPieces
 
         var diagonalTile = Board.tiles[diagonal[0].row][diagonal[0].column];
         return IsEnemyPiece(diagonalTile.OccupiedBy)
-            || Board.rules.HasEnPassant && diagonal[0].Equals(Board.rules.enPassantTileCoordinates);
+            || Board.rules.HasEnPassant && diagonalTile.Equals(Board.rules.enPassantTileCoordinates);
     }
 
     protected override void GenerateBitBoardMethod()
     {
         Profiler.BeginSample("Move Generation > Generate Bitboard -> Pawn");
 
-        List<Tile> tiles = new List<Tile>();
         int range = IsOnInitialRow() ? 2 : 1;
 
         var verticals = actualTile.GetVerticalsByColor(pieceColor);
-        var checkingBlockVerticals = CheckForBlockingSquares(verticals.frontVerticals.GetRange(0, range), false);
+        var checkingBlockVerticals = GetBitboardUntilBlockedSquare(verticals.frontVerticals.GetRange(0, range), false);
 
-        tiles.AddRange(checkingBlockVerticals);
-
-        MovingSquares = AddTilesBitBoards(tiles);
+        MovingSquares.Add(checkingBlockVerticals);
 
         Diagonals diagonals = actualTile.GetDiagonalsByColor(pieceColor);
 
@@ -45,9 +42,7 @@ public class Pawn : SlidingPieces
             var topLeftCoord = diagonals.topLeftDiagonals[0];
             var bitboard = Board.GetTiles()[topLeftCoord.row][topLeftCoord.column].Bitboard;
             if (CanMoveToDiagonal(diagonals.topLeftDiagonals))
-            {
                 MovingSquares.Add(bitboard);
-            }
 
             AttackingSquares.Add(bitboard);
         }

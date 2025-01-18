@@ -27,10 +27,6 @@ public class Bishop : PinnerPiece
 
     private void GenerateAttackingSquaresBitBoard()
     {
-        List<Tile> attackingTiles = new List<Tile>();
-
-        attackingTiles.AddRange(GetDiagonalBlockedSquares());
-
-        MovingSquares = AttackingSquares = AddTilesBitBoards(attackingTiles);
+        MovingSquares = AttackingSquares = GetDiagonalBlockedSquares();
     }
 }

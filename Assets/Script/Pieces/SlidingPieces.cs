@@ -8,63 +8,63 @@ public abstract class SlidingPieces : Piece
     {
     }
 
-    protected List<Tile> GetVerticalBlockedSquares(int range = 8, bool includeFriendlySquare = true) 
+    protected Bitboard GetVerticalBlockedSquares(int range = 8, bool includeFriendlySquare = true) 
     {
-        List<Tile> tiles = new();
+        Bitboard bitboard = new();
         var verticals = actualTile.GetVerticalsByColor(pieceColor);
 
         var rangedFront = verticals.frontVerticals.GetRange(0, Mathf.Min(range, verticals.frontVerticals.Count));
-        var checkedFrontBlockingSquares = CheckForBlockingSquares(rangedFront, includeBlockingPieceSquare: includeFriendlySquare);
+        var checkedFrontBlockingSquares = GetBitboardUntilBlockedSquare(rangedFront, includeBlockingPieceSquare: includeFriendlySquare);
 
         var rangedBack = verticals.backVerticals.GetRange(0, Mathf.Min(range, verticals.backVerticals.Count));
-        var checkedBackBlockingSquares = CheckForBlockingSquares(rangedBack, includeBlockingPieceSquare: includeFriendlySquare);
+        var checkedBackBlockingSquares = GetBitboardUntilBlockedSquare(rangedBack, includeBlockingPieceSquare: includeFriendlySquare);
 
-        tiles.AddRange(checkedFrontBlockingSquares);
-        tiles.AddRange(checkedBackBlockingSquares);
+        bitboard.Add(checkedFrontBlockingSquares);
+        bitboard.Add(checkedBackBlockingSquares);
 
-        return tiles;
+        return bitboard;
     }
 
-    protected List<Tile> GetHorizontalBlockedSquares(int range = 8, bool includeFriendlySquare = true)
+    protected Bitboard GetHorizontalBlockedSquares(int range = 8, bool includeFriendlySquare = true)
     {
-        List<Tile> tiles = new();
+        Bitboard bitboard = new();
         var horizontals = actualTile.GetHorizontalsByColor(pieceColor);
 
         var rangedLeft = horizontals.leftHorizontals.GetRange(0, Mathf.Min(range, horizontals.leftHorizontals.Count));
-        var checkedLeftBlockingSquares = CheckForBlockingSquares(rangedLeft, includeBlockingPieceSquare: includeFriendlySquare);
+        var checkedLeftBlockingSquares = GetBitboardUntilBlockedSquare(rangedLeft, includeBlockingPieceSquare: includeFriendlySquare);
 
         var rangedRight = horizontals.rightHorizontals.GetRange(0, Mathf.Min(range, horizontals.rightHorizontals.Count));
-        var checkedRightBlockingSquares = CheckForBlockingSquares(rangedRight, includeBlockingPieceSquare: includeFriendlySquare);
+        var checkedRightBlockingSquares = GetBitboardUntilBlockedSquare(rangedRight, includeBlockingPieceSquare: includeFriendlySquare);
 
-        tiles.AddRange(checkedLeftBlockingSquares);
-        tiles.AddRange(checkedRightBlockingSquares);
+        bitboard.Add(checkedLeftBlockingSquares);
+        bitboard.Add(checkedRightBlockingSquares);
 
-        return tiles;
+        return bitboard;
     }
 
-    protected List<Tile> GetDiagonalBlockedSquares(int range = 8, bool includeFriendlySquare = true) 
+    protected Bitboard GetDiagonalBlockedSquares(int range = 8, bool includeFriendlySquare = true) 
     {
-        List<Tile> tiles = new();
+        Bitboard bitboard = new();
 
         var diagonals = actualTile.GetDiagonalsByColor(pieceColor);
 
         var rangedTopLeft = diagonals.topLeftDiagonals.GetRange(0, Mathf.Min(range, diagonals.topLeftDiagonals.Count));
-        var checkedTopLeftBlockingSquares = CheckForBlockingSquares(rangedTopLeft, includeBlockingPieceSquare: includeFriendlySquare);
+        var checkedTopLeftBlockingSquares = GetBitboardUntilBlockedSquare(rangedTopLeft, includeBlockingPieceSquare: includeFriendlySquare);
 
         var rangedTopRight = diagonals.topRightDiagonals.GetRange(0, Mathf.Min(range, diagonals.topRightDiagonals.Count));
-        var checkedTopRightBlockingSquares = CheckForBlockingSquares(rangedTopRight, includeBlockingPieceSquare: includeFriendlySquare);
+        var checkedTopRightBlockingSquares = GetBitboardUntilBlockedSquare(rangedTopRight, includeBlockingPieceSquare: includeFriendlySquare);
 
         var rangedDownLeft = diagonals.downLeftDiagonals.GetRange(0, Mathf.Min(range, diagonals.downLeftDiagonals.Count));
-        var checkedDownLeftBlockingSquares = CheckForBlockingSquares(rangedDownLeft, includeBlockingPieceSquare: includeFriendlySquare);
+        var checkedDownLeftBlockingSquares = GetBitboardUntilBlockedSquare(rangedDownLeft, includeBlockingPieceSquare: includeFriendlySquare);
 
         var rangedDownRight = diagonals.downRightDiagonals.GetRange(0, Mathf.Min(range, diagonals.downRightDiagonals.Count));
-        var checkedDownRightBlockingSquares = CheckForBlockingSquares(rangedDownRight, includeBlockingPieceSquare: includeFriendlySquare);
+        var checkedDownRightBlockingSquares = GetBitboardUntilBlockedSquare(rangedDownRight, includeBlockingPieceSquare: includeFriendlySquare);
 
-        tiles.AddRange(checkedTopLeftBlockingSquares);
-        tiles.AddRange(checkedTopRightBlockingSquares);
-        tiles.AddRange(checkedDownLeftBlockingSquares);
-        tiles.AddRange(checkedDownRightBlockingSquares);
+        bitboard.Add(checkedTopLeftBlockingSquares);
+        bitboard.Add(checkedTopRightBlockingSquares);
+        bitboard.Add(checkedDownLeftBlockingSquares);
+        bitboard.Add(checkedDownRightBlockingSquares);
 
-        return tiles;
+        return bitboard;
     }
 }

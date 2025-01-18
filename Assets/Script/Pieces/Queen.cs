@@ -33,12 +33,12 @@ public class Queen : PinnerPiece
 
     private void GenerateAttackingSquaresBitBoard()
     {
-        List<Tile> attackingTiles = new List<Tile>();
+        Bitboard attackingTiles = new Bitboard();
 
-        attackingTiles.AddRange(GetDiagonalBlockedSquares());
-        attackingTiles.AddRange(GetVerticalBlockedSquares());
-        attackingTiles.AddRange(GetHorizontalBlockedSquares());
+        attackingTiles.Add(GetDiagonalBlockedSquares());
+        attackingTiles.Add(GetVerticalBlockedSquares());
+        attackingTiles.Add(GetHorizontalBlockedSquares());
 
-        MovingSquares = AttackingSquares = AddTilesBitBoards(attackingTiles);
+        MovingSquares = AttackingSquares = attackingTiles;
     }
 }

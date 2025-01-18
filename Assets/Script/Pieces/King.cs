@@ -12,13 +12,13 @@ public class King : SlidingPieces
     protected override void GenerateBitBoardMethod()
     {
         Profiler.BeginSample("Move Generation > Generate Bitboard -> King");
-        List<Tile> attackingTiles = new List<Tile>();
+        Bitboard attackingTiles = new Bitboard();
 
-        attackingTiles.AddRange(GetDiagonalBlockedSquares(1));
-        attackingTiles.AddRange(GetVerticalBlockedSquares(1));
-        attackingTiles.AddRange(GetHorizontalBlockedSquares(1));
+        attackingTiles.Add(GetDiagonalBlockedSquares(1));
+        attackingTiles.Add(GetVerticalBlockedSquares(1));
+        attackingTiles.Add(GetHorizontalBlockedSquares(1));
 
-        AttackingSquares = AddTilesBitBoards(attackingTiles);
+        AttackingSquares = attackingTiles;
         MovingSquares.Add(AttackingSquares);
 
         Bitboard castleBitboard = GetCastleBitboard();

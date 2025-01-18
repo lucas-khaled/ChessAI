@@ -65,57 +65,24 @@ public abstract class Piece
         return piece != null && pieceColor != piece.pieceColor;
     }
 
-    protected Move[] CreateMovesFromSegment(List<Tile> segments)
+    protected Bitboard GetBitboardUntilBlockedSquare(List<TileCoordinates> segment, bool capturesIfEnemy = true, bool includeBlockingPieceSquare = false)
     {
-        Move[] moves = new Move[segments.Count];
-
-        for (int i = 0; i < segments.Count; i++)
-            moves[i] = new Move(actualTile, segments[i], this, segments[i].OccupiedBy);
-
-        return moves;
-    }
-
-    protected List<Tile> CheckForBlockingSquares(List<TileCoordinates> segment, bool capturesIfEnemy = true, bool includeBlockingPieceSquare = false)
-    {
-        List<Tile> finalTiles = new();
+        Bitboard bitboard = new();
         foreach (var tileCoord in segment)
         {
             Tile tile = Board.tiles[tileCoord.row][tileCoord.column];
             if (tile.IsOccupied)
             {
                 if (IsEnemyPiece(tile.OccupiedBy) && capturesIfEnemy || includeBlockingPieceSquare)
-                    finalTiles.Add(tile);
+                    bitboard.Add(tile.Bitboard);
 
                 break;
             }
 
-            finalTiles.Add(tile);
+            bitboard.Add(tile.Bitboard);
         }
 
-        return finalTiles;
-    }
-
-    protected List<Tile> GetTilesFromCoordinates(List<TileCoordinates> segment, bool friendlyBlock = true) 
-    {
-        List<Tile> finalTiles = new();
-        foreach (var tileCoord in segment)
-        {
-            Tile tile = Board.tiles[tileCoord.row][tileCoord.column];
-            if (friendlyBlock && tile.IsOccupied && tile.OccupiedBy.pieceColor == pieceColor) break;
-
-            finalTiles.Add(tile);
-        }
-
-        return finalTiles;
-    }
-
-    protected Bitboard AddTilesBitBoards(List<Tile> tiles)
-    {
-        Bitboard bitBoard = new Bitboard();
-        foreach (Tile tile in tiles)
-            bitBoard.Add(tile.Bitboard);
-
-        return bitBoard;
+        return bitboard;
     }
 
     public Piece Copy(Tile tile) 

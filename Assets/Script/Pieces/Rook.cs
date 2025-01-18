@@ -28,11 +28,11 @@ public class Rook : PinnerPiece
 
     private void GenerateAttackingSquaresBitBoard() 
     {
-        List<Tile> attackingTiles = new List<Tile>();
+        Bitboard attackingTiles = new Bitboard();
 
-        attackingTiles.AddRange(GetVerticalBlockedSquares());
-        attackingTiles.AddRange(GetHorizontalBlockedSquares());
+        attackingTiles.Add(GetVerticalBlockedSquares());
+        attackingTiles.Add(GetHorizontalBlockedSquares());
 
-        MovingSquares = AttackingSquares = AddTilesBitBoards(attackingTiles);
+        MovingSquares = AttackingSquares = attackingTiles;
     }
 }
