@@ -12,6 +12,7 @@ public class PromotionMove : Move
     public override Move VirtualizeTo(Board board)
     {
         Move virtualizedMove = base.VirtualizeTo(board);
+        promoteTo.Board = board;
 
         return new PromotionMove(virtualizedMove.from, virtualizedMove.to, virtualizedMove.piece, promoteTo, virtualizedMove.capture);
     }
