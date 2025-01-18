@@ -19,9 +19,12 @@ public class MoveGenerator
     private Bitboard piecesPositionBitboard = new Bitboard();
     private Bitboard enemyPiecesPositionBitboard = new Bitboard();
 
-    private Bitboard queenSideCastleWhiteBitboard = new Bitboard(2) | new Bitboard(3);
+    private Bitboard queenSideCastleWhiteBitboard = new Bitboard(1) |new Bitboard(2) | new Bitboard(3);
+    private Bitboard queenSideAttackCastleWhiteBitboard = new Bitboard(2) | new Bitboard(3);
     private Bitboard kingSideCastleWhiteBitboard = new Bitboard(5) | new Bitboard(6);
-    private Bitboard queenSideCastleBlackBitboard = new Bitboard(58) | new Bitboard(59);
+
+    private Bitboard queenSideCastleBlackBitboard = new Bitboard(57) | new Bitboard(58) | new Bitboard(59);
+    private Bitboard queenSideAttackCastleBlackBitboard = new Bitboard(58) | new Bitboard(59);
     private Bitboard kingSideCastleBlackBitboard = new Bitboard(61) | new Bitboard(62);
 
     private List<Piece> kingAttackers;
@@ -102,8 +105,9 @@ public class MoveGenerator
                 bool canCastle = (isQueenSide) ? board.rules.CanCastleQueenSide(piece.pieceColor) : board.rules.CanCastleKingSide(piece.pieceColor);
                 if (!canCastle) return;
 
-                Bitboard checkBitboard = GetCastleCheckBitboard(piece.pieceColor, isQueenSide);
-                if (HasAnyPieceOrAnyAttackIn(checkBitboard)) return;
+                Bitboard attackCheckBitboard = GetCastleAttackCheckBitboard(piece.pieceColor, isQueenSide);
+                Bitboard pieceCheckBitBoard = GetCastleCheckBitboard(piece.pieceColor, isQueenSide);
+                if (HasAnyAttackIn(attackCheckBitboard) || HasAnyPieceIn(pieceCheckBitBoard)) return;
 
                 var rookCoord = EspecialRules.GetRookCoordinates(isQueenSide, piece.pieceColor);
                 Piece rookPiece = board.GetTiles()[rookCoord.row][rookCoord.column].OccupiedBy;
@@ -156,9 +160,23 @@ public class MoveGenerator
             || (pawn.Coordinates.row == 1 && pawn.pieceColor == PieceColor.Black);
     }
 
-    private bool HasAnyPieceOrAnyAttackIn(Bitboard checkBitboard)
+    private bool HasAnyAttackIn(Bitboard checkBitboard)
     {
-        return ((enemyPiecesPositionBitboard | piecesPositionBitboard | enemiesAttackingSquares) & checkBitboard) > 0;
+        return (enemiesAttackingSquares & checkBitboard) > 0;
+    }
+
+    private bool HasAnyPieceIn(Bitboard checkBitboard)
+    {
+        return ((enemyPiecesPositionBitboard | piecesPositionBitboard) & checkBitboard) > 0;
+    }
+
+    private Bitboard GetCastleAttackCheckBitboard(PieceColor pieceColor, bool isQueenSide)
+    {
+        return (pieceColor == PieceColor.White)
+            ? (isQueenSide)
+                ? queenSideAttackCastleWhiteBitboard : kingSideCastleWhiteBitboard
+            : (isQueenSide)
+                ? queenSideAttackCastleBlackBitboard : kingSideCastleBlackBitboard;
     }
 
     private Bitboard GetCastleCheckBitboard(PieceColor pieceColor, bool isQueenSide)
