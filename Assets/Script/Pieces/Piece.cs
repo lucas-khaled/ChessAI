@@ -27,7 +27,6 @@ public abstract class Piece
     public Bitboard AttackingSquares { get; set; } = new Bitboard();
 
     protected abstract void GenerateBitBoardMethod();
-    public abstract Move[] GetMoves();
 
     public Piece(Board board) 
     {

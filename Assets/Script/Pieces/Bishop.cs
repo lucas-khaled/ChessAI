@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using UnityEngine.Profiling;
 
 public class Bishop : PinnerPiece
 {
@@ -8,8 +9,10 @@ public class Bishop : PinnerPiece
 
     protected override void GenerateBitBoardMethod()
     {
+        Profiler.BeginSample("Move Generation > Generate Bitboard -> Bishop");
         GenerateAttackingSquaresBitBoard();
         GenerateKingDangerBitBoard();
+        Profiler.EndSample();
     }
 
     private void GenerateKingDangerBitBoard()
@@ -29,10 +32,5 @@ public class Bishop : PinnerPiece
         attackingTiles.AddRange(GetDiagonalBlockedSquares());
 
         MovingSquares = AttackingSquares = AddTilesBitBoards(attackingTiles);
-    }
-
-    public override Move[] GetMoves()
-    {
-        return GetDiagonalMoves().ToArray();
     }
 }

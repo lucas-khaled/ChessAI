@@ -3,12 +3,11 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Profiling;
 
 public class MoveGenerator
 {
     private Board board;
-
-    private Bitboard attackingSquares = new Bitboard();
 
     private Bitboard enemiesAttackingSquares = new Bitboard();
     private Bitboard enemiesKingDangerSquares = new Bitboard();
@@ -16,7 +15,7 @@ public class MoveGenerator
     private Bitboard kingAttackersSquaresBitboard = new Bitboard();
     private Bitboard inBetweenKingAndAttackersBitboard = new Bitboard();
 
-    private List<Bitboard> enemyInBetweenPinners = new List<Bitboard>();
+    private Dictionary<PinnerPiece, Bitboard> enemyInBetweenPinners = new Dictionary<PinnerPiece, Bitboard>();
 
     private Bitboard piecesPositionBitboard = new Bitboard();
     private Bitboard enemyPiecesPositionBitboard = new Bitboard();
@@ -29,6 +28,8 @@ public class MoveGenerator
     private Bitboard queenSideAttackCastleBlackBitboard = new Bitboard(58) | new Bitboard(59);
     private Bitboard kingSideCastleBlackBitboard = new Bitboard(61) | new Bitboard(62);
 
+    private Piece[] myPieces;
+    private Piece[] enemyPieces;
     private List<Piece> kingAttackers;
     private Piece kingPiece;
     private PieceColor actualColor;
@@ -41,9 +42,14 @@ public class MoveGenerator
     public List<Move> GenerateMoves(PieceColor color) 
     {
         List <Move> moves = new List<Move>();
-        
+
+        Profiler.BeginSample("Move Generation > Initialize");
         Initialize(color);
+        Profiler.EndSample();
+
+        Profiler.BeginSample("Move Generation > GenerateBitboards");
         GenerateBitboards();
+        Profiler.EndSample();
 
         if (IsCheck())
         {
@@ -57,7 +63,9 @@ public class MoveGenerator
         }
         else 
         {
+            Profiler.BeginSample("Move Generation > GeneratePiecesMove");
             moves.AddRange(GeneratePiecesMove());
+            Profiler.EndSample();
 
             return moves;
         }
@@ -67,7 +75,7 @@ public class MoveGenerator
     {
         List<Move> moves = new();
 
-        foreach (var piece in board.GetAllPieces(actualColor))
+        foreach (var piece in myPieces)
         {
             if (piece is King || piece.PinnedBy != null) continue;
 
@@ -86,15 +94,24 @@ public class MoveGenerator
 
     private void FillMovesFromPiece(List<Move> moves, Piece piece, Bitboard movesBitboard)
     {
-        foreach (var index in movesBitboard.ConvertToIndexes())
+        Profiler.BeginSample("Move Generation > GeneratePiecesMove > FillMovesFromPiece > ConvertToIndexes");
+        var indexes = movesBitboard.ConvertToIndexes();
+        Profiler.EndSample();
+
+        foreach (var index in indexes)
         {
             var toTile = board.GetTileByIndex(index);
+            Profiler.BeginSample("Move Generation > GeneratePiecesMove > FillMovesFromPiece > GeneratePieceMove");
             GeneratePieceMove(moves, piece, toTile);
+            Profiler.EndSample();
         }
     }
 
     private void GeneratePieceMove(List<Move> moves, Piece piece, Tile toTile)
     {
+        if (WillRevealAttack(piece.GetTile().Bitboard, toTile.Bitboard)) 
+            return;
+
         if(piece is King king) 
         {
             if (IsImpossibleForKing(toTile)) return;
@@ -135,7 +152,7 @@ public class MoveGenerator
                 int offset = (piece.pieceColor == PieceColor.White) ? -1 : 1;
                 Piece enPassantPiece = board.GetTiles()[toTile.TilePosition.row+offset][toTile.TilePosition.column].OccupiedBy;
 
-                if (WillRevealAttack(piece.GetTile().Bitboard, enPassantPiece.GetTile().Bitboard)) return;
+                if (WillRevealAttack(piece.GetTile().Bitboard | enPassantPiece.GetTile().Bitboard, toTile.Bitboard)) return;
                 
                 EnPassantMove enPassantCapture = new EnPassantMove(piece.GetTile(), toTile, pawn, enPassantPiece);
                 moves.Add(enPassantCapture);
@@ -147,16 +164,15 @@ public class MoveGenerator
         moves.Add(move);
     }
 
-    private bool WillRevealAttack(Bitboard bitboard1, Bitboard bitboard2)
+    private bool WillRevealAttack(Bitboard willLeave, Bitboard willGo)
     {
-        var pieces = GetCurrentBoardBitboard();
         foreach (var inBetween in enemyInBetweenPinners) 
         {
-            Bitboard testBoard = new Bitboard(inBetween);
-            testBoard.Remove(bitboard1);
-            testBoard.Remove(bitboard2);
+            Bitboard afterLeaveBoard = new Bitboard(inBetween.Value);
+            afterLeaveBoard.Remove(willLeave);
+            afterLeaveBoard.Remove(inBetween.Key.GetTile().Bitboard);
 
-            if ((testBoard & pieces) == 0) return true;
+            if ((HasAnyPieceIn(afterLeaveBoard) is false) && ((willGo & inBetween.Value) <= 0)) return true;
         }
 
         return false;
@@ -210,6 +226,9 @@ public class MoveGenerator
     private void Initialize(PieceColor color)
     {
         actualColor = color;
+        myPieces = board.GetAllPieces(color);
+        enemyPieces = board.GetAllPieces(color.GetOppositeColor());
+
         kingPiece = board.GetKingTile(color).OccupiedBy;
         kingAttackers = new();
     }
@@ -217,7 +236,6 @@ public class MoveGenerator
     private void GenerateBitboards()
     {
         enemyInBetweenPinners.Clear();
-        attackingSquares.Clear();
         inBetweenKingAndAttackersBitboard.Clear();
         enemiesAttackingSquares.Clear();
         enemiesKingDangerSquares.Clear();
@@ -231,7 +249,8 @@ public class MoveGenerator
     private void GenerateEnemyBitboards()
     {
         kingAttackersSquaresBitboard = new Bitboard();
-        foreach (var piece in board.GetAllPieces(actualColor.GetOppositeColor()))
+
+        foreach (var piece in enemyPieces)
         {
             enemyPiecesPositionBitboard.Add(piece.GetTile().Bitboard);
 
@@ -241,23 +260,9 @@ public class MoveGenerator
             if (piece is PinnerPiece pinner)
             {
                 if(pinner.InBetweenSquares > 0)
-                    enemyInBetweenPinners.Add(pinner.InBetweenSquares);
+                    enemyInBetweenPinners.Add(pinner, pinner.InBetweenSquares);
 
                 enemiesKingDangerSquares.Add(pinner.KingDangerSquares);
-
-                int pinningIndex = pinner.PinningIndex;
-                if (pinningIndex > -1)
-                {
-                    var tile = board.GetTileByIndex(pinningIndex);
-                    if (tile.IsOccupied is false)
-                    {
-                        Debug.LogError($"A pin was indicated by {pinner} in {pinningIndex} but there was no piece");
-                        continue;
-                    }
-
-                    tile.OccupiedBy.PinnedBy = pinner;
-                }
-
             }
 
             if ((piece.AttackingSquares & kingPiece.GetTile().Bitboard) > 0)
@@ -305,12 +310,11 @@ public class MoveGenerator
 
     private void GenerateMyBitboards()
     {
-        foreach (var piece in board.GetAllPieces(actualColor))
+        foreach (var piece in myPieces)
         {
             piecesPositionBitboard.Add(piece.GetTile().Bitboard);
 
             piece.GenerateBitBoard();
-            attackingSquares.Add(piece.AttackingSquares);
         }
     }
 
@@ -365,17 +369,16 @@ public class MoveGenerator
     private List<Move> GeneratePiecesMove() 
     {
         List<Move> moves = new();
-        foreach (Piece piece in board.GetAllPieces(actualColor)) 
+        foreach (Piece piece in myPieces) 
         {
-            var filteredMoves = new Bitboard(piece.MovingSquares.value);
+            var filteredMoves = new Bitboard(piece.MovingSquares);
             filteredMoves.Remove(piecesPositionBitboard);
 
             if (filteredMoves <= 0) continue;
-            
-            if (piece.PinnedBy != null) 
-                filteredMoves &= (piece.PinnedBy.PinSquares | piece.PinnedBy.GetTile().Bitboard);
 
+            Profiler.BeginSample("Move Generation > GeneratePiecesMove > FillMovesFromPiece");
             FillMovesFromPiece(moves, piece, filteredMoves);
+            Profiler.EndSample();
         }
 
         return moves;

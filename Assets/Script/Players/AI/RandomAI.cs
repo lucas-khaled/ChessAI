@@ -11,7 +11,7 @@ public class RandomAI : AIPlayer
     protected override async Task<Move> CalculateMove()
     {
         await Task.Delay((int)(minimumWaitTime * 1000));
-        var allMoves = GetAllMoves(manager.GameBoard, actualColor);
+        var allMoves = manager.TestBoard.currentTurnMoves;
         System.Random rand = new System.Random();
         int index = rand.Next(0, allMoves.Count);
 

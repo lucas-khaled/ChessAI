@@ -9,6 +9,5 @@ public interface IGameManager
 
     public TurnManager TurnManager { get; }
     public EndGameChecker EndGameChecker { get; }
-    public MoveChecker MoveChecker { get; }
     public ZobristHashManager HashManager { get; }
 }

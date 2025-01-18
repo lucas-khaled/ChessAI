@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using UnityEngine.Profiling;
 
 public class Rook : PinnerPiece
 {
@@ -8,8 +9,10 @@ public class Rook : PinnerPiece
 
     protected override void GenerateBitBoardMethod()
     {
+        Profiler.BeginSample("Move Generation > Generate Bitboard -> Rook");
         GenerateAttackingSquaresBitBoard();   
         GenerateKingDangerBitBoard();
+        Profiler.EndSample();
     }
 
     private void GenerateKingDangerBitBoard()
@@ -31,14 +34,5 @@ public class Rook : PinnerPiece
         attackingTiles.AddRange(GetHorizontalBlockedSquares());
 
         MovingSquares = AttackingSquares = AddTilesBitBoards(attackingTiles);
-    }
-
-    public override Move[] GetMoves()
-    {
-        List<Move> moves = new();
-        moves.AddRange(GetVerticalMoves());
-        moves.AddRange(GetHorizontalMoves());
-
-        return moves.ToArray();
     }
 }

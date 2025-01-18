@@ -14,7 +14,6 @@ public class GameManager : MonoBehaviour, IGameManager
 
     public TurnManager TurnManager { get; private set; }
     public EndGameChecker EndGameChecker { get; private set; }
-    public MoveChecker MoveChecker { get; private set; }
     public ZobristHashManager HashManager { get; private set; }
 
     private PiecesSetup setup;
@@ -57,7 +56,6 @@ public class GameManager : MonoBehaviour, IGameManager
         SetupEnvironment(board);
 
         EndGameChecker = new EndGameChecker(this);
-        MoveChecker = new MoveChecker(this);
         TurnManager = new TurnManager(this);
 
         ChooseSetup();

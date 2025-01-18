@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using UnityEngine.Profiling;
 
 public class Queen : PinnerPiece
 {
@@ -8,8 +9,10 @@ public class Queen : PinnerPiece
 
     protected override void GenerateBitBoardMethod()
     {
+        Profiler.BeginSample("Move Generation > Generate Bitboard -> Queen");
         GenerateAttackingSquaresBitBoard();
         GenerateKingDangerBitBoard();
+        Profiler.EndSample();
     }
 
     private void GenerateKingDangerBitBoard()
@@ -37,16 +40,5 @@ public class Queen : PinnerPiece
         attackingTiles.AddRange(GetHorizontalBlockedSquares());
 
         MovingSquares = AttackingSquares = AddTilesBitBoards(attackingTiles);
-    }
-
-    public override Move[] GetMoves()
-    {
-        List<Move> moves = new();
-
-        moves.AddRange(GetDiagonalMoves());
-        moves.AddRange(GetVerticalMoves());
-        moves.AddRange(GetHorizontalMoves());
-
-        return moves.ToArray();
     }
 }
