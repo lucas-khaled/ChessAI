@@ -61,7 +61,7 @@ public abstract class SlidingPieces : Piece
         return moves;
     }
 
-    protected List<Tile> GetHorizontalBlockedSquares(int range = 8, bool includeFriendlySquare = false)
+    protected List<Tile> GetHorizontalBlockedSquares(int range = 8, bool includeFriendlySquare = true)
     {
         List<Tile> tiles = new();
         var horizontals = actualTile.GetHorizontalsByColor(pieceColor);
