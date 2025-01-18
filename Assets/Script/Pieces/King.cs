@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using UnityEngine.Profiling;
 
 public class King : SlidingPieces
 {
@@ -74,6 +75,7 @@ public class King : SlidingPieces
 
     protected override void GenerateBitBoardMethod()
     {
+        Profiler.BeginSample("Move Generation > Generate Bitboard -> King");
         List<Tile> attackingTiles = new List<Tile>();
 
         attackingTiles.AddRange(GetDiagonalBlockedSquares(1));
@@ -85,6 +87,7 @@ public class King : SlidingPieces
 
         Bitboard castleBitboard = GetCastleBitboard();
         MovingSquares.Add(castleBitboard);
+        Profiler.EndSample();
     }
 
     private Bitboard GetCastleBitboard()

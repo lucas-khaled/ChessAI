@@ -1,10 +1,9 @@
 using System;
 using System.Collections.Generic;
+using UnityEngine.Profiling;
 
 public class Pawn : SlidingPieces
 {
-    public Bitboard enPassantPawnBitboard = new Bitboard();
-
     public Pawn(Board board) : base(board)
     {
     }
@@ -130,7 +129,7 @@ public class Pawn : SlidingPieces
 
     protected override void GenerateBitBoardMethod()
     {
-        enPassantPawnBitboard.Clear();
+        Profiler.BeginSample("Move Generation > Generate Bitboard -> Pawn");
 
         List<Tile> tiles = new List<Tile>();
         int range = IsOnInitialRow() ? 2 : 1;
@@ -166,5 +165,6 @@ public class Pawn : SlidingPieces
 
             AttackingSquares.Add(bitboard);
         }
+        Profiler.EndSample();
     }
 }

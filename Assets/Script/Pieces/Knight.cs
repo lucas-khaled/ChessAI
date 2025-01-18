@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using UnityEngine.Profiling;
 
 public class Knight : Piece
 {
@@ -92,6 +93,7 @@ public class Knight : Piece
 
     protected override void GenerateBitBoardMethod()
     {
+        Profiler.BeginSample("Move Generation > Generate Bitboard -> Knight");
         int currentIndex = actualTile.Index;
         Bitboard bitboard = new Bitboard();
 
@@ -168,6 +170,8 @@ public class Knight : Piece
         }
 
         MovingSquares = bitboard;
+
+        Profiler.EndSample();
     }
 
     private void AddToBitboardIfNotOccupiedByFriend(ref Bitboard bitboard, Tile tile) 
