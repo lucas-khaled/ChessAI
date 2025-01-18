@@ -9,6 +9,7 @@ public class BitboardSelector : MonoBehaviour
     {
         KingDanger,
         PinSquares,
+        InBetween,
         Attacking,
         AspiredMove,
         ValidMove
@@ -89,6 +90,17 @@ public class BitboardSelector : MonoBehaviour
 
                 pinner.GenerateBitBoard();
                 boardVisualizer.SetBitBoard(pinner.KingDangerSquares, kingDangerColor);
+                break;
+
+            case PieceVisualizationType.InBetween:
+                if (tile.OccupiedBy is not PinnerPiece pinner3)
+                {
+                    boardVisualizer.SetBitBoard(new Bitboard(), pinSquaresColor);
+                    return;
+                }
+
+                pinner3.GenerateBitBoard();
+                boardVisualizer.SetBitBoard(pinner3.InBetweenSquares, pinSquaresColor);
                 break;
 
             case PieceVisualizationType.PinSquares:

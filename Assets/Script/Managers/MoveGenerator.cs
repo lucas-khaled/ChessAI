@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -8,13 +9,14 @@ public class MoveGenerator
     private Board board;
 
     private Bitboard attackingSquares = new Bitboard();
-    private Bitboard kingDangerSquares = new Bitboard();
 
     private Bitboard enemiesAttackingSquares = new Bitboard();
     private Bitboard enemiesKingDangerSquares = new Bitboard();
 
     private Bitboard kingAttackersSquaresBitboard = new Bitboard();
-    public Bitboard inBetweenKingAndAttackersBitboard = new Bitboard();
+    private Bitboard inBetweenKingAndAttackersBitboard = new Bitboard();
+
+    private List<Bitboard> enemyInBetweenPinners = new List<Bitboard>();
 
     private Bitboard piecesPositionBitboard = new Bitboard();
     private Bitboard enemyPiecesPositionBitboard = new Bitboard();
@@ -132,6 +134,8 @@ public class MoveGenerator
             {
                 int offset = (piece.pieceColor == PieceColor.White) ? -1 : 1;
                 Piece enPassantPiece = board.GetTiles()[toTile.TilePosition.row+offset][toTile.TilePosition.column].OccupiedBy;
+
+                if (WillRevealAttack(piece.GetTile().Bitboard, enPassantPiece.GetTile().Bitboard)) return;
                 
                 EnPassantMove enPassantCapture = new EnPassantMove(piece.GetTile(), toTile, pawn, enPassantPiece);
                 moves.Add(enPassantCapture);
@@ -141,6 +145,21 @@ public class MoveGenerator
 
         Move move = new Move(piece.GetTile(), toTile, piece, toTile.OccupiedBy);
         moves.Add(move);
+    }
+
+    private bool WillRevealAttack(Bitboard bitboard1, Bitboard bitboard2)
+    {
+        var pieces = GetCurrentBoardBitboard();
+        foreach (var inBetween in enemyInBetweenPinners) 
+        {
+            Bitboard testBoard = new Bitboard(inBetween);
+            testBoard.Remove(bitboard1);
+            testBoard.Remove(bitboard2);
+
+            if ((testBoard & pieces) == 0) return true;
+        }
+
+        return false;
     }
 
     private PromotionMove[] GetPossiblePromotions(Pawn pawn, Tile toTile)
@@ -197,8 +216,8 @@ public class MoveGenerator
 
     private void GenerateBitboards()
     {
+        enemyInBetweenPinners.Clear();
         attackingSquares.Clear();
-        kingDangerSquares.Clear();
         inBetweenKingAndAttackersBitboard.Clear();
         enemiesAttackingSquares.Clear();
         enemiesKingDangerSquares.Clear();
@@ -221,6 +240,9 @@ public class MoveGenerator
 
             if (piece is PinnerPiece pinner)
             {
+                if(pinner.InBetweenSquares > 0)
+                    enemyInBetweenPinners.Add(pinner.InBetweenSquares);
+
                 enemiesKingDangerSquares.Add(pinner.KingDangerSquares);
 
                 int pinningIndex = pinner.PinningIndex;
@@ -235,6 +257,7 @@ public class MoveGenerator
 
                     tile.OccupiedBy.PinnedBy = pinner;
                 }
+
             }
 
             if ((piece.AttackingSquares & kingPiece.GetTile().Bitboard) > 0)
@@ -288,24 +311,6 @@ public class MoveGenerator
 
             piece.GenerateBitBoard();
             attackingSquares.Add(piece.AttackingSquares);
-
-            if (piece is PinnerPiece pinner)
-            {
-                kingDangerSquares.Add(pinner.KingDangerSquares);
-
-                int pinningIndex = pinner.PinningIndex;
-                if (pinningIndex > -1)
-                {
-                    var tile = board.GetTileByIndex(pinningIndex);
-                    if(tile.IsOccupied is false)
-                    {
-                        Debug.LogError($"A pin was indicated by {pinner} in {pinningIndex} but there was no piece");
-                        continue;
-                    }
-
-                    tile.OccupiedBy.PinnedBy = pinner;
-                }
-            }
         }
     }
 
@@ -366,7 +371,7 @@ public class MoveGenerator
             filteredMoves.Remove(piecesPositionBitboard);
 
             if (filteredMoves <= 0) continue;
-
+            
             if (piece.PinnedBy != null) 
                 filteredMoves &= (piece.PinnedBy.PinSquares | piece.PinnedBy.GetTile().Bitboard);
 

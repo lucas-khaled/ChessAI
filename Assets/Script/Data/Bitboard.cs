@@ -10,6 +10,11 @@ public class Bitboard
         value = 0L;
     }
 
+    public Bitboard(Bitboard from) 
+    {
+        this.value = from.value;
+    }
+
     public Bitboard(ulong value)
     {
         this.value = value;

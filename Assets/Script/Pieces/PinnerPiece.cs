@@ -5,6 +5,7 @@ public abstract class PinnerPiece : SlidingPieces
 {
     public Bitboard KingDangerSquares { get; protected set; } = new Bitboard();
     public Bitboard PinSquares { get; protected set; } = new Bitboard();
+    public Bitboard InBetweenSquares { get; protected set; } = new Bitboard();
     public int PinningIndex { get; protected set; }
 
     protected PinnerPiece(Board board) : base(board)
@@ -16,6 +17,7 @@ public abstract class PinnerPiece : SlidingPieces
         PinningIndex = -1;
         KingDangerSquares.Clear();
         PinSquares.Clear();
+        InBetweenSquares.Clear();
         base.GenerateBitBoard();
     }
 
@@ -23,6 +25,9 @@ public abstract class PinnerPiece : SlidingPieces
     {
         Bitboard kingDanger = new();
         Bitboard pinSquares = new();
+        Bitboard inBetween = new();
+
+        int friendlyPieces = 0;
         bool hasKing = false;
         bool hasPin = false;
         int enemieInBetweenIndex = -1;
@@ -31,22 +36,41 @@ public abstract class PinnerPiece : SlidingPieces
         {
             Tile tile = Board.tiles[tileCoord.row][tileCoord.column];
 
+            if(hasKing is false)
+                inBetween.Add(tile.Bitboard);
+
             if (tile.IsOccupied)
             {
-                if (tile.OccupiedBy.pieceColor == pieceColor)
-                    break;
+                if (tile.OccupiedBy.pieceColor == pieceColor) 
+                {
+                    if (hasKing)
+                    {
+                        if (friendlyPieces <= 0)
+                            kingDanger.Add(tile.Bitboard);
+
+                        inBetween.Remove(tile.Bitboard);
+                        break;
+                    }
+
+
+                    friendlyPieces++;
+                    continue;
+                }
 
                 if (tile.OccupiedBy is King)
                 {
                     hasKing = true;
-                    hasPin = enemieInBetweenIndex > -1;
+                    hasPin = (enemieInBetweenIndex > -1) && friendlyPieces <= 0;
+                    inBetween.Remove(tile.Bitboard);
 
-                    if (hasPin)
+                    if (hasPin || friendlyPieces > 0)
                         break;
 
                     kingDanger.Add(tile.Bitboard);
                     continue;
                 }
+
+                if (friendlyPieces > 0) continue;
 
                 if (enemieInBetweenIndex > -1)
                 {
@@ -60,24 +84,16 @@ public abstract class PinnerPiece : SlidingPieces
                 continue;
             }
 
-            if(enemieInBetweenIndex == -1)
+            if(enemieInBetweenIndex == -1 && friendlyPieces <= 0)
                 kingDanger.Add(tile.Bitboard);
 
             if (hasKing is false)
                 pinSquares.Add(tile.Bitboard);
         }
 
-        /*if(this is Rook && pieceColor == PieceColor.White && Coordinates.row == 7 && segment.Count > 0 && segment[0].column == 3) 
-        {
-            Debug.Log($"!!!{hasKing} - {enemieInBetween} - {Board.Name} - {enemieInBetween.Board.Name}");
-            foreach(var turn in Board.turns) 
-            {
-                Debug.Log($"!!!!{turn.move}");
-            }
-        }*/
-
         if (hasKing) 
         {
+            InBetweenSquares = inBetween;
             KingDangerSquares.Add(kingDanger);
             if (hasPin)
             {
