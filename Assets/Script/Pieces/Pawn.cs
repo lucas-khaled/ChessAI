@@ -8,105 +8,10 @@ public class Pawn : SlidingPieces
     {
     }
 
-    public override Move[] GetMoves()
-    {
-        List<Move> possibleMoves = new List<Move>();
-
-        if (NextMoveIsPromotion()) 
-        {
-            possibleMoves.AddRange(GetPromotionMoves());
-            return possibleMoves.ToArray();
-        }
-
-        possibleMoves.AddRange(GetFowardMoves());
-        possibleMoves.AddRange(GetCaptures());
-
-        return possibleMoves.ToArray();
-    }
-    
-    private bool NextMoveIsPromotion() 
-    {
-        return (Row == 6 && IsWhite)
-            || (Row == 1 && !IsWhite);
-    }
-
-    private PromotionMove[] GetPromotionMoves()
-    {
-        List<PromotionMove> moves = new();
-
-        var forwardMoves = GetPromotionsForward();
-        moves.AddRange(forwardMoves);
-
-        var captureMoves = GetPromotionCaptures();
-        moves.AddRange(captureMoves);
-
-        return moves.ToArray();
-    }
-
-    private PromotionMove[] GetPromotionsForward() 
-    {
-        var verticals = actualTile.GetVerticalsByColor(pieceColor);
-
-        var toTileCoord = verticals.frontVerticals[0];
-        var toTile = Board.tiles[toTileCoord.row][toTileCoord.column];
-        return toTile.IsOccupied ? new PromotionMove[0] : GetPossiblePromotions(toTileCoord);
-    }
-
-    private List<PromotionMove> GetPromotionCaptures() 
-    {
-        List<PromotionMove> moves = new();
-
-        var diagonals = actualTile.GetDiagonalsByColor(pieceColor);
-
-        if (CanMoveToDiagonal(diagonals.topLeftDiagonals))
-            moves.AddRange(GetPossiblePromotions(diagonals.topLeftDiagonals[0]));
-
-        if (CanMoveToDiagonal(diagonals.topRightDiagonals))
-            moves.AddRange(GetPossiblePromotions(diagonals.topRightDiagonals[0]));
-
-        return moves;
-    }
-
-    private PromotionMove[] GetPossiblePromotions(TileCoordinates toCoord) 
-    {
-        return new PromotionMove[4]
-        {
-            new PromotionMove(actualTile, Board.tiles[toCoord.row][toCoord.column], this, new Rook(Board), Board.tiles[toCoord.row][toCoord.column].OccupiedBy),
-            new PromotionMove(actualTile, Board.tiles[toCoord.row][toCoord.column], this, new Bishop(Board), Board.tiles[toCoord.row][toCoord.column].OccupiedBy),
-            new PromotionMove(actualTile, Board.tiles[toCoord.row][toCoord.column], this, new Knight(Board), Board.tiles[toCoord.row][toCoord.column].OccupiedBy),
-            new PromotionMove(actualTile, Board.tiles[toCoord.row][toCoord.column], this, new Queen(Board), Board.tiles[toCoord.row][toCoord.column].OccupiedBy)
-        };
-    }
-
-    private Move[] GetFowardMoves() 
-    {
-        int range = (IsOnInitialRow()) ? 2 : 1;
-
-        var verticals = actualTile.GetVerticalsByColor(pieceColor);
-        var checkingBlockVerticals = CheckForBlockingSquares(verticals.frontVerticals.GetRange(0, range), false);
-        
-        return CreateMovesFromSegment(checkingBlockVerticals);
-    }
-
     private bool IsOnInitialRow()
     {
         return (Row == 1 && IsWhite)
             || (Row == 6 && !IsWhite);
-    }
-
-    private Move[] GetCaptures() 
-    {
-        List<Move> moves = new();
-
-        var diagonals = actualTile.GetDiagonalsByColor(pieceColor);
-
-        if (CanMoveToDiagonal(diagonals.topLeftDiagonals)) 
-            moves.Add(CreateDiagonalMove(diagonals.topLeftDiagonals[0]));
-
-        if (CanMoveToDiagonal(diagonals.topRightDiagonals))
-            moves.Add(CreateDiagonalMove(diagonals.topRightDiagonals[0]));
-
-        return moves.ToArray();
     }
 
     private bool CanMoveToDiagonal(List<TileCoordinates> diagonal) 
@@ -117,14 +22,6 @@ public class Pawn : SlidingPieces
         var diagonalTile = Board.tiles[diagonal[0].row][diagonal[0].column];
         return IsEnemyPiece(diagonalTile.OccupiedBy)
             || Board.rules.HasEnPassant && diagonal[0].Equals(Board.rules.enPassantTileCoordinates);
-    }
-
-    private Move CreateDiagonalMove(TileCoordinates diagonalTileCoord) 
-    {
-        Tile diagonalTile = Board.tiles[diagonalTileCoord.row][diagonalTileCoord.column];
-        return diagonalTile.IsOccupied ?
-            new Move(actualTile, diagonalTile, this, diagonalTile.OccupiedBy) :
-            new Move(actualTile, diagonalTile, this, Board.GetTiles()[Board.rules.enPassantTileCoordinates.row][Board.rules.enPassantTileCoordinates.column].OccupiedBy);
     }
 
     protected override void GenerateBitBoardMethod()

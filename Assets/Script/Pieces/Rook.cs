@@ -35,13 +35,4 @@ public class Rook : PinnerPiece
 
         MovingSquares = AttackingSquares = AddTilesBitBoards(attackingTiles);
     }
-
-    public override Move[] GetMoves()
-    {
-        List<Move> moves = new();
-        moves.AddRange(GetVerticalMoves());
-        moves.AddRange(GetHorizontalMoves());
-
-        return moves.ToArray();
-    }
 }

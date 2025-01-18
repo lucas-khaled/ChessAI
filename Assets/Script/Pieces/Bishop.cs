@@ -33,9 +33,4 @@ public class Bishop : PinnerPiece
 
         MovingSquares = AttackingSquares = AddTilesBitBoards(attackingTiles);
     }
-
-    public override Move[] GetMoves()
-    {
-        return GetDiagonalMoves().ToArray();
-    }
 }

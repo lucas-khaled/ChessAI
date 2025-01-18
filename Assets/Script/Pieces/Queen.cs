@@ -41,15 +41,4 @@ public class Queen : PinnerPiece
 
         MovingSquares = AttackingSquares = AddTilesBitBoards(attackingTiles);
     }
-
-    public override Move[] GetMoves()
-    {
-        List<Move> moves = new();
-
-        moves.AddRange(GetDiagonalMoves());
-        moves.AddRange(GetVerticalMoves());
-        moves.AddRange(GetHorizontalMoves());
-
-        return moves.ToArray();
-    }
 }
