@@ -99,13 +99,14 @@ public class Bitboard
 
     public override string ToString()
     {
-        return value.ToString();
+        return ToVisualString();
     }
 
     public static Bitboard operator &(Bitboard a, Bitboard b) => new Bitboard(a.value & b.value);
     public static Bitboard operator |(Bitboard a, Bitboard b) => new Bitboard(a.value | b.value);
     public static Bitboard operator <<(Bitboard a, int b) => new Bitboard(a.value << b);
     public static Bitboard operator >>(Bitboard a, int b) => new Bitboard(a.value >> b);
+    public static Bitboard operator ~(Bitboard a) => new Bitboard(~a.value);
 
     public static bool operator >(Bitboard a, Bitboard b) => a.value > b.value;
     public static bool operator <(Bitboard a, Bitboard b) => a.value < b.value;
