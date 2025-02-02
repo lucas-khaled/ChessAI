@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.Profiling;
 
 public class King : SlidingPieces
@@ -12,13 +13,17 @@ public class King : SlidingPieces
     protected override void GenerateBitBoardMethod()
     {
         Profiler.BeginSample("Move Generation > Generate Bitboard -> King");
-        Bitboard attackingTiles = new Bitboard();
 
-        attackingTiles.Add(GetDiagonalBlockedSquares(1));
-        attackingTiles.Add(GetVerticalBlockedSquares(1));
-        attackingTiles.Add(GetHorizontalBlockedSquares(1));
+        var verticalUp = actualTile.Bitboard << 8;
+        var verticalDown = actualTile.Bitboard >> 8;
+        var horizontalLeft = actualTile.Bitboard >> 1;
+        var horizontalRight = actualTile.Bitboard << 1;
+        var diagonalUpLeft = actualTile.Bitboard << 7;
+        var diagonalUpRight = actualTile.Bitboard << 9;
+        var diagonalDownLeft = actualTile.Bitboard >> 9;
+        var diagonalDownRight = actualTile.Bitboard >> 7;
 
-        AttackingSquares = attackingTiles;
+        AttackingSquares = verticalUp | verticalDown | horizontalLeft | horizontalRight | diagonalUpLeft | diagonalUpRight | diagonalDownLeft | diagonalDownRight;
         MovingSquares.Add(AttackingSquares);
 
         Bitboard castleBitboard = GetCastleBitboard();
@@ -29,12 +34,12 @@ public class King : SlidingPieces
     private Bitboard GetCastleBitboard()
     {
         Bitboard bitboard = new Bitboard();
-        int initialRow = (pieceColor == PieceColor.White) ? 0 : 7;
+        Bitboard initialSquare = (pieceColor == PieceColor.White) ? new Bitboard(4) : new Bitboard(60);
 
-        if(Coordinates.column != 4 || Coordinates.row != initialRow) return bitboard;
+        if(actualTile.Bitboard != initialSquare) return bitboard;
 
-        bitboard.Add(Board.GetTiles()[initialRow][Coordinates.column + 2].Bitboard);
-        bitboard.Add(Board.GetTiles()[initialRow][Coordinates.column - 2].Bitboard);
+        bitboard.Add(actualTile.Bitboard >> 2);
+        bitboard.Add(actualTile.Bitboard << 2);
 
         return bitboard;
     }

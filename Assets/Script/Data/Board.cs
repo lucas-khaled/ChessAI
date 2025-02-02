@@ -113,14 +113,7 @@ public class Board
 
     public Tile GetKingTile(PieceColor color)
     {
-        foreach (var row in tiles)
-        {
-            var kingTile = row.Find(t => t.OccupiedBy is King king && king.pieceColor == color);
-            if (kingTile != null)
-                return kingTile;
-        }
-
-        return null;
+        return (color == PieceColor.White) ? piecesHolder.whiteKing.GetTile() : piecesHolder.blackKing.GetTile();
     }
 
     public Tile[] GetRookTiles(PieceColor color)
