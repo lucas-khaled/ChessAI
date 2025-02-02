@@ -29,15 +29,6 @@ public class King : SlidingPieces
         var diagonalDownLeft = actualTile.Bitboard >> 9 & leftMask;
         var diagonalDownRight = actualTile.Bitboard >> 7 & rightMask;
 
-        Debug.Log($"{nameof(verticalUp)} => {verticalUp.ToVisualString()}\n" +
-            $"{nameof(verticalDown)} => {verticalDown.ToVisualString()}\n" +
-            $"{nameof(horizontalLeft)} => {horizontalLeft.ToVisualString()}\n" +
-            $"{nameof(horizontalRight)} => {horizontalRight.ToVisualString()}\n" +
-            $"{nameof(diagonalUpLeft)} => {diagonalUpLeft.ToVisualString()}\n" +
-            $"{nameof(diagonalUpRight)} => {diagonalUpRight.ToVisualString()}\n" +
-            $"{nameof(diagonalDownLeft)} => {diagonalDownLeft.ToVisualString()}\n" +
-            $"{nameof(diagonalDownRight)} => {diagonalDownRight.ToVisualString()}\n");
-
         AttackingSquares = verticalUp | verticalDown | horizontalLeft | horizontalRight | diagonalUpLeft | diagonalUpRight | diagonalDownLeft | diagonalDownRight;
         MovingSquares.Add(AttackingSquares);
 

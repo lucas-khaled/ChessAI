@@ -21,7 +21,7 @@ public class Pawn : SlidingPieces
 
         var diagonalTile = Board.tiles[diagonal[0].row][diagonal[0].column];
         return IsEnemyPiece(diagonalTile.OccupiedBy)
-            || Board.rules.HasEnPassant && diagonalTile.Equals(Board.rules.enPassantTileCoordinates);
+            || Board.rules.HasEnPassant && diagonalTile.TilePosition.Equals(Board.rules.enPassantTileCoordinates);
     }
 
     protected override void GenerateBitBoardMethod()
