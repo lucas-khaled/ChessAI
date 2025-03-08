@@ -61,6 +61,7 @@ public class GameManager : MonoBehaviour, IGameManager
         UpdateTestBoard();
 
         playTurnManager.SetPlayers(firstPlayer, secondPlayer, GameBoard.ActualTurn, randomize);
+        UIManager.ShowTurn(playTurnManager.GetCurrentPlayer());
     }
 
     private void UpdateTestBoard()
@@ -82,7 +83,11 @@ public class GameManager : MonoBehaviour, IGameManager
     {
         UpdateTestBoard();
         var endInfo = EndGameChecker.CheckEnd(GameBoard);
-        if (endInfo.hasEnded is false) return;
+        if (endInfo.hasEnded is false)
+        {
+            UIManager.ShowTurn(playTurnManager.GetCurrentPlayer());
+            return;
+        }
 
         if (endInfo.isCheckMate)
         {

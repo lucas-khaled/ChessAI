@@ -10,6 +10,9 @@ public class PlayTurnManager : ManagerHelper
     private object moveLock = new();
     private Move madeMove = null;
 
+    private object currentTurnLock = new();
+    private IPlayer currentTurn;
+
     public void SetPlayers(IPlayer firstPlayer, IPlayer secondPlayer, PieceColor startTurn, bool randomize = true) 
     {
         this.whitePlayer = firstPlayer;
@@ -28,6 +31,7 @@ public class PlayTurnManager : ManagerHelper
 
         this.whitePlayer.Init(PieceColor.White);
         this.blackPlayer.Init(PieceColor.Black);
+        SetCurrentPlayer(startTurn);
 
         Task.Run(() => PlayerMove(startTurn));
         InvokeRepeating("CheckForMove", 0, 0.2f);
@@ -38,14 +42,31 @@ public class PlayTurnManager : ManagerHelper
     {
         try
         {
-            if (turn == PieceColor.White)
-                whitePlayer.StartTurn(OnMove);
-            else
-                blackPlayer.StartTurn(OnMove);
+            SetCurrentPlayer(turn);
+            currentTurn.StartTurn(OnMove);
         }
-        catch(Exception e) 
+        catch (Exception e) 
         {
             Debug.LogError($"Was not able to do Turn\n{e}");
+        }
+    }
+
+    private void SetCurrentPlayer(PieceColor turn)
+    {
+        lock (currentTurnLock)
+        {
+            if (turn == PieceColor.White)
+                currentTurn = whitePlayer;
+            else
+                currentTurn = blackPlayer;
+        }
+    }
+
+    public IPlayer GetCurrentPlayer() 
+    {
+        lock (currentTurnLock) 
+        {
+            return currentTurn;
         }
     }
 
