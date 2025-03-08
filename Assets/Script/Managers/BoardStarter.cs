@@ -7,6 +7,8 @@ public class BoardStarter : ManagerHelper
     private VisualTile tileprefab;
     [SerializeField]
     private Vector2 tilesOffset = new Vector2(10, 10);
+    [SerializeField]
+    private LookupSave lookupSave;
 
     private Board actualBoard;
 
@@ -46,6 +48,7 @@ public class BoardStarter : ManagerHelper
                 tile.TilePosition = new TileCoordinates(row, column);
                 tile.SetIndex(index);
                 tile.SetVisual(visualTile);
+                tile.SetLookups(lookupSave.bishopLookups[index], lookupSave.rookLookups[index]);
 
                 tileRow.Add(tile);
             }

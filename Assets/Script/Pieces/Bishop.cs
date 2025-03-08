@@ -27,6 +27,6 @@ public class Bishop : PinnerPiece
 
     private void GenerateAttackingSquaresBitBoard()
     {
-        MovingSquares = AttackingSquares = GetDiagonalBlockedSquares();
+        MovingSquares = AttackingSquares = actualTile.BishopLookup.GetBaseOnOccupancy(Board.moveGenerator.GetCurrentBoardBitboard());//GetDiagonalBlockedSquares();
     }
 }

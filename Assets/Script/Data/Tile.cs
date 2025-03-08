@@ -12,6 +12,9 @@ public class Tile
     public TileCoordinates TilePosition { get; set; }
     public Board Board { get; private set; }
 
+    public Lookup RookLookup { get; private set; }
+    public Lookup BishopLookup { get; private set; }
+
     private Diagonals Diagonals;
     private Diagonals InvertedDiagonals;
 
@@ -69,6 +72,9 @@ public class Tile
         tile.Horizontals = Horizontals;
         tile.InvertedHorizontals = Horizontals;
 
+        tile.BishopLookup = BishopLookup;
+        tile.RookLookup = RookLookup;
+
         tile.OccupiedBy = (IsOccupied) ? this.OccupiedBy.Copy(tile) : null;
 
         return tile;
@@ -121,5 +127,11 @@ public class Tile
     public override bool Equals(object obj)
     {
         return obj is Tile tile && tile.TilePosition.Equals(TilePosition);
+    }
+
+    public void SetLookups(Lookup bishopLookup, Lookup rookLookup) 
+    {
+        this.BishopLookup = bishopLookup;
+        this.RookLookup = rookLookup;
     }
 }

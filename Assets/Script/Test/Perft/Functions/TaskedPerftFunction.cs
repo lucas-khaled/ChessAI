@@ -10,10 +10,6 @@ public class TaskedPerftFunction : PerftFunction
     protected bool divide;
     protected bool debugAll;
 
-    private Stopwatch doMoveTimer = new();
-    private Stopwatch undoMoveTimer = new();
-    private Stopwatch perftTimer = new();
-
     private int iterationNum = 0;
 
     public override async Task<PerftData> Perft(int depth, bool divide = true, bool debugAll = false) 
@@ -22,10 +18,6 @@ public class TaskedPerftFunction : PerftFunction
         {
             return PerftData.NotValid;
         }
-
-        perftTimer.Reset();
-        doMoveTimer.Reset();
-        undoMoveTimer.Reset();
 
         this.divide = divide;
         this.debugAll = debugAll;
@@ -45,17 +37,7 @@ public class TaskedPerftFunction : PerftFunction
     {
         UnityEngine.Debug.Log($"Starting Perft with depth {currentDepth}");
 
-        perftTimer.Start();
         PerftData result = await Perft(currentDepth, manager.TestBoard);
-        perftTimer.Stop();
-
-        long medianDoTime = doMoveTimer.ElapsedMilliseconds / result.nodes;
-        long medianUndoTime = undoMoveTimer.ElapsedMilliseconds / result.nodes;
-
-        UnityEngine.Debug.Log($"Finished Perft with depth {currentDepth}:\n " +
-            $"Perft time: {perftTimer.ElapsedMilliseconds}ms\n" +
-            $"Do time: {medianDoTime}ms\n" +
-            $"Undo time: {medianUndoTime}ms\n");
 
         if (divide)
             DebugDivide(result);
@@ -77,6 +59,9 @@ public class TaskedPerftFunction : PerftFunction
     protected virtual async Task<PerftData> Perft(int depth, Board board) 
     {
         iterationNum++;
+        if(debugAll)
+            UnityEngine.Debug.Log("Perfting: "+iterationNum);
+
         var moves = new List<Move>(board.currentTurnMoves);
 
         if (debugAll is false)
@@ -130,8 +115,6 @@ public class TaskedPerftFunction : PerftFunction
         PerftData data = PerftData.Empty;
         foreach(var move in moves)
         {
-            doMoveTimer.Start();
-            
             try
             {
                 DoMove(move, board);
@@ -153,14 +136,11 @@ public class TaskedPerftFunction : PerftFunction
                     $"\n Move Sequence: {sequence}\n {e}");
                 continue;
             }
-            doMoveTimer.Stop();
 
             PerftData moveNodeCount = await Perft(depth - 1, board);
             data += moveNodeCount;
 
-            undoMoveTimer.Start();
             UndoLastMove(board);
-            undoMoveTimer.Stop();
 
             if(divide && currentDepth == depth) 
                 data.divideDict.Add(new PerftDivide(move.ToUCI(), moveNodeCount.nodes));

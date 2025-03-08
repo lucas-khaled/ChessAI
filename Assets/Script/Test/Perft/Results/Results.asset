@@ -418,9 +418,9 @@ MonoBehaviour:
     - depth: 1
       data:
         nodes: 48
-        captures: 8
+        captures: 0
         enPassants: 0
-        castles: 2
+        castles: 0
         promotions: 0
         checks: 0
         checkmates: 0
@@ -525,11 +525,11 @@ MonoBehaviour:
     - depth: 2
       data:
         nodes: 2039
-        captures: 351
-        enPassants: 1
-        castles: 91
+        captures: 0
+        enPassants: 0
+        castles: 0
         promotions: 0
-        checks: 3
+        checks: 0
         checkmates: 0
         doubleChecks: 0
         divideDict:
@@ -632,12 +632,12 @@ MonoBehaviour:
     - depth: 3
       data:
         nodes: 97862
-        captures: 17102
-        enPassants: 45
-        castles: 3162
+        captures: 0
+        enPassants: 0
+        castles: 0
         promotions: 0
-        checks: 993
-        checkmates: 1
+        checks: 0
+        checkmates: 0
         doubleChecks: 0
         divideDict:
         - move: a2a3
@@ -843,6 +843,113 @@ MonoBehaviour:
           nodeCount: 86975
         - move: e1c1
           nodeCount: 79803
+    - depth: 5
+      data:
+        nodes: 193690690
+        captures: 0
+        enPassants: 0
+        castles: 0
+        promotions: 0
+        checks: 0
+        checkmates: 0
+        doubleChecks: 0
+        divideDict:
+        - move: a2a3
+          nodeCount: 4627439
+        - move: b2b3
+          nodeCount: 3768824
+        - move: g2g3
+          nodeCount: 3472039
+        - move: d5d6
+          nodeCount: 3835265
+        - move: a2a4
+          nodeCount: 4387586
+        - move: g2g4
+          nodeCount: 3338154
+        - move: g2h3
+          nodeCount: 3819456
+        - move: d5e6
+          nodeCount: 4727437
+        - move: c3b1
+          nodeCount: 3996171
+        - move: c3d1
+          nodeCount: 3995761
+        - move: c3a4
+          nodeCount: 4628497
+        - move: c3b5
+          nodeCount: 4317482
+        - move: e5d3
+          nodeCount: 3288812
+        - move: e5c4
+          nodeCount: 3494887
+        - move: e5g4
+          nodeCount: 3415992
+        - move: e5c6
+          nodeCount: 4083458
+        - move: e5g6
+          nodeCount: 3949417
+        - move: e5d7
+          nodeCount: 4404043
+        - move: e5f7
+          nodeCount: 4164923
+        - move: d2c1
+          nodeCount: 3793390
+        - move: d2e3
+          nodeCount: 4407041
+        - move: d2f4
+          nodeCount: 3941257
+        - move: d2g5
+          nodeCount: 4370915
+        - move: d2h6
+          nodeCount: 3967365
+        - move: e2d1
+          nodeCount: 3074219
+        - move: e2f1
+          nodeCount: 4095479
+        - move: e2d3
+          nodeCount: 4066966
+        - move: e2c4
+          nodeCount: 4182989
+        - move: e2b5
+          nodeCount: 4032348
+        - move: e2a6
+          nodeCount: 3553501
+        - move: a1b1
+          nodeCount: 3827454
+        - move: a1c1
+          nodeCount: 3814203
+        - move: a1d1
+          nodeCount: 3568344
+        - move: h1f1
+          nodeCount: 3685756
+        - move: h1g1
+          nodeCount: 3989454
+        - move: f3d3
+          nodeCount: 3949570
+        - move: f3e3
+          nodeCount: 4477772
+        - move: f3g3
+          nodeCount: 4669768
+        - move: f3h3
+          nodeCount: 5067173
+        - move: f3f4
+          nodeCount: 4327936
+        - move: f3g4
+          nodeCount: 4514010
+        - move: f3f5
+          nodeCount: 5271134
+        - move: f3h5
+          nodeCount: 4743335
+        - move: f3f6
+          nodeCount: 3975992
+        - move: e1d1
+          nodeCount: 3559113
+        - move: e1f1
+          nodeCount: 3377351
+        - move: e1g1
+          nodeCount: 4119629
+        - move: e1c1
+          nodeCount: 3551583
   - fenPosition: r3k2r/p1pNqpb1/bn2pnp1/3P4/1p2P3/2N2Q1p/PPPBBPPP/R3K2R b KQkq -
       0 1
     depthData:
@@ -1250,3 +1357,667 @@ MonoBehaviour:
           nodeCount: 102896
         - move: e8c8
           nodeCount: 99890
+  - fenPosition: rnBq1k1r/pp2bppp/2p5/8/2B5/8/PPP1NnPP/RNBQK2R b KQ - 0 8
+    depthData:
+    - depth: 1
+      data:
+        nodes: 41
+        captures: 0
+        enPassants: 0
+        castles: 0
+        promotions: 0
+        checks: 0
+        checkmates: 0
+        doubleChecks: 0
+        divideDict:
+        - move: c6c5
+          nodeCount: 1
+        - move: a7a6
+          nodeCount: 1
+        - move: b7b6
+          nodeCount: 1
+        - move: f7f6
+          nodeCount: 1
+        - move: g7g6
+          nodeCount: 1
+        - move: h7h6
+          nodeCount: 1
+        - move: a7a5
+          nodeCount: 1
+        - move: b7b5
+          nodeCount: 1
+        - move: f7f5
+          nodeCount: 1
+        - move: g7g5
+          nodeCount: 1
+        - move: h7h5
+          nodeCount: 1
+        - move: f2d1
+          nodeCount: 1
+        - move: f2h1
+          nodeCount: 1
+        - move: f2d3
+          nodeCount: 1
+        - move: f2h3
+          nodeCount: 1
+        - move: f2e4
+          nodeCount: 1
+        - move: f2g4
+          nodeCount: 1
+        - move: b8a6
+          nodeCount: 1
+        - move: b8d7
+          nodeCount: 1
+        - move: e7a3
+          nodeCount: 1
+        - move: e7b4
+          nodeCount: 1
+        - move: e7h4
+          nodeCount: 1
+        - move: e7c5
+          nodeCount: 1
+        - move: e7g5
+          nodeCount: 1
+        - move: e7d6
+          nodeCount: 1
+        - move: e7f6
+          nodeCount: 1
+        - move: h8g8
+          nodeCount: 1
+        - move: d8d1
+          nodeCount: 1
+        - move: d8d2
+          nodeCount: 1
+        - move: d8d3
+          nodeCount: 1
+        - move: d8d4
+          nodeCount: 1
+        - move: d8a5
+          nodeCount: 1
+        - move: d8d5
+          nodeCount: 1
+        - move: d8b6
+          nodeCount: 1
+        - move: d8d6
+          nodeCount: 1
+        - move: d8c7
+          nodeCount: 1
+        - move: d8d7
+          nodeCount: 1
+        - move: d8c8
+          nodeCount: 1
+        - move: d8e8
+          nodeCount: 1
+        - move: f8e8
+          nodeCount: 1
+        - move: f8g8
+          nodeCount: 1
+    - depth: 2
+      data:
+        nodes: 1668
+        captures: 0
+        enPassants: 0
+        castles: 0
+        promotions: 0
+        checks: 0
+        checkmates: 0
+        doubleChecks: 0
+        divideDict:
+        - move: c6c5
+          nodeCount: 47
+        - move: a7a6
+          nodeCount: 47
+        - move: b7b6
+          nodeCount: 48
+        - move: f7f6
+          nodeCount: 48
+        - move: g7g6
+          nodeCount: 47
+        - move: h7h6
+          nodeCount: 47
+        - move: a7a5
+          nodeCount: 47
+        - move: b7b5
+          nodeCount: 47
+        - move: f7f5
+          nodeCount: 46
+        - move: g7g5
+          nodeCount: 46
+        - move: h7h5
+          nodeCount: 47
+        - move: f2d1
+          nodeCount: 39
+        - move: f2h1
+          nodeCount: 43
+        - move: f2d3
+          nodeCount: 5
+        - move: f2h3
+          nodeCount: 44
+        - move: f2e4
+          nodeCount: 46
+        - move: f2g4
+          nodeCount: 44
+        - move: b8a6
+          nodeCount: 47
+        - move: b8d7
+          nodeCount: 43
+        - move: e7a3
+          nodeCount: 46
+        - move: e7b4
+          nodeCount: 8
+        - move: e7h4
+          nodeCount: 45
+        - move: e7c5
+          nodeCount: 46
+        - move: e7g5
+          nodeCount: 46
+        - move: e7d6
+          nodeCount: 46
+        - move: e7f6
+          nodeCount: 47
+        - move: h8g8
+          nodeCount: 47
+        - move: d8d1
+          nodeCount: 1
+        - move: d8d2
+          nodeCount: 6
+        - move: d8d3
+          nodeCount: 43
+        - move: d8d4
+          nodeCount: 42
+        - move: d8a5
+          nodeCount: 9
+        - move: d8d5
+          nodeCount: 42
+        - move: d8b6
+          nodeCount: 47
+        - move: d8d6
+          nodeCount: 45
+        - move: d8c7
+          nodeCount: 48
+        - move: d8d7
+          nodeCount: 42
+        - move: d8c8
+          nodeCount: 42
+        - move: d8e8
+          nodeCount: 48
+        - move: f8e8
+          nodeCount: 47
+        - move: f8g8
+          nodeCount: 47
+    - depth: 3
+      data:
+        nodes: 65053
+        captures: 0
+        enPassants: 0
+        castles: 0
+        promotions: 0
+        checks: 0
+        checkmates: 0
+        doubleChecks: 0
+        divideDict:
+        - move: c6c5
+          nodeCount: 1698
+        - move: a7a6
+          nodeCount: 1784
+        - move: b7b6
+          nodeCount: 1725
+        - move: f7f6
+          nodeCount: 1645
+        - move: g7g6
+          nodeCount: 1791
+        - move: h7h6
+          nodeCount: 1829
+        - move: a7a5
+          nodeCount: 1828
+        - move: b7b5
+          nodeCount: 1821
+        - move: f7f5
+          nodeCount: 1702
+        - move: g7g5
+          nodeCount: 1703
+        - move: h7h5
+          nodeCount: 1875
+        - move: f2d1
+          nodeCount: 1460
+        - move: f2h1
+          nodeCount: 1500
+        - move: f2d3
+          nodeCount: 179
+        - move: f2h3
+          nodeCount: 1615
+        - move: f2e4
+          nodeCount: 1881
+        - move: f2g4
+          nodeCount: 1703
+        - move: b8a6
+          nodeCount: 1922
+        - move: b8d7
+          nodeCount: 1648
+        - move: e7a3
+          nodeCount: 1879
+        - move: e7b4
+          nodeCount: 358
+        - move: e7h4
+          nodeCount: 1766
+        - move: e7c5
+          nodeCount: 1937
+        - move: e7g5
+          nodeCount: 1878
+        - move: e7d6
+          nodeCount: 1871
+        - move: e7f6
+          nodeCount: 1799
+        - move: h8g8
+          nodeCount: 1781
+        - move: d8d1
+          nodeCount: 38
+        - move: d8d2
+          nodeCount: 210
+        - move: d8d3
+          nodeCount: 2026
+        - move: d8d4
+          nodeCount: 2005
+        - move: d8a5
+          nodeCount: 404
+        - move: d8d5
+          nodeCount: 1997
+        - move: d8b6
+          nodeCount: 1773
+        - move: d8d6
+          nodeCount: 1953
+        - move: d8c7
+          nodeCount: 1849
+        - move: d8d7
+          nodeCount: 1727
+        - move: d8c8
+          nodeCount: 1531
+        - move: d8e8
+          nodeCount: 1514
+        - move: f8e8
+          nodeCount: 1733
+        - move: f8g8
+          nodeCount: 1715
+    - depth: 4
+      data:
+        nodes: 2712122
+        captures: 0
+        enPassants: 0
+        castles: 0
+        promotions: 0
+        checks: 0
+        checkmates: 0
+        doubleChecks: 0
+        divideDict:
+        - move: c6c5
+          nodeCount: 73652
+        - move: a7a6
+          nodeCount: 75912
+        - move: b7b6
+          nodeCount: 75368
+        - move: f7f6
+          nodeCount: 70147
+        - move: g7g6
+          nodeCount: 76376
+        - move: h7h6
+          nodeCount: 78111
+        - move: a7a5
+          nodeCount: 79480
+        - move: b7b5
+          nodeCount: 77346
+        - move: f7f5
+          nodeCount: 70941
+        - move: g7g5
+          nodeCount: 71026
+        - move: h7h5
+          nodeCount: 80292
+        - move: f2d1
+          nodeCount: 52814
+        - move: f2h1
+          nodeCount: 59074
+        - move: f2d3
+          nodeCount: 7141
+        - move: f2h3
+          nodeCount: 65750
+        - move: f2e4
+          nodeCount: 79178
+        - move: f2g4
+          nodeCount: 70217
+        - move: b8a6
+          nodeCount: 82538
+        - move: b8d7
+          nodeCount: 68798
+        - move: e7a3
+          nodeCount: 78325
+        - move: e7b4
+          nodeCount: 13549
+        - move: e7h4
+          nodeCount: 65474
+        - move: e7c5
+          nodeCount: 80512
+        - move: e7g5
+          nodeCount: 77566
+        - move: e7d6
+          nodeCount: 80256
+        - move: e7f6
+          nodeCount: 75552
+        - move: h8g8
+          nodeCount: 75789
+        - move: d8d1
+          nodeCount: 1310
+        - move: d8d2
+          nodeCount: 7935
+        - move: d8d3
+          nodeCount: 80109
+        - move: d8d4
+          nodeCount: 79055
+        - move: d8a5
+          nodeCount: 16836
+        - move: d8d5
+          nodeCount: 79953
+        - move: d8b6
+          nodeCount: 76090
+        - move: d8d6
+          nodeCount: 82587
+        - move: d8c7
+          nodeCount: 81861
+        - move: d8d7
+          nodeCount: 70791
+        - move: d8c8
+          nodeCount: 61999
+        - move: d8e8
+          nodeCount: 65567
+        - move: f8e8
+          nodeCount: 73943
+        - move: f8g8
+          nodeCount: 72902
+    - depth: 5
+      data:
+        nodes: 103822670
+        captures: 0
+        enPassants: 0
+        castles: 0
+        promotions: 0
+        checks: 0
+        checkmates: 0
+        doubleChecks: 0
+        divideDict:
+        - move: c6c5
+          nodeCount: 2645538
+        - move: a7a6
+          nodeCount: 2837152
+        - move: b7b6
+          nodeCount: 2700434
+        - move: f7f6
+          nodeCount: 2397149
+        - move: g7g6
+          nodeCount: 2876931
+        - move: h7h6
+          nodeCount: 2980217
+        - move: a7a5
+          nodeCount: 3058792
+        - move: b7b5
+          nodeCount: 2929670
+        - move: f7f5
+          nodeCount: 2593355
+        - move: g7g5
+          nodeCount: 2596262
+        - move: h7h5
+          nodeCount: 3143930
+        - move: f2d1
+          nodeCount: 1992054
+        - move: f2h1
+          nodeCount: 2058220
+        - move: f2d3
+          nodeCount: 256189
+        - move: f2h3
+          nodeCount: 2381428
+        - move: f2e4
+          nodeCount: 3100942
+        - move: f2g4
+          nodeCount: 2649556
+        - move: b8a6
+          nodeCount: 3311529
+        - move: b8d7
+          nodeCount: 2608025
+        - move: e7a3
+          nodeCount: 3043295
+        - move: e7b4
+          nodeCount: 551224
+        - move: e7h4
+          nodeCount: 2488219
+        - move: e7c5
+          nodeCount: 3216282
+        - move: e7g5
+          nodeCount: 3057053
+        - move: e7d6
+          nodeCount: 3203612
+        - move: e7f6
+          nodeCount: 2877448
+        - move: h8g8
+          nodeCount: 2832153
+        - move: d8d1
+          nodeCount: 48169
+        - move: d8d2
+          nodeCount: 267471
+        - move: d8d3
+          nodeCount: 3499724
+        - move: d8d4
+          nodeCount: 3486438
+        - move: d8a5
+          nodeCount: 683685
+        - move: d8d5
+          nodeCount: 3518638
+        - move: d8b6
+          nodeCount: 2856735
+        - move: d8d6
+          nodeCount: 3437616
+        - move: d8c7
+          nodeCount: 3113802
+        - move: d8d7
+          nodeCount: 2785075
+        - move: d8c8
+          nodeCount: 2230515
+        - move: d8e8
+          nodeCount: 2120277
+        - move: f8e8
+          nodeCount: 2756359
+        - move: f8g8
+          nodeCount: 2631507
+  - fenPosition: 8/2p5/3p4/KP5r/1R3p1k/8/4P1P1/8 w - - 0 0
+    depthData:
+    - depth: 1
+      data:
+        nodes: 14
+        captures: 0
+        enPassants: 0
+        castles: 0
+        promotions: 0
+        checks: 0
+        checkmates: 0
+        doubleChecks: 0
+        divideDict:
+        - move: e2e3
+          nodeCount: 1
+        - move: g2g3
+          nodeCount: 1
+        - move: a5a6
+          nodeCount: 1
+        - move: e2e4
+          nodeCount: 1
+        - move: g2g4
+          nodeCount: 1
+        - move: b4b1
+          nodeCount: 1
+        - move: b4b2
+          nodeCount: 1
+        - move: b4b3
+          nodeCount: 1
+        - move: b4a4
+          nodeCount: 1
+        - move: b4c4
+          nodeCount: 1
+        - move: b4d4
+          nodeCount: 1
+        - move: b4e4
+          nodeCount: 1
+        - move: b4f4
+          nodeCount: 1
+        - move: a5a4
+          nodeCount: 1
+    - depth: 2
+      data:
+        nodes: 191
+        captures: 0
+        enPassants: 0
+        castles: 0
+        promotions: 0
+        checks: 0
+        checkmates: 0
+        doubleChecks: 0
+        divideDict:
+        - move: e2e3
+          nodeCount: 15
+        - move: g2g3
+          nodeCount: 4
+        - move: a5a6
+          nodeCount: 15
+        - move: e2e4
+          nodeCount: 16
+        - move: g2g4
+          nodeCount: 17
+        - move: b4b1
+          nodeCount: 16
+        - move: b4b2
+          nodeCount: 16
+        - move: b4b3
+          nodeCount: 15
+        - move: b4a4
+          nodeCount: 15
+        - move: b4c4
+          nodeCount: 15
+        - move: b4d4
+          nodeCount: 15
+        - move: b4e4
+          nodeCount: 15
+        - move: b4f4
+          nodeCount: 2
+        - move: a5a4
+          nodeCount: 15
+    - depth: 3
+      data:
+        nodes: 2812
+        captures: 0
+        enPassants: 0
+        castles: 0
+        promotions: 0
+        checks: 0
+        checkmates: 0
+        doubleChecks: 0
+        divideDict:
+        - move: e2e3
+          nodeCount: 205
+        - move: g2g3
+          nodeCount: 54
+        - move: a5a6
+          nodeCount: 240
+        - move: e2e4
+          nodeCount: 177
+        - move: g2g4
+          nodeCount: 226
+        - move: b4b1
+          nodeCount: 265
+        - move: b4b2
+          nodeCount: 205
+        - move: b4b3
+          nodeCount: 248
+        - move: b4a4
+          nodeCount: 202
+        - move: b4c4
+          nodeCount: 254
+        - move: b4d4
+          nodeCount: 243
+        - move: b4e4
+          nodeCount: 228
+        - move: b4f4
+          nodeCount: 41
+        - move: a5a4
+          nodeCount: 224
+    - depth: 4
+      data:
+        nodes: 43238
+        captures: 0
+        enPassants: 0
+        castles: 0
+        promotions: 0
+        checks: 0
+        checkmates: 0
+        doubleChecks: 0
+        divideDict:
+        - move: e2e3
+          nodeCount: 3107
+        - move: g2g3
+          nodeCount: 1014
+        - move: a5a6
+          nodeCount: 3653
+        - move: e2e4
+          nodeCount: 2748
+        - move: g2g4
+          nodeCount: 3702
+        - move: b4b1
+          nodeCount: 4199
+        - move: b4b2
+          nodeCount: 3328
+        - move: b4b3
+          nodeCount: 3658
+        - move: b4a4
+          nodeCount: 3019
+        - move: b4c4
+          nodeCount: 3797
+        - move: b4d4
+          nodeCount: 3622
+        - move: b4e4
+          nodeCount: 3391
+        - move: b4f4
+          nodeCount: 606
+        - move: a5a4
+          nodeCount: 3394
+    - depth: 5
+      data:
+        nodes: 674624
+        captures: 0
+        enPassants: 0
+        castles: 0
+        promotions: 0
+        checks: 0
+        checkmates: 0
+        doubleChecks: 0
+        divideDict:
+        - move: e2e3
+          nodeCount: 45326
+        - move: g2g3
+          nodeCount: 14747
+        - move: a5a6
+          nodeCount: 59028
+        - move: e2e4
+          nodeCount: 36889
+        - move: g2g4
+          nodeCount: 53895
+        - move: b4b1
+          nodeCount: 69665
+        - move: b4b2
+          nodeCount: 48498
+        - move: b4b3
+          nodeCount: 59719
+        - move: b4a4
+          nodeCount: 45591
+        - move: b4c4
+          nodeCount: 63781
+        - move: b4d4
+          nodeCount: 59574
+        - move: b4e4
+          nodeCount: 54192
+        - move: b4f4
+          nodeCount: 10776
+        - move: a5a4
+          nodeCount: 52943
