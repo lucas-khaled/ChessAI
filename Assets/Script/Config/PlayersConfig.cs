@@ -6,12 +6,12 @@ public class PlayersConfig : ScriptableObject
     [SerializeReference] public PlayerSelectionInfo firstPlayerInfo;
     [SerializeReference] public PlayerSelectionInfo secondPlayerInfo;
 
-    public virtual IPlayer GetWhitePlayer(GameManager manager) 
+    public virtual IPlayer GetFirstPlayer(GameManager manager) 
     {
         return firstPlayerInfo.GetPlayer(manager);
     }
 
-    public virtual IPlayer GetBlackPlayer(GameManager manager) 
+    public virtual IPlayer GetSecondPlayer(GameManager manager) 
     {
         return secondPlayerInfo.GetPlayer(manager);
     }

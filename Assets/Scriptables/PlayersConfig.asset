@@ -12,18 +12,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5503e1363da341408237359dc46e62b, type: 3}
   m_Name: PlayersConfig
   m_EditorClassIdentifier: 
-  whitePlayerInfo:
-    rid: 5352729892453089280
-  blackPlayerInfo:
-    rid: 5352729730512584704
+  firstPlayerInfo:
+    rid: 3255328667819048961
+  secondPlayerInfo:
+    rid: 3255328667819048963
   references:
     version: 2
     RefIds:
-    - rid: 5352729730512584704
+    - rid: 3255328667819048961
       type: {class: HumanPlayerInfo, ns: , asm: Assembly-CSharp}
       data:
         selected: 1
-    - rid: 5352729892453089280
-      type: {class: HumanPlayerInfo, ns: , asm: Assembly-CSharp}
+    - rid: 3255328667819048963
+      type: {class: MinimaxPlayerInfo, ns: , asm: Assembly-CSharp}
       data:
-        selected: 1
+        selected: 0
+        depth: 4
+        maxTimePerChoice: 60000
