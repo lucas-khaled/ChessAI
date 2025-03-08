@@ -25,14 +25,14 @@ public class PlayersConfigEditor : Editor
     private void OnEnable()
     {
         config = (PlayersConfig)target;
-        whiteInfo = serializedObject.FindProperty("whitePlayerInfo");
+        whiteInfo = serializedObject.FindProperty("firstPlayerInfo");
 
         if(whiteInfo.managedReferenceValue == null) 
         {
             whiteInfo.managedReferenceValue = new HumanPlayerInfo();
         }
 
-        blackInfo = serializedObject.FindProperty("blackPlayerInfo");
+        blackInfo = serializedObject.FindProperty("secondPlayerInfo");
         if (blackInfo.managedReferenceValue == null)
         {
             blackInfo.managedReferenceValue = new HumanPlayerInfo();
@@ -55,13 +55,13 @@ public class PlayersConfigEditor : Editor
 
     private VisualElement GetWhiteContainer() 
     {
-        var type = (config.whitePlayerInfo == null) ? PlayerSelectionType.Human : config.whitePlayerInfo.selected;
+        var type = (config.firstPlayerInfo == null) ? PlayerSelectionType.Human : config.firstPlayerInfo.selected;
         return GetContainer("White", whiteInfo, type);
     }
 
     private VisualElement GetBlackContainer()
     {
-        var type = (config.blackPlayerInfo == null) ? PlayerSelectionType.Human : config.blackPlayerInfo.selected;
+        var type = (config.secondPlayerInfo == null) ? PlayerSelectionType.Human : config.secondPlayerInfo.selected;
         return GetContainer("Black", blackInfo, type);
     }
 

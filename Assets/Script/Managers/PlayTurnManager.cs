@@ -10,12 +10,21 @@ public class PlayTurnManager : ManagerHelper
     private object moveLock = new();
     private Move madeMove = null;
 
-    public void SetPlayers(IPlayer whitePlayer, IPlayer blackPlayer, PieceColor startTurn) 
+    public void SetPlayers(IPlayer firstPlayer, IPlayer secondPlayer, PieceColor startTurn, bool randomize = true) 
     {
-        int random = UnityEngine.Random.Range(0, 100);
+        this.whitePlayer = firstPlayer;
+        this.blackPlayer = secondPlayer;
 
-        this.whitePlayer = whitePlayer;
-        this.blackPlayer = blackPlayer;
+        if (randomize)
+        {
+            int random = UnityEngine.Random.Range(0, 100);
+
+            if (random >= 50)
+            {
+                this.whitePlayer = secondPlayer;
+                this.blackPlayer = firstPlayer;
+            }
+        }
 
         this.whitePlayer.Init(PieceColor.White);
         this.blackPlayer.Init(PieceColor.Black);
