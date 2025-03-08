@@ -1,6 +1,3 @@
-using System;
-using UnityEngine;
-
 public class Move 
 {
     public Tile from;
@@ -61,5 +58,10 @@ public class Move
 
         return otherMove.from.Equals(from) && otherMove.to.Equals(to)
             && sameCapture && piece.Equals(otherMove.piece);
+    }
+    
+    public virtual string ToUCI() 
+    {
+        return $"{from.TilePosition}{to.TilePosition}";
     }
 }

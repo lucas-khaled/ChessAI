@@ -1,5 +1,3 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -42,9 +40,11 @@ public class BoardStarter : ManagerHelper
 
                 visualTile.name = $"Tile({row},{column})";
 
+                int index = row * board.BoardRowSize + column;
 
                 Tile tile = new(board);
                 tile.TilePosition = new TileCoordinates(row, column);
+                tile.SetIndex(index);
                 tile.SetVisual(visualTile);
 
                 tileRow.Add(tile);

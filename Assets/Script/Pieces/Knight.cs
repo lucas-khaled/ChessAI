@@ -1,94 +1,37 @@
-using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
+using UnityEngine.Profiling;
 
 public class Knight : Piece
 {
+    private Bitboard leftBorder = new Bitboard(0b0000000100000001000000010000000100000001000000010000000100000001);
+    private Bitboard rightBorder = new Bitboard(0b1000000010000000100000001000000010000000100000001000000010000000);
+
+    private Bitboard farRightBorder = new Bitboard(0b0100000001000000010000000100000001000000010000000100000001000000);
+    private Bitboard farLeftBorder = new Bitboard(0b0000001000000010000000100000001000000010000000100000001000000010);
+
     public Knight(Board board) : base(board)
     {
     }
 
-    public override Move[] GetMoves()
+    protected override void GenerateBitBoardMethod()
     {
-        List<Move> moves = new List<Move>();
-        moves.AddRange(GetMovesFromHorizontals());
-        moves.AddRange(GetMovesFromVertical());
+        Profiler.BeginSample("Move Generation > Generate Bitboard -> Knight");
+        Bitboard farRightMask = ~(farLeftBorder | leftBorder);
+        Bitboard farLeftMask = ~(farRightBorder | rightBorder);
+        Bitboard rightMask = ~leftBorder;
+        Bitboard leftMask = ~rightBorder;
 
-        return moves.ToArray();
-    }
+        var upRight = actualTile.Bitboard << 17 & rightMask;
+        var upLeft = actualTile.Bitboard << 15 & leftMask;
+        var downRight = actualTile.Bitboard >> 15 & rightMask;
+        var downLeft = actualTile.Bitboard >> 17 & leftMask;
+        var leftUp = actualTile.Bitboard << 6 & farLeftMask;
+        var leftDown = actualTile.Bitboard >> 10 & farLeftMask;
+        var rightUp = actualTile.Bitboard << 10 & farRightMask;
+        var rightDown = actualTile.Bitboard >> 6 & farRightMask;
 
-    private List<Move> GetMovesFromHorizontals() 
-    {
-        List<Move> moves = new List<Move>();
+        MovingSquares = AttackingSquares = upRight | upLeft | downRight | downLeft | leftUp | leftDown | rightUp | rightDown;
 
-        var horizontals = actualTile.GetHorizontalsByColor(pieceColor);
-        moves.AddRange(GetMovesFromHorizontal(horizontals.rightHorizontals));
-        moves.AddRange(GetMovesFromHorizontal(horizontals.leftHorizontals));
-
-        return moves;
-    }
-
-    private List<Move> GetMovesFromHorizontal(List<TileCoordinates> horizontal) 
-    {
-        List<Move> moves = new List<Move>();
-
-        if (horizontal.Count >= 2)
-        {
-            var edgeCoord = horizontal[1];
-            var edge = Board.tiles[edgeCoord.row][edgeCoord.column];
-            var edgeVerticals = edge.GetVerticalsByColor(pieceColor);
-
-            if (edgeVerticals.frontVerticals.Count > 0)
-            {
-                var checkedFront = CheckForBlockingSquares(edgeVerticals.frontVerticals.GetRange(0, 1));
-                moves.AddRange(CreateMovesFromSegment(checkedFront));
-            }
-
-            if (edgeVerticals.backVerticals.Count > 0)
-            {
-                var checkedBack = CheckForBlockingSquares(edgeVerticals.backVerticals.GetRange(0, 1));
-                moves.AddRange(CreateMovesFromSegment(checkedBack));
-            }
-        }
-
-        return moves;
-    }
-
-    private List<Move> GetMovesFromVertical()
-    {
-        List<Move> moves = new List<Move>();
-
-        var verticals = actualTile.GetVerticalsByColor(pieceColor);
-
-        moves.AddRange(GetMovesFromVertical(verticals.frontVerticals));
-        moves.AddRange(GetMovesFromVertical(verticals.backVerticals));
-
-        return moves;
-    }
-
-    private List<Move> GetMovesFromVertical(List<TileCoordinates> vertical)
-    {
-        List<Move> moves = new List<Move>();
-
-        if (vertical.Count >= 2)
-        {
-            var edgeCoord = vertical[1];
-            var edge = Board.tiles[edgeCoord.row][edgeCoord.column];
-            var edgeHorizontals = edge.GetHorizontalsByColor(pieceColor);
-
-            if (edgeHorizontals.leftHorizontals.Count > 0)
-            {
-                var checkedLeft = CheckForBlockingSquares(edgeHorizontals.leftHorizontals.GetRange(0, 1));
-                moves.AddRange(CreateMovesFromSegment(checkedLeft));
-            }
-
-            if (edgeHorizontals.rightHorizontals.Count > 0)
-            {
-                var checkedRight = CheckForBlockingSquares(edgeHorizontals.rightHorizontals.GetRange(0, 1));
-                moves.AddRange(CreateMovesFromSegment(checkedRight));
-            }
-        }
-
-        return moves;
+        Profiler.EndSample();
     }
 }

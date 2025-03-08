@@ -1,21 +1,44 @@
-using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
+using UnityEngine.Profiling;
 
-public class Queen : BlockableMovesPiece
+public class Queen : PinnerPiece
 {
     public Queen(Board board) : base(board)
     {
     }
 
-    public override Move[] GetMoves()
+    protected override void GenerateBitBoardMethod()
     {
-        List<Move> moves = new();
+        Profiler.BeginSample("Move Generation > Generate Bitboard -> Queen");
+        GenerateAttackingSquaresBitBoard();
+        GenerateKingDangerBitBoard();
+        Profiler.EndSample();
+    }
 
-        moves.AddRange(GetDiagonalMoves());
-        moves.AddRange(GetVerticalMoves());
-        moves.AddRange(GetHorizontalMoves());
+    private void GenerateKingDangerBitBoard()
+    {
+        var diagonals = actualTile.GetDiagonalsByColor(pieceColor);
+        var verticals = actualTile.GetVerticalsByColor(pieceColor);
+        var horizontals = actualTile.GetHorizontalsByColor(pieceColor);
 
-        return moves.ToArray();
+        GeneratePinAndKingDangerBySegment(verticals.backVerticals);
+        GeneratePinAndKingDangerBySegment(verticals.frontVerticals);
+        GeneratePinAndKingDangerBySegment(horizontals.leftHorizontals);
+        GeneratePinAndKingDangerBySegment(horizontals.rightHorizontals);
+        GeneratePinAndKingDangerBySegment(diagonals.topRightDiagonals);
+        GeneratePinAndKingDangerBySegment(diagonals.topLeftDiagonals);
+        GeneratePinAndKingDangerBySegment(diagonals.downRightDiagonals);
+        GeneratePinAndKingDangerBySegment(diagonals.downLeftDiagonals);
+    }
+
+    private void GenerateAttackingSquaresBitBoard()
+    {
+        Bitboard attackingTiles = new Bitboard();
+
+        attackingTiles.Add(GetDiagonalBlockedSquares());
+        attackingTiles.Add(GetVerticalBlockedSquares());
+        attackingTiles.Add(GetHorizontalBlockedSquares());
+
+        MovingSquares = AttackingSquares = attackingTiles;
     }
 }

@@ -2,7 +2,7 @@ using UnityEngine;
 
 [RequireComponent(typeof(PiecesSetup), typeof(PiecesCapturedController), typeof(BoardStarter))]
 [RequireComponent(typeof(PlayTurnManager))]
-public class GameManager : MonoBehaviour
+public class GameManager : MonoBehaviour, IGameManager
 {
     [SerializeField] private UIManager uiManager;
     [SerializeField] private string fen;
@@ -14,7 +14,6 @@ public class GameManager : MonoBehaviour
 
     public TurnManager TurnManager { get; private set; }
     public EndGameChecker EndGameChecker { get; private set; }
-    public MoveChecker MoveChecker { get; private set; }
     public ZobristHashManager HashManager { get; private set; }
 
     private PiecesSetup setup;
@@ -57,7 +56,6 @@ public class GameManager : MonoBehaviour
         SetupEnvironment(board);
 
         EndGameChecker = new EndGameChecker(this);
-        MoveChecker = new MoveChecker(this);
         TurnManager = new TurnManager(this);
 
         ChooseSetup();
@@ -107,7 +105,10 @@ public class GameManager : MonoBehaviour
     private void ChooseSetup() 
     {
         if (string.IsNullOrEmpty(fen) || startWithFen is false)
+        {
             setup.SetInitialPieces();
+            GameBoard.SetTurn(PieceColor.White);
+        }
         else
         {
             GameBoard.FENManager.SetupByFEN(new FEN(fen), setup.InstantiatePiece, this);

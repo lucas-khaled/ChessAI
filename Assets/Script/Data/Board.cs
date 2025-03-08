@@ -1,5 +1,8 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
+using UnityEngine.Profiling;
 
 public class Board
 {
@@ -14,10 +17,15 @@ public class Board
 
     public string ActualHash;
 
+    public MoveGenerator moveGenerator { get; private set; }
     public List<Turn> turns { get; private set; } = new List<Turn>();
     public Turn LastTurn => turns.Count > 0 ? turns[turns.Count - 1] : new Turn();
-    public PieceColor ActualTurn { get; set; } = PieceColor.White;
+    public PieceColor ActualTurn { get; private set; } = PieceColor.White;
     public FENManager FENManager { get; private set; }
+
+    public List<Move> currentTurnMoves { get; private set; }
+    public bool IsCheckMate { get; private set; }
+    public bool HasMoves { get; private set; }
 
     public string Name { get; set; }
 
@@ -30,6 +38,7 @@ public class Board
         events = new BoardEvents();
         rules = new EspecialRules(this);
         FENManager = new FENManager(this);
+        moveGenerator = new MoveGenerator(this);
     }
 
     public Board Copy()
@@ -66,11 +75,24 @@ public class Board
         }
 
         board.tiles = virtualTiles;
+
+        board.currentTurnMoves = new List<Move>();
+        for (int i = 0; i<currentTurnMoves.Count; i++) 
+        {
+            var move = currentTurnMoves[i].VirtualizeTo(board);
+            board.currentTurnMoves.Add(move);
+        }
+
         board.piecesHolder = pieces;
         board.rules = rules.Copy(board);
-        board.ActualTurn = ActualTurn;
         board.ActualHash = ActualHash;
+        board.ActualTurn = ActualTurn;
         board.turns = turns;
+        
+        
+        board.HasMoves = HasMoves;
+        board.IsCheckMate = IsCheckMate;
+
         return board;
     }
 
@@ -79,16 +101,19 @@ public class Board
         return tiles;
     }
 
+    public Tile GetTileByIndex(int index) 
+    {
+        double division = index / BoardRowSize;
+        int row = (int)Math.Floor(division);
+
+        int column = index - row * BoardColumnSize;
+
+        return tiles[row][column];
+    }
+
     public Tile GetKingTile(PieceColor color)
     {
-        foreach (var row in tiles)
-        {
-            var kingTile = row.Find(t => t.OccupiedBy is King king && king.pieceColor == color);
-            if (kingTile != null)
-                return kingTile;
-        }
-
-        return null;
+        return (color == PieceColor.White) ? piecesHolder.whiteKing.GetTile() : piecesHolder.blackKing.GetTile();
     }
 
     public Tile[] GetRookTiles(PieceColor color)
@@ -109,17 +134,7 @@ public class Board
 
     public Piece[] GetAllPieces(PieceColor pieceColor)
     {
-        List<Piece> pieces = new();
-        foreach (var tileList in tiles)
-        {
-            foreach (var tile in tileList)
-            {
-                if (tile.IsOccupied && tile.OccupiedBy.pieceColor == pieceColor)
-                    pieces.Add(tile.OccupiedBy);
-            }
-        }
-
-        return pieces.ToArray();
+        return pieceColor == PieceColor.White ? piecesHolder.whitePieces.ToArray() : piecesHolder.blackPieces.ToArray();
     }
 
     public void Clear()
@@ -136,5 +151,17 @@ public class Board
     public override string ToString()
     {
         return Name;
+    }
+
+    public void SetTurn(PieceColor color) 
+    {
+        ActualTurn = color;
+
+        Profiler.BeginSample("Move Generation");
+        currentTurnMoves = moveGenerator.GenerateMoves(color);
+        Profiler.EndSample();
+
+        HasMoves = currentTurnMoves.Count > 0;
+        IsCheckMate = moveGenerator.IsCheck() && HasMoves is false;
     }
 }

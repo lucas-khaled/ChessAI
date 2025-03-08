@@ -6,35 +6,50 @@ public class EspecialRules
     public CastleRights whiteCastleRights { get; private set; }
     public CastleRights blackCastleRights { get; private set; }
 
-
-    public Tile enPassantTile { get; private set; }
-    public Pawn enPassantPawn { get; private set; }
+    public TileCoordinates enPassantTileCoordinates { get; private set; } = new TileCoordinates(-1, -1);
 
     public Board Board { get; private set; }
 
-    public EspecialRules(Board board, bool listenToEvents = true) 
+    public bool HasEnPassant => enPassantTileCoordinates.IsValid();
+
+    public EspecialRules(Board board) 
     {
         whiteCastleRights = new();
         blackCastleRights = new();
 
-        if (listenToEvents)
-        {
-            board.events.onMoveMade += OnPieceMoved;
-            board.events.onMoveUnmade += OnPieceUnmoved;
-        }
-
         Board = board;
     }
 
-    public EspecialRules Copy(Board board, bool listenToEvents = true)
+    public EspecialRules Copy(Board board)
     {
-        return new EspecialRules(board, listenToEvents)
+        return new EspecialRules(board)
         {
-            whiteCastleRights = this.whiteCastleRights,
-            blackCastleRights = this.blackCastleRights,
-            enPassantPawn = this.enPassantPawn,
-            enPassantTile = this.enPassantTile
+            whiteCastleRights = this.whiteCastleRights.Copy(),
+            blackCastleRights = this.blackCastleRights.Copy(),
+            enPassantTileCoordinates = this.enPassantTileCoordinates,
         };
+    }
+
+    public bool CanCastleQueenSide(PieceColor color) 
+    {
+        if (HasCastledAllSides(color)) return false;
+
+        var castleRights = GetCastleRightsByColor(color);
+        var queensideBool = castleRights.CanCastleQueenSide;
+        var coord = GetRookCoordinates(true, color);
+
+        return queensideBool && Board.GetTiles()[coord.row][coord.column].OccupiedBy is Rook rook && rook.pieceColor == color;
+    }
+
+    public bool CanCastleKingSide(PieceColor color) 
+    {
+        if (HasCastledAllSides(color)) return false;
+
+        var castleRights = GetCastleRightsByColor(color);
+        var kingsideBool = castleRights.CanCastleKingSide;
+        var coord = GetRookCoordinates(false, color);
+
+        return kingsideBool && Board.GetTiles()[coord.row][coord.column].OccupiedBy is Rook rook && rook.pieceColor == color;
     }
 
     public bool CanCastle(PieceColor color, Rook rook)
@@ -64,7 +79,7 @@ public class EspecialRules
         return castleRights.CanCastleKingSide is false && castleRights.CanCastleQueenSide is false;
     }
 
-    private TileCoordinates GetRookCoordinates(bool isQueenSide, PieceColor pieceColor) 
+    public static TileCoordinates GetRookCoordinates(bool isQueenSide, PieceColor pieceColor) 
     {
         bool isWhite = pieceColor == PieceColor.White;
 
@@ -74,8 +89,9 @@ public class EspecialRules
             return isWhite ? new TileCoordinates(0, 7) : new TileCoordinates(7, 7);
     }
 
-    private void OnPieceMoved(Move move) 
+    public void OnMoveMade(Move move) 
     {
+        SetEnPassant(new TileCoordinates(-1, -1));
         if (move.piece is Pawn)
         {
             CheckEnPassant(move);
@@ -86,9 +102,6 @@ public class EspecialRules
             SetKingMove(move);
         else if (move.piece is Rook)
             RookMoved(move);
-
-        enPassantTile = null;
-        enPassantPawn = null;
     }
 
     private void SetKingMove(Move move)
@@ -101,24 +114,19 @@ public class EspecialRules
 
     private void CheckEnPassant(Move move)
     {
-        TileCoordinates toCoord = move.to.TilePosition;
         var moveRange = Mathf.Abs(move.from.TilePosition.row - move.to.TilePosition.row);
         if (moveRange < 2)
-        {
-            enPassantTile = null;
-            enPassantPawn = null;
             return;
-        }
 
-        var row = (move.piece.pieceColor == PieceColor.White) ? toCoord.row - 1 : toCoord.row + 1;
-        Tile tile = Board.GetTiles()[row][toCoord.column];
-        SetEnPassant(tile, move.piece as Pawn);
+        TileCoordinates toCoord = move.to.TilePosition;
+        toCoord.row += (move.piece.pieceColor == PieceColor.White) ? -1 : 1;
+
+        SetEnPassant(toCoord);
     }
 
-    public void SetEnPassant(Tile tile, Pawn pawn) 
+    public void SetEnPassant(TileCoordinates tile) 
     {
-        enPassantTile = tile;
-        enPassantPawn = pawn;
+        enPassantTileCoordinates = tile;
     }
 
     private void RookMoved(Move rookMove)
@@ -180,15 +188,14 @@ public class EspecialRules
         }
     }
 
-    private void OnPieceUnmoved(Move move)
+    public void OnTurnUnmade(Turn turn)
     {
-        enPassantPawn = null;
-        enPassantTile = null;
+        SetEnPassant(turn.enPassant);
 
-        if (move is CastleMove || move.piece is King)
-            UndoKingMove(move);
-        if (move.piece is Rook)
-            UndoRookMove(move);
+        if (turn.move is CastleMove || turn.move.piece is King)
+            UndoKingMove(turn.move);
+        if (turn.move.piece is Rook)
+            UndoRookMove(turn.move);
     }
 
     private void UndoKingMove(Move move)
@@ -231,6 +238,19 @@ public class EspecialRules
         {
             CanCastleKingSide = true;
             CanCastleQueenSide = true;
+        }
+
+        public CastleRights Copy() 
+        {
+            return new CastleRights()
+            {
+                WasSetByFEN = false,
+                CanCastleKingSide = CanCastleKingSide,
+                CanCastleQueenSide = CanCastleQueenSide,
+                KingFirstMove = KingFirstMove,
+                QueenRookFirstMove = QueenRookFirstMove,
+                KingRookFirstMove = KingRookFirstMove
+            };
         }
 
         public void SetCastleOnBothSides(bool canCastle) 

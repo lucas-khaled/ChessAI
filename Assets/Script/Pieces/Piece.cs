@@ -20,13 +20,26 @@ public abstract class Piece
     protected int Column => Coordinates.column;
     protected bool IsWhite => pieceColor == PieceColor.White;
 
-    public Board Board { get; }
+    public Board Board { get; set; }
+    public PinnerPiece PinnedBy { get; set; }
 
-    public abstract Move[] GetMoves();
+    public Bitboard MovingSquares { get; set; } = new Bitboard();
+    public Bitboard AttackingSquares { get; set; } = new Bitboard();
+
+    protected abstract void GenerateBitBoardMethod();
 
     public Piece(Board board) 
     {
         Board = board;
+    }
+
+    public virtual void GenerateBitBoard() 
+    {
+        PinnedBy = null;
+        MovingSquares.Clear();
+        AttackingSquares.Clear();
+
+        GenerateBitBoardMethod();
     }
 
     public void SetTile(Tile tile) 
@@ -52,34 +65,24 @@ public abstract class Piece
         return piece != null && pieceColor != piece.pieceColor;
     }
 
-    protected Move[] CreateMovesFromSegment(List<Tile> segments)
+    protected Bitboard GetBitboardUntilBlockedSquare(List<TileCoordinates> segment, bool capturesIfEnemy = true, bool includeBlockingPieceSquare = false)
     {
-        Move[] moves = new Move[segments.Count];
-
-        for (int i = 0; i < segments.Count; i++)
-            moves[i] = new Move(actualTile, segments[i], this, segments[i].OccupiedBy);
-
-        return moves;
-    }
-
-    protected List<Tile> CheckForBlockingSquares(List<TileCoordinates> segment, bool capturesIfEnemy = true, bool includeBlockingPieceSquare = false)
-    {
-        List<Tile> finalTiles = new();
+        Bitboard bitboard = new();
         foreach (var tileCoord in segment)
         {
             Tile tile = Board.tiles[tileCoord.row][tileCoord.column];
             if (tile.IsOccupied)
             {
                 if (IsEnemyPiece(tile.OccupiedBy) && capturesIfEnemy || includeBlockingPieceSquare)
-                    finalTiles.Add(tile);
+                    bitboard.Add(tile.Bitboard);
 
                 break;
             }
 
-            finalTiles.Add(tile);
+            bitboard.Add(tile.Bitboard);
         }
 
-        return finalTiles;
+        return bitboard;
     }
 
     public Piece Copy(Tile tile) 

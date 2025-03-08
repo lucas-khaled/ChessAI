@@ -13,18 +13,17 @@ MonoBehaviour:
   m_Name: PlayersConfig
   m_EditorClassIdentifier: 
   whitePlayerInfo:
-    rid: 8642854227372671028
+    rid: 5352729892453089280
   blackPlayerInfo:
-    rid: 8642854227372671033
+    rid: 5352729730512584704
   references:
     version: 2
     RefIds:
-    - rid: 8642854227372671028
+    - rid: 5352729730512584704
       type: {class: HumanPlayerInfo, ns: , asm: Assembly-CSharp}
       data:
         selected: 1
-    - rid: 8642854227372671033
-      type: {class: MinimaxPlayerInfo, ns: , asm: Assembly-CSharp}
+    - rid: 5352729892453089280
+      type: {class: HumanPlayerInfo, ns: , asm: Assembly-CSharp}
       data:
-        selected: 0
-        depth: 4
+        selected: 1

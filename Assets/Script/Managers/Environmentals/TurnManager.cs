@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class TurnManager
 {
-    public GameManager Manager { get; }
+    public IGameManager Manager { get; }
 
-    public TurnManager(GameManager manager) 
+    public TurnManager(IGameManager manager) 
     {
         Manager = manager;
     }
@@ -16,8 +16,7 @@ public class TurnManager
     {
         if (IsValidMove(move) is false)
         {
-            Debug.LogError($"The move is not valid:\n\n {move}");
-            return;
+            throw new Exception($"The move is not valid:\n\n {move}");
         }
 
         Move convertedMove = ConvertMoveEnvironment(move, board);
@@ -43,7 +42,7 @@ public class TurnManager
 
     private void ComputeMove(Move move, Board board) 
     {
-        EspecialRules oldRules = board.rules.Copy(board, false);
+        EspecialRules oldRules = board.rules.Copy(board);
         string oldHash = board.ActualHash;
 
         if (move is CastleMove castleMove)
@@ -53,13 +52,12 @@ public class TurnManager
         else
             ComputeSimpleMove(move, board);
 
-        board.events?.onMoveMade?.Invoke(move);
-
+        board.rules.OnMoveMade(move);
         
         long hash = Manager.HashManager.GetNewHashFromMove(Convert.ToInt64(oldHash), move, board.rules, oldRules);
         board.ActualHash = hash.ToString();
 
-        SetTurn(move, board);
+        SetTurn(move, board, oldRules.enPassantTileCoordinates);
     }
 
     private void ComputeCastleMove(CastleMove move, Board board) 
@@ -111,13 +109,15 @@ public class TurnManager
         }
     }
 
-    private void SetTurn(Move move, Board board) 
+    private void SetTurn(Move move, Board board, TileCoordinates oldEnPassant) 
     {
         Turn lastTurn = board.LastTurn;
         int halfMoves = (move.capture != null) ? 0 : lastTurn.halfMoves + 1;
         int fullMoves = (board.ActualTurn == PieceColor.Black) ? lastTurn.fullMoves + 1 : lastTurn.fullMoves;
 
-        var turn = new Turn(move, board.ActualHash, halfMoves, fullMoves);
+        //Debug.Log($"<color=yellow>Setting en passant in new turn: {board.rules.enPassantTileCoordinates}</color>");
+
+        var turn = new Turn(move, board.ActualHash, halfMoves, fullMoves, oldEnPassant);
         board.turns.Add(turn);
     }
     #endregion
@@ -135,10 +135,13 @@ public class TurnManager
             UndoCastleMove(castleMove, board);
         else if (lastMove is PromotionMove promotionMove)
             UndoPromotionMove(promotionMove, board);
+        else if (lastMove is EnPassantMove enPassantMove)
+            UndoEnPassant(enPassantMove, board);
         else
             UndoSimpleMove(lastMove, board);
 
-        board.events.onMoveUnmade?.Invoke(lastMove);
+        //Debug.Log($"<color=cyan>Undoing en passant from last turn: {lastTurn.enPassant}</color>");
+        board.rules.OnTurnUnmade(lastTurn);
 
         board.ActualHash = hash;
 
@@ -170,6 +173,20 @@ public class TurnManager
         board.events.onPromotionUnmade?.Invoke(move);
     }
 
+    private void UndoEnPassant(EnPassantMove lastMove, Board board)
+    {
+        lastMove.from.Occupy(lastMove.piece);
+        lastMove.piece.SetTile(lastMove.from);
+        lastMove.to.DeOccupy();
+
+        Piece capturedPiece = lastMove.capture;
+        lastMove.capturedTile.Occupy(capturedPiece);
+        capturedPiece.SetTile(lastMove.capturedTile);
+
+        board.piecesHolder.AddPiece(capturedPiece);
+        board.events.onPieceUncaptured?.Invoke(capturedPiece);
+    }
+
     private void UndoSimpleMove(Move lastMove, Board board)
     {
         lastMove.from.Occupy(lastMove.piece);
@@ -196,7 +213,7 @@ public class TurnManager
     private void SwapTurn(Board board)
     {
         var thisTurn = board.ActualTurn;
-        board.ActualTurn = (thisTurn == PieceColor.White) ? PieceColor.Black : PieceColor.White;
+        board.SetTurn(thisTurn.GetOppositeColor());
     }
 
     public void DebugAllTurns(Board board) 
@@ -215,18 +232,20 @@ public struct Turn
     public Move move;
     public string zobristHash;
     public int halfMoves;
-    public int fullMoves; 
+    public int fullMoves;
+    public TileCoordinates enPassant;
 
-    public Turn(Move move, string zobristHash, int halfMoves, int fullMoves) 
+    public Turn(Move move, string zobristHash, int halfMoves, int fullMoves, TileCoordinates enPassant) 
     {
         this.move = move;
         this.zobristHash = zobristHash;
         this.halfMoves = halfMoves;
         this.fullMoves = fullMoves;
+        this.enPassant = enPassant;
     }
 
     public override string ToString()
     {
-        return $"{move};\n\nFEN: {zobristHash}";
+        return $"{move};\n\nFEN: {zobristHash}\nEnPassant: {(enPassant.IsValid() ? enPassant : '-')}";
     }
 }

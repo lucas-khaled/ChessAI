@@ -1,15 +1,32 @@
-using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
+using UnityEngine.Profiling;
 
-public class Bishop : BlockableMovesPiece
+public class Bishop : PinnerPiece
 {
     public Bishop(Board board) : base(board)
     {
     }
 
-    public override Move[] GetMoves()
+    protected override void GenerateBitBoardMethod()
     {
-        return GetDiagonalMoves().ToArray();
+        Profiler.BeginSample("Move Generation > Generate Bitboard -> Bishop");
+        GenerateAttackingSquaresBitBoard();
+        GenerateKingDangerBitBoard();
+        Profiler.EndSample();
+    }
+
+    private void GenerateKingDangerBitBoard()
+    {
+        var diagonals = actualTile.GetDiagonalsByColor(pieceColor);
+
+        GeneratePinAndKingDangerBySegment(diagonals.topRightDiagonals);
+        GeneratePinAndKingDangerBySegment(diagonals.topLeftDiagonals);
+        GeneratePinAndKingDangerBySegment(diagonals.downRightDiagonals);
+        GeneratePinAndKingDangerBySegment(diagonals.downLeftDiagonals);
+    }
+
+    private void GenerateAttackingSquaresBitBoard()
+    {
+        MovingSquares = AttackingSquares = GetDiagonalBlockedSquares();
     }
 }

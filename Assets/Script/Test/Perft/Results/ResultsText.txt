@@ -1,0 +1,788 @@
+[
+  {
+    "fenPosition": "rnbq1k1r/pp1Pbppp/2p5/8/2B5/8/PPP1NnPP/RNBQK2R w KQ - 1 8",
+    "depthData": [
+      {
+        "depth": 1,
+        "data": {
+          "nodes": 44,
+          "captures": 0,
+          "castles": 0,
+          "promotions": 0,
+          "checks": 0,
+          "checkmates": 0,
+          "doubleChecks": 0,
+          "divideDict": [
+            {
+              "move": "a2a3",
+              "nodeCount": 34
+            },
+            {
+              "move": "b2b3",
+              "nodeCount": 34
+            },
+            {
+              "move": "c2c3",
+              "nodeCount": 34
+            },
+            {
+              "move": "g2g3",
+              "nodeCount": 34
+            },
+            {
+              "move": "h2h3",
+              "nodeCount": 34
+            },
+            {
+              "move": "a2a4",
+              "nodeCount": 34
+            },
+            {
+              "move": "b2b4",
+              "nodeCount": 33
+            },
+            {
+              "move": "g2g4",
+              "nodeCount": 34
+            },
+            {
+              "move": "h2h4",
+              "nodeCount": 34
+            },
+            {
+              "move": "d7c8q",
+              "nodeCount": 31
+            },
+            {
+              "move": "d7c8r",
+              "nodeCount": 31
+            },
+            {
+              "move": "d7c8b",
+              "nodeCount": 41
+            },
+            {
+              "move": "d7c8n",
+              "nodeCount": 41
+            },
+            {
+              "move": "b1d2",
+              "nodeCount": 34
+            },
+            {
+              "move": "b1a3",
+              "nodeCount": 34
+            },
+            {
+              "move": "b1c3",
+              "nodeCount": 34
+            },
+            {
+              "move": "e2g1",
+              "nodeCount": 34
+            },
+            {
+              "move": "e2c3",
+              "nodeCount": 34
+            },
+            {
+              "move": "e2g3",
+              "nodeCount": 34
+            },
+            {
+              "move": "e2d4",
+              "nodeCount": 34
+            },
+            {
+              "move": "e2f4",
+              "nodeCount": 34
+            },
+            {
+              "move": "c1d2",
+              "nodeCount": 34
+            },
+            {
+              "move": "c1e3",
+              "nodeCount": 34
+            },
+            {
+              "move": "c1f4",
+              "nodeCount": 34
+            },
+            {
+              "move": "c1g5",
+              "nodeCount": 32
+            },
+            {
+              "move": "c1h6",
+              "nodeCount": 31
+            },
+            {
+              "move": "c4b3",
+              "nodeCount": 34
+            },
+            {
+              "move": "c4d3",
+              "nodeCount": 34
+            },
+            {
+              "move": "c4b5",
+              "nodeCount": 34
+            },
+            {
+              "move": "c4d5",
+              "nodeCount": 35
+            },
+            {
+              "move": "c4a6",
+              "nodeCount": 33
+            },
+            {
+              "move": "c4e6",
+              "nodeCount": 35
+            },
+            {
+              "move": "c4f7",
+              "nodeCount": 32
+            },
+            {
+              "move": "h1f1",
+              "nodeCount": 34
+            },
+            {
+              "move": "h1g1",
+              "nodeCount": 34
+            },
+            {
+              "move": "d1d2",
+              "nodeCount": 34
+            },
+            {
+              "move": "d1d3",
+              "nodeCount": 34
+            },
+            {
+              "move": "d1d4",
+              "nodeCount": 34
+            },
+            {
+              "move": "d1d5",
+              "nodeCount": 35
+            },
+            {
+              "move": "d1d6",
+              "nodeCount": 28
+            },
+            {
+              "move": "e1f1",
+              "nodeCount": 34
+            },
+            {
+              "move": "e1d2",
+              "nodeCount": 34
+            },
+            {
+              "move": "e1f2",
+              "nodeCount": 28
+            },
+            {
+              "move": "e1g1",
+              "nodeCount": 34
+            }
+          ]
+        }
+      },
+      {
+        "depth": 2,
+        "data": {
+          "nodes": 1486,
+          "captures": 0,
+          "castles": 0,
+          "promotions": 0,
+          "checks": 0,
+          "checkmates": 0,
+          "doubleChecks": 0,
+          "divideDict": [
+            {
+              "move": "a2a3",
+              "nodeCount": 34
+            },
+            {
+              "move": "b2b3",
+              "nodeCount": 34
+            },
+            {
+              "move": "c2c3",
+              "nodeCount": 34
+            },
+            {
+              "move": "g2g3",
+              "nodeCount": 34
+            },
+            {
+              "move": "h2h3",
+              "nodeCount": 34
+            },
+            {
+              "move": "a2a4",
+              "nodeCount": 34
+            },
+            {
+              "move": "b2b4",
+              "nodeCount": 33
+            },
+            {
+              "move": "g2g4",
+              "nodeCount": 34
+            },
+            {
+              "move": "h2h4",
+              "nodeCount": 34
+            },
+            {
+              "move": "d7c8q",
+              "nodeCount": 31
+            },
+            {
+              "move": "d7c8r",
+              "nodeCount": 31
+            },
+            {
+              "move": "d7c8b",
+              "nodeCount": 41
+            },
+            {
+              "move": "d7c8n",
+              "nodeCount": 41
+            },
+            {
+              "move": "b1d2",
+              "nodeCount": 34
+            },
+            {
+              "move": "b1a3",
+              "nodeCount": 34
+            },
+            {
+              "move": "b1c3",
+              "nodeCount": 34
+            },
+            {
+              "move": "e2g1",
+              "nodeCount": 34
+            },
+            {
+              "move": "e2c3",
+              "nodeCount": 34
+            },
+            {
+              "move": "e2g3",
+              "nodeCount": 34
+            },
+            {
+              "move": "e2d4",
+              "nodeCount": 34
+            },
+            {
+              "move": "e2f4",
+              "nodeCount": 34
+            },
+            {
+              "move": "c1d2",
+              "nodeCount": 34
+            },
+            {
+              "move": "c1e3",
+              "nodeCount": 34
+            },
+            {
+              "move": "c1f4",
+              "nodeCount": 34
+            },
+            {
+              "move": "c1g5",
+              "nodeCount": 32
+            },
+            {
+              "move": "c1h6",
+              "nodeCount": 31
+            },
+            {
+              "move": "c4b3",
+              "nodeCount": 34
+            },
+            {
+              "move": "c4d3",
+              "nodeCount": 34
+            },
+            {
+              "move": "c4b5",
+              "nodeCount": 34
+            },
+            {
+              "move": "c4d5",
+              "nodeCount": 35
+            },
+            {
+              "move": "c4a6",
+              "nodeCount": 33
+            },
+            {
+              "move": "c4e6",
+              "nodeCount": 35
+            },
+            {
+              "move": "c4f7",
+              "nodeCount": 32
+            },
+            {
+              "move": "h1f1",
+              "nodeCount": 34
+            },
+            {
+              "move": "h1g1",
+              "nodeCount": 34
+            },
+            {
+              "move": "d1d2",
+              "nodeCount": 34
+            },
+            {
+              "move": "d1d3",
+              "nodeCount": 34
+            },
+            {
+              "move": "d1d4",
+              "nodeCount": 34
+            },
+            {
+              "move": "d1d5",
+              "nodeCount": 35
+            },
+            {
+              "move": "d1d6",
+              "nodeCount": 28
+            },
+            {
+              "move": "e1f1",
+              "nodeCount": 34
+            },
+            {
+              "move": "e1d2",
+              "nodeCount": 34
+            },
+            {
+              "move": "e1f2",
+              "nodeCount": 28
+            },
+            {
+              "move": "e1g1",
+              "nodeCount": 34
+            }
+          ]
+        }
+      },
+      {
+        "depth": 3,
+        "data": {
+          "nodes": 62379,
+          "captures": 0,
+          "castles": 0,
+          "promotions": 0,
+          "checks": 0,
+          "checkmates": 0,
+          "doubleChecks": 0,
+          "divideDict": [
+            {
+              "move": "a2a3",
+              "nodeCount": 1373
+            },
+            {
+              "move": "b2b3",
+              "nodeCount": 1368
+            },
+            {
+              "move": "c2c3",
+              "nodeCount": 1440
+            },
+            {
+              "move": "g2g3",
+              "nodeCount": 1308
+            },
+            {
+              "move": "h2h3",
+              "nodeCount": 1371
+            },
+            {
+              "move": "a2a4",
+              "nodeCount": 1433
+            },
+            {
+              "move": "b2b4",
+              "nodeCount": 1398
+            },
+            {
+              "move": "g2g4",
+              "nodeCount": 1337
+            },
+            {
+              "move": "h2h4",
+              "nodeCount": 1402
+            },
+            {
+              "move": "d7c8q",
+              "nodeCount": 1459
+            },
+            {
+              "move": "d7c8r",
+              "nodeCount": 1296
+            },
+            {
+              "move": "d7c8b",
+              "nodeCount": 1668
+            },
+            {
+              "move": "d7c8n",
+              "nodeCount": 1607
+            },
+            {
+              "move": "b1d2",
+              "nodeCount": 1174
+            },
+            {
+              "move": "b1a3",
+              "nodeCount": 1303
+            },
+            {
+              "move": "b1c3",
+              "nodeCount": 1467
+            },
+            {
+              "move": "e2g1",
+              "nodeCount": 1431
+            },
+            {
+              "move": "e2c3",
+              "nodeCount": 1595
+            },
+            {
+              "move": "e2g3",
+              "nodeCount": 1523
+            },
+            {
+              "move": "e2d4",
+              "nodeCount": 1554
+            },
+            {
+              "move": "e2f4",
+              "nodeCount": 1555
+            },
+            {
+              "move": "c1d2",
+              "nodeCount": 1368
+            },
+            {
+              "move": "c1e3",
+              "nodeCount": 1587
+            },
+            {
+              "move": "c1f4",
+              "nodeCount": 1552
+            },
+            {
+              "move": "c1g5",
+              "nodeCount": 1422
+            },
+            {
+              "move": "c1h6",
+              "nodeCount": 1312
+            },
+            {
+              "move": "c4b3",
+              "nodeCount": 1275
+            },
+            {
+              "move": "c4d3",
+              "nodeCount": 1269
+            },
+            {
+              "move": "c4b5",
+              "nodeCount": 1332
+            },
+            {
+              "move": "c4d5",
+              "nodeCount": 1375
+            },
+            {
+              "move": "c4a6",
+              "nodeCount": 1256
+            },
+            {
+              "move": "c4e6",
+              "nodeCount": 1438
+            },
+            {
+              "move": "c4f7",
+              "nodeCount": 1328
+            },
+            {
+              "move": "h1f1",
+              "nodeCount": 1364
+            },
+            {
+              "move": "h1g1",
+              "nodeCount": 1311
+            },
+            {
+              "move": "d1d2",
+              "nodeCount": 1436
+            },
+            {
+              "move": "d1d3",
+              "nodeCount": 1685
+            },
+            {
+              "move": "d1d4",
+              "nodeCount": 1751
+            },
+            {
+              "move": "d1d5",
+              "nodeCount": 1688
+            },
+            {
+              "move": "d1d6",
+              "nodeCount": 1500
+            },
+            {
+              "move": "e1f1",
+              "nodeCount": 1445
+            },
+            {
+              "move": "e1d2",
+              "nodeCount": 978
+            },
+            {
+              "move": "e1f2",
+              "nodeCount": 1269
+            },
+            {
+              "move": "e1g1",
+              "nodeCount": 1376
+            }
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "fenPosition": "r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 0",
+    "depthData": [
+      {
+        "depth": 2,
+        "data": {
+          "nodes": 2039,
+          "captures": 351,
+          "castles": 91,
+          "promotions": 0,
+          "checks": 3,
+          "checkmates": 0,
+          "doubleChecks": 0,
+          "divideDict": [
+            {
+              "move": "a2a3",
+              "nodeCount": 44
+            },
+            {
+              "move": "b2b3",
+              "nodeCount": 42
+            },
+            {
+              "move": "g2g3",
+              "nodeCount": 42
+            },
+            {
+              "move": "d5d6",
+              "nodeCount": 41
+            },
+            {
+              "move": "a2a4",
+              "nodeCount": 44
+            },
+            {
+              "move": "g2g4",
+              "nodeCount": 42
+            },
+            {
+              "move": "g2h3",
+              "nodeCount": 43
+            },
+            {
+              "move": "d5e6",
+              "nodeCount": 46
+            },
+            {
+              "move": "c3b1",
+              "nodeCount": 42
+            },
+            {
+              "move": "c3d1",
+              "nodeCount": 42
+            },
+            {
+              "move": "c3a4",
+              "nodeCount": 42
+            },
+            {
+              "move": "c3b5",
+              "nodeCount": 39
+            },
+            {
+              "move": "e5d3",
+              "nodeCount": 43
+            },
+            {
+              "move": "e5c4",
+              "nodeCount": 42
+            },
+            {
+              "move": "e5g4",
+              "nodeCount": 44
+            },
+            {
+              "move": "e5c6",
+              "nodeCount": 41
+            },
+            {
+              "move": "e5g6",
+              "nodeCount": 42
+            },
+            {
+              "move": "e5d7",
+              "nodeCount": 45
+            },
+            {
+              "move": "e5f7",
+              "nodeCount": 44
+            },
+            {
+              "move": "d2c1",
+              "nodeCount": 43
+            },
+            {
+              "move": "d2e3",
+              "nodeCount": 43
+            },
+            {
+              "move": "d2f4",
+              "nodeCount": 43
+            },
+            {
+              "move": "d2g5",
+              "nodeCount": 42
+            },
+            {
+              "move": "d2h6",
+              "nodeCount": 41
+            },
+            {
+              "move": "e2d1",
+              "nodeCount": 44
+            },
+            {
+              "move": "e2f1",
+              "nodeCount": 44
+            },
+            {
+              "move": "e2d3",
+              "nodeCount": 42
+            },
+            {
+              "move": "e2c4",
+              "nodeCount": 41
+            },
+            {
+              "move": "e2b5",
+              "nodeCount": 39
+            },
+            {
+              "move": "e2a6",
+              "nodeCount": 36
+            },
+            {
+              "move": "a1b1",
+              "nodeCount": 43
+            },
+            {
+              "move": "a1c1",
+              "nodeCount": 43
+            },
+            {
+              "move": "a1d1",
+              "nodeCount": 43
+            },
+            {
+              "move": "h1f1",
+              "nodeCount": 43
+            },
+            {
+              "move": "h1g1",
+              "nodeCount": 43
+            },
+            {
+              "move": "f3d3",
+              "nodeCount": 42
+            },
+            {
+              "move": "f3e3",
+              "nodeCount": 43
+            },
+            {
+              "move": "f3g3",
+              "nodeCount": 43
+            },
+            {
+              "move": "f3h3",
+              "nodeCount": 43
+            },
+            {
+              "move": "f3f4",
+              "nodeCount": 43
+            },
+            {
+              "move": "f3g4",
+              "nodeCount": 43
+            },
+            {
+              "move": "f3f5",
+              "nodeCount": 45
+            },
+            {
+              "move": "f3h5",
+              "nodeCount": 43
+            },
+            {
+              "move": "f3f6",
+              "nodeCount": 39
+            },
+            {
+              "move": "e1d1",
+              "nodeCount": 43
+            },
+            {
+              "move": "e1f1",
+              "nodeCount": 43
+            },
+            {
+              "move": "e1g1",
+              "nodeCount": 43
+            },
+            {
+              "move": "e1c1",
+              "nodeCount": 43
+            }
+          ]
+        }
+      }
+    ]
+  }
+]
