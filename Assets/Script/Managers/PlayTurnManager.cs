@@ -42,7 +42,6 @@ public class PlayTurnManager : ManagerHelper
     {
         try
         {
-            SetCurrentPlayer(turn);
             currentTurn.StartTurn(OnMove);
         }
         catch (Exception e) 
@@ -85,11 +84,14 @@ public class PlayTurnManager : ManagerHelper
             if (madeMove == null) return;
 
             var board = manager.GameBoard;
+            SetCurrentPlayer(board.ActualTurn.GetOppositeColor());
             manager.TurnManager.DoMove(madeMove, board);
             madeMove = null;
 
             if (manager.EndGameChecker.CheckEnd(manager.TestBoard).hasEnded is false)
+            {
                 Task.Run(() => PlayerMove(board.ActualTurn));
+            }
         }
     }
 }

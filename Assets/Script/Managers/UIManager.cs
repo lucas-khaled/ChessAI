@@ -9,6 +9,10 @@ public class UIManager : MonoBehaviour
     [SerializeField] private DrawPopup drawPopup;
     [SerializeField] private TurnPanel turnPanel;
 
+    private void Start()
+    {
+        turnPanel.gameObject.SetActive(false);
+    }
     public void ShowTurn(IPlayer player) 
     {
         turnPanel.gameObject.SetActive(true);
