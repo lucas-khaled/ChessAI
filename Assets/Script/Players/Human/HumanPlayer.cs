@@ -39,6 +39,7 @@ public class HumanPlayer : Player
         if (moves is null || moves.Count <= 0) 
         {
             DeselectTile();
+            SelectTileIfPossible(tile);
             return;
         }
 
@@ -61,7 +62,7 @@ public class HumanPlayer : Player
 
     private void GetMoves() 
     {
-        actualPossibleMoves = manager.environment.moveMaker.GetMoves(selectedTile.OccupiedBy);
+        actualPossibleMoves = manager.GameBoard.currentTurnMoves.Where(move => move.piece.Equals(selectedTile.OccupiedBy)).ToArray();
 
         SetPossibleTilesMaterial(actualPossibleMoves);
     }

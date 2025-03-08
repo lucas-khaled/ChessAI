@@ -1,34 +1,55 @@
+using System;
 using UnityEngine;
 
-public class EspecialRules : IEnvironmentable
+public class EspecialRules
 {
-    public Environment Environment { get; }
+    public CastleRights whiteCastleRights { get; private set; }
+    public CastleRights blackCastleRights { get; private set; }
 
-    public bool whiteCanCastleKingSide { get; private set; } = true;
-    public bool whiteCanCastleQueenSide { get; private set; } = true;
-    public bool blackCanCastleQueenSide { get; private set; } = true;
-    public bool blackCanCastleKingSide { get; private set; } = true;
+    public TileCoordinates enPassantTileCoordinates { get; private set; } = new TileCoordinates(-1, -1);
 
-    public Tile enPassantTile { get; private set; }
-    public Pawn enPassantPawn { get; private set; }
+    public Board Board { get; private set; }
 
-    public EspecialRules(Environment environment) 
+    public bool HasEnPassant => enPassantTileCoordinates.IsValid();
+
+    public EspecialRules(Board board) 
     {
-        Environment = environment;
-        Environment.events.onMoveMade += OnPieceMoved;
+        whiteCastleRights = new();
+        blackCastleRights = new();
+
+        Board = board;
     }
 
-    public IEnvironmentable Copy(Environment env)
+    public EspecialRules Copy(Board board)
     {
-        return new EspecialRules(env)
+        return new EspecialRules(board)
         {
-            whiteCanCastleQueenSide = this.whiteCanCastleQueenSide,
-            whiteCanCastleKingSide = this.whiteCanCastleKingSide,
-            blackCanCastleKingSide = this.blackCanCastleKingSide,
-            blackCanCastleQueenSide = this.blackCanCastleKingSide,
-            enPassantPawn = this.enPassantPawn,
-            enPassantTile = this.enPassantTile
+            whiteCastleRights = this.whiteCastleRights.Copy(),
+            blackCastleRights = this.blackCastleRights.Copy(),
+            enPassantTileCoordinates = this.enPassantTileCoordinates,
         };
+    }
+
+    public bool CanCastleQueenSide(PieceColor color) 
+    {
+        if (HasCastledAllSides(color)) return false;
+
+        var castleRights = GetCastleRightsByColor(color);
+        var queensideBool = castleRights.CanCastleQueenSide;
+        var coord = GetRookCoordinates(true, color);
+
+        return queensideBool && Board.GetTiles()[coord.row][coord.column].OccupiedBy is Rook rook && rook.pieceColor == color;
+    }
+
+    public bool CanCastleKingSide(PieceColor color) 
+    {
+        if (HasCastledAllSides(color)) return false;
+
+        var castleRights = GetCastleRightsByColor(color);
+        var kingsideBool = castleRights.CanCastleKingSide;
+        var coord = GetRookCoordinates(false, color);
+
+        return kingsideBool && Board.GetTiles()[coord.row][coord.column].OccupiedBy is Rook rook && rook.pieceColor == color;
     }
 
     public bool CanCastle(PieceColor color, Rook rook)
@@ -36,13 +57,14 @@ public class EspecialRules : IEnvironmentable
         if (HasCastledAllSides(color)) return false;
 
         var coord = GetRookCoordinates(true, color);
-        var queensideBool = (color == PieceColor.White) ? whiteCanCastleQueenSide : blackCanCastleQueenSide;
+        var castleRights = GetCastleRightsByColor(color);
 
+        var queensideBool = castleRights.CanCastleQueenSide;
         if (rook.GetTile().TilePosition.Equals(coord) && queensideBool)
             return true;
 
         coord = GetRookCoordinates(false, color);
-        var kingsideBool = (color == PieceColor.White) ? whiteCanCastleKingSide : blackCanCastleKingSide;
+        var kingsideBool = castleRights.CanCastleKingSide;
 
         if (rook.GetTile().TilePosition.Equals(coord) && kingsideBool)
             return true;
@@ -50,15 +72,14 @@ public class EspecialRules : IEnvironmentable
         return false;
     }
 
-    private bool HasCastledAllSides(PieceColor pieceColor) 
+    public bool HasCastledAllSides(PieceColor pieceColor) 
     {
-        var isWhite = pieceColor == PieceColor.White;
+        var castleRights = GetCastleRightsByColor(pieceColor);
 
-        return (isWhite && whiteCanCastleKingSide is false && whiteCanCastleQueenSide is false) ||
-            (isWhite is false && blackCanCastleKingSide is false && blackCanCastleQueenSide is false);
+        return castleRights.CanCastleKingSide is false && castleRights.CanCastleQueenSide is false;
     }
 
-    private TileCoordinates GetRookCoordinates(bool isQueenSide, PieceColor pieceColor) 
+    public static TileCoordinates GetRookCoordinates(bool isQueenSide, PieceColor pieceColor) 
     {
         bool isWhite = pieceColor == PieceColor.White;
 
@@ -68,23 +89,9 @@ public class EspecialRules : IEnvironmentable
             return isWhite ? new TileCoordinates(0, 7) : new TileCoordinates(7, 7);
     }
 
-    public void SetCastle(PieceColor pieceColor)
+    public void OnMoveMade(Move move) 
     {
-        switch (pieceColor)
-        {
-            case PieceColor.White:
-                whiteCanCastleKingSide = false;
-                whiteCanCastleQueenSide = false;
-                break;
-            case PieceColor.Black:
-                blackCanCastleKingSide = false;
-                blackCanCastleQueenSide = false;
-                break;
-        }
-    }
-
-    private void OnPieceMoved(Move move) 
-    {
+        SetEnPassant(new TileCoordinates(-1, -1));
         if (move.piece is Pawn)
         {
             CheckEnPassant(move);
@@ -92,33 +99,34 @@ public class EspecialRules : IEnvironmentable
         }
 
         if (move is CastleMove || move.piece is King)
-            SetCastle(move.piece.pieceColor);
+            SetKingMove(move);
         else if (move.piece is Rook)
             RookMoved(move);
+    }
 
-        enPassantTile = null;
-        enPassantPawn = null;
+    private void SetKingMove(Move move)
+    {
+        var castleRights = GetCastleRightsByColor(move.piece.pieceColor);
+
+        if (castleRights.KingFirstMove == null && castleRights.WasSetByFEN is false)
+            castleRights.SetKingMove(move);
     }
 
     private void CheckEnPassant(Move move)
     {
-        TileCoordinates toCoord = move.to.TilePosition;
         var moveRange = Mathf.Abs(move.from.TilePosition.row - move.to.TilePosition.row);
         if (moveRange < 2)
-        {
-            enPassantTile = null;
-            enPassantPawn = null;
             return;
-        }
 
-        var row = (move.piece.pieceColor == PieceColor.White) ? toCoord.row - 1 : toCoord.row + 1;
-        SetEnPassant(Environment.board.GetTiles()[row][toCoord.column], move.piece as Pawn);
+        TileCoordinates toCoord = move.to.TilePosition;
+        toCoord.row += (move.piece.pieceColor == PieceColor.White) ? -1 : 1;
+
+        SetEnPassant(toCoord);
     }
 
-    public void SetEnPassant(Tile tile, Pawn pawn) 
+    public void SetEnPassant(TileCoordinates tile) 
     {
-        enPassantTile = tile;
-        enPassantPawn = pawn;
+        enPassantTileCoordinates = tile;
     }
 
     private void RookMoved(Move rookMove)
@@ -131,30 +139,142 @@ public class EspecialRules : IEnvironmentable
 
         if (rookMove.from.TilePosition.Equals(queensidePosition)) 
         {
-            SetCastleQueenSide(pieceColor);
+            var castleRights = GetCastleRightsByColor(pieceColor);
+
+            if (castleRights.QueenRookFirstMove == null)
+            {
+                castleRights.SetQueenRookFirstMove(rookMove);
+            }
             return;
         }
 
         if (rookMove.from.TilePosition.Equals(kingsidePosition))
         {
-            SetCastleKingSide(pieceColor);
+            var castleRights = GetCastleRightsByColor(pieceColor);
+
+            if (castleRights.KingRookFirstMove == null)
+            {
+                castleRights.SetKingRookFirstMove(rookMove);
+            }
             return;
         }
     }
 
-    public void SetCastleKingSide(PieceColor color) 
+    public void SetCastleKingSide(PieceColor color, bool can, bool setByFEN = false) 
     {
         if (color == PieceColor.White)
-            whiteCanCastleKingSide = false;
+        {
+            whiteCastleRights.CanCastleKingSide = can;
+            whiteCastleRights.WasSetByFEN = setByFEN;
+        }
         else
-            blackCanCastleKingSide = false;
+        {
+            blackCastleRights.CanCastleKingSide = can;
+            blackCastleRights.WasSetByFEN = setByFEN;
+        }
     }
 
-    public void SetCastleQueenSide(PieceColor color)
+    public void SetCastleQueenSide(PieceColor color, bool can, bool setByFEN = false)
     {
         if (color == PieceColor.White)
-            whiteCanCastleQueenSide = false;
+        {
+            whiteCastleRights.CanCastleQueenSide = can;
+            whiteCastleRights.WasSetByFEN = setByFEN;
+        }
         else
-            blackCanCastleQueenSide = false;
+        {
+            blackCastleRights.CanCastleQueenSide = can;
+            blackCastleRights.WasSetByFEN = setByFEN;
+        }
+    }
+
+    public void OnTurnUnmade(Turn turn)
+    {
+        SetEnPassant(turn.enPassant);
+
+        if (turn.move is CastleMove || turn.move.piece is King)
+            UndoKingMove(turn.move);
+        if (turn.move.piece is Rook)
+            UndoRookMove(turn.move);
+    }
+
+    private void UndoKingMove(Move move)
+    {
+        var castleRights = GetCastleRightsByColor(move.piece.pieceColor);
+        bool undo = castleRights.KingFirstMove != null && castleRights.WasSetByFEN is false && castleRights.KingFirstMove.Equals(move);
+
+        if (undo)
+            castleRights.SetKingMove(null);
+    }
+
+    private void UndoRookMove(Move move)
+    {
+        var color = move.piece.pieceColor;
+        var castleRights = GetCastleRightsByColor(color);
+
+        if (castleRights.KingRookFirstMove != null && castleRights.WasSetByFEN is false && castleRights.KingRookFirstMove.Equals(move)) 
+            castleRights.SetKingRookFirstMove(null);
+
+        if (castleRights.QueenRookFirstMove != null && castleRights.WasSetByFEN is false && castleRights.QueenRookFirstMove.Equals(move))
+            castleRights.SetQueenRookFirstMove(null);
+    }
+
+    public CastleRights GetCastleRightsByColor(PieceColor color) 
+    {
+        return (color == PieceColor.White) ? whiteCastleRights : blackCastleRights;
+    }
+
+    public class CastleRights 
+    {
+        public bool WasSetByFEN { get; set; }
+        public bool CanCastleKingSide { get; set; }
+        public bool CanCastleQueenSide { get; set; }
+
+        public Move KingFirstMove { get; private set; }
+        public Move QueenRookFirstMove { get; private set; }
+        public Move KingRookFirstMove { get; private set; }
+
+        public CastleRights()
+        {
+            CanCastleKingSide = true;
+            CanCastleQueenSide = true;
+        }
+
+        public CastleRights Copy() 
+        {
+            return new CastleRights()
+            {
+                WasSetByFEN = false,
+                CanCastleKingSide = CanCastleKingSide,
+                CanCastleQueenSide = CanCastleQueenSide,
+                KingFirstMove = KingFirstMove,
+                QueenRookFirstMove = QueenRookFirstMove,
+                KingRookFirstMove = KingRookFirstMove
+            };
+        }
+
+        public void SetCastleOnBothSides(bool canCastle) 
+        {
+            CanCastleKingSide = canCastle;
+            CanCastleQueenSide = canCastle;
+        }
+
+        public void SetKingRookFirstMove(Move move) 
+        {
+            KingRookFirstMove = move;
+            CanCastleKingSide = move == null;
+        }
+
+        public void SetQueenRookFirstMove(Move move)
+        {
+            QueenRookFirstMove = move;
+            CanCastleQueenSide = move == null;
+        }
+
+        public void SetKingMove(Move move) 
+        {
+            SetCastleOnBothSides(move == null);
+            KingFirstMove = move;
+        }
     }
 }

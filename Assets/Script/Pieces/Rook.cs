@@ -1,19 +1,38 @@
-using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
+using UnityEngine.Profiling;
 
-public class Rook : BlockableMovesPiece
+public class Rook : PinnerPiece
 {
-    public Rook(Environment env) : base(env)
+    public Rook(Board board) : base(board)
     {
     }
 
-    public override Move[] GetMoves()
+    protected override void GenerateBitBoardMethod()
     {
-        List<Move> moves = new();
-        moves.AddRange(GetVerticalMoves());
-        moves.AddRange(GetHorizontalMoves());
+        Profiler.BeginSample("Move Generation > Generate Bitboard -> Rook");
+        GenerateAttackingSquaresBitBoard();   
+        GenerateKingDangerBitBoard();
+        Profiler.EndSample();
+    }
 
-        return moves.ToArray();
+    private void GenerateKingDangerBitBoard()
+    {
+        var verticals = actualTile.GetVerticalsByColor(pieceColor);
+        var horizontals = actualTile.GetHorizontalsByColor(pieceColor);
+
+        GeneratePinAndKingDangerBySegment(verticals.backVerticals);
+        GeneratePinAndKingDangerBySegment(verticals.frontVerticals);
+        GeneratePinAndKingDangerBySegment(horizontals.leftHorizontals);
+        GeneratePinAndKingDangerBySegment(horizontals.rightHorizontals);
+    }
+
+    private void GenerateAttackingSquaresBitBoard() 
+    {
+        Bitboard attackingTiles = new Bitboard();
+
+        attackingTiles.Add(GetVerticalBlockedSquares());
+        attackingTiles.Add(GetHorizontalBlockedSquares());
+
+        MovingSquares = AttackingSquares = attackingTiles;
     }
 }

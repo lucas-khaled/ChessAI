@@ -13,34 +13,55 @@ public class Move
         this.piece = piece;
     }
 
-    public virtual Move VirtualizeTo(Environment env) 
+    public virtual Move VirtualizeTo(Board board) 
     {
-        var toTile = VirtualizeTile(to, env);
-        var fromTile = VirtualizeTile(from, env);
-        var captureTile = (capture == null) ? null : VirtualizeTile(capture.GetTile(), env);
+        var toTile = VirtualizeTile(to, board);
+        var fromTile = VirtualizeTile(from, board);
+        var captureTile = (capture == null) ? null : VirtualizeTile(capture.GetTile(), board);
+        var virtualizedPiece = fromTile.OccupiedBy;
 
-        return new Move(fromTile, toTile, VirtualizePiece(piece, env, toTile), VirtualizePiece(capture, env, captureTile));
+        var virtualizedCapturePiece = (captureTile == null) ? null : captureTile.OccupiedBy;
+
+        return new Move(fromTile, toTile, virtualizedPiece, virtualizedCapturePiece);
     }
 
-    protected Tile VirtualizeTile(Tile tile, Environment env) 
+    protected Tile VirtualizeTile(Tile tile, Board board) 
     {
         var row = tile.TilePosition.row;
         var column = tile.TilePosition.column;
 
-        return env.board.GetTiles()[row][column];
+        return board.GetTiles()[row][column];
     }
 
-    protected Piece VirtualizePiece(Piece piece, Environment env, Tile tile) 
+    protected Piece VirtualizePiece(Piece piece, Tile tile) 
     {
-        return (piece == null) ? null : piece.Copy(env, tile) as Piece;
+        return (piece == null) ? null : piece.Copy(tile);
     }
 
     public override string ToString()
     {
-        string captureString = (capture != null) ? capture.GetType().Name : "None";
-        return $"Move Piece {piece.GetType().Name} {piece.pieceColor}" +
-            $"\n - From tile ({from.TilePosition.row + 1}, {from.TilePosition.column + 1})" +
-            $"\n - To tile ({to.TilePosition.row + 1}, {to.TilePosition.column + 1})" +
-            $"\n - Capturing Piece {captureString}";
+        return $"Move Piece {piece}" +
+            $"\n - From tile ({from.TilePosition})" +
+            $"\n - To tile ({to.TilePosition})" +
+            $"\n - Capturing Piece {capture}";
+    }
+
+    public override bool Equals(object obj)
+    {
+        if (obj is not Move otherMove) return false;
+        
+        bool sameCapture = (capture == null) ? 
+            otherMove.capture == null : 
+            (otherMove.capture == null) 
+                ? false 
+                : otherMove.capture.Equals(capture);
+
+        return otherMove.from.Equals(from) && otherMove.to.Equals(to)
+            && sameCapture && piece.Equals(otherMove.piece);
+    }
+    
+    public virtual string ToUCI() 
+    {
+        return $"{from.TilePosition}{to.TilePosition}";
     }
 }

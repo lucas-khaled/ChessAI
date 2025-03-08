@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 
 public class FENManager
 {
@@ -28,30 +29,39 @@ public class FENManager
         { 'q', typeof(Queen) }
     };
 
-    private Environment environment;
-    public FENManager(Environment environment) 
+    private Board board;
+
+    public FENManager(Board board) 
     {
-        this.environment = environment;
+        this.board = board;
     }
 
-    public void SetupByFEN(FEN fen, InstantiateCallback instantiateCallback)
+    public void SetupByFEN(FEN fen, InstantiateCallback instantiateCallback, IGameManager manager)
     {
+        Turn turn = new Turn();
+
         SetPiecesPosition(fen.positions, instantiateCallback);
-        SetInitialColor(fen.pieceColor);
-        SetCaslling(fen.castlingString);
+        SetCastling(fen.castlingString);
         SetEnPassant(fen.enPassantString);
-        SetHalfMoves(fen.halfMovesString);
-        SetFullMoves(fen.fullMovesString);
+        SetInitialColor(fen.pieceColor);
+
+        turn.halfMoves = GetHalfMoves(fen.halfMovesString);
+        turn.fullMoves = GetFullMoves(fen.fullMovesString);
+
+        long hash = manager.HashManager.GetHashFromPosition(board);
+        board.ActualHash = turn.zobristHash = hash.ToString();
+
+        board.turns.Add(turn);
     }
 
-    private void SetFullMoves(string fullMovesString)
+    private int GetFullMoves(string fullMovesString)
     {
-        environment.turnManager.fullMoves = Convert.ToInt32(fullMovesString) - 1;
+        return Convert.ToInt32(fullMovesString) - 1;
     }
 
-    private void SetHalfMoves(string halfMovesString)
+    private int GetHalfMoves(string halfMovesString)
     {
-        environment.turnManager.halfMoves = Convert.ToInt32(halfMovesString);
+        return Convert.ToInt32(halfMovesString);
     }
 
     private void SetPiecesPosition(string[] piecesSplitted, InstantiateCallback instantiateCallback)
@@ -70,7 +80,7 @@ public class FENManager
                 }
 
                 PieceColor color = char.IsUpper(entry) ? PieceColor.White : PieceColor.Black;
-                var tile = environment.board.GetTiles()[row][column];
+                var tile = board.GetTiles()[row][column];
                 CreatePieceFromEntry(entry, tile, color, instantiateCallback);
 
                 column++;
@@ -88,29 +98,20 @@ public class FENManager
 
     private void SetInitialColor(PieceColor color)
     {
-        environment.turnManager.ActualTurn = color;
+        board.SetTurn(color);
     }
 
-    private void SetCaslling(string castlingString)
+    private void SetCastling(string castlingString)
     {
-        if (castlingString == "-")
-        {
-            environment.rules.SetCastle(PieceColor.White);
-            environment.rules.SetCastle(PieceColor.Black);
-            return;
-        }
+        bool castledWhiteKingside = (castlingString != "-" && castlingString.Contains("K"));
+        bool castledWhiteQueenside = (castlingString != "-" && castlingString.Contains("Q"));
+        bool castledBlackKingside = (castlingString != "-" && castlingString.Contains("k"));
+        bool castledBlackQueenside = (castlingString != "-" && castlingString.Contains("q"));
 
-        if (castlingString.Contains("K") is false)
-            environment.rules.SetCastleKingSide(PieceColor.White);
-
-        if (castlingString.Contains("Q") is false)
-            environment.rules.SetCastleQueenSide(PieceColor.White);
-
-        if (castlingString.Contains("k") is false)
-            environment.rules.SetCastleKingSide(PieceColor.Black);
-
-        if (castlingString.Contains("q") is false)
-            environment.rules.SetCastleQueenSide(PieceColor.Black);
+        board.rules.SetCastleKingSide(PieceColor.White, castledWhiteKingside, true);
+        board.rules.SetCastleQueenSide(PieceColor.White, castledWhiteQueenside, true);
+        board.rules.SetCastleKingSide(PieceColor.Black, castledBlackKingside, true);
+        board.rules.SetCastleQueenSide(PieceColor.Black, castledBlackQueenside, true);
     }
 
     private void SetEnPassant(string enPassantString)
@@ -123,26 +124,24 @@ public class FENManager
         int columnIndex = letterColumnToIndex[column];
         int rowIndex = Convert.ToInt32(row.ToString()) - 1;
 
-        var tile = environment.board.GetTiles()[rowIndex][columnIndex];
-        var offset = (environment.turnManager.ActualTurn == PieceColor.White) ? -1 : 1;
-        var pawn = environment.board.GetTiles()[rowIndex + offset][columnIndex].OccupiedBy as Pawn;
+        var tile = new TileCoordinates(rowIndex,columnIndex);
 
-        environment.rules.SetEnPassant(tile, pawn);
+        board.rules.SetEnPassant(tile);
     }
 
     public FEN GetFEN() 
     {
-        string fullString = GetFENPositions(environment.board) 
-            + " " + GetFENActiveColor(environment.turnManager) 
-            + " " + GetFENCastlingRights(environment.rules)
-            + " " + GetFENEnPassant(environment.rules)
-            + " " + environment.turnManager.halfMoves
-            + " " + (environment.turnManager.fullMoves + 1);
+        string fullString = GetFENPositions() 
+            + " " + GetFENActiveColor() 
+            + " " + GetFENCastlingRights(board.rules)
+            + " " + GetFENEnPassant(board.rules)
+            + " " + board.LastTurn.halfMoves
+            + " " + (board.LastTurn.fullMoves + 1);
 
         return new FEN(fullString);
     }
 
-    private string GetFENPositions(Board board) 
+    private string GetFENPositions() 
     {
         var postionsString = "";
         var tiles = board.GetTiles();
@@ -188,24 +187,24 @@ public class FENManager
              char.ToLower(pieceChar);
     }
 
-    private string GetFENActiveColor(TurnManager turnManager)
+    private string GetFENActiveColor()
     {
-        return turnManager.ActualTurn == PieceColor.White ? "w" : "b";
+        return board.ActualTurn == PieceColor.White ? "w" : "b";
     }
 
     private string GetFENCastlingRights(EspecialRules rules)
     {
         string returnString = string.Empty;
-        if (rules.whiteCanCastleKingSide) 
+        if (rules.whiteCastleRights.CanCastleKingSide) 
             returnString += "K";
 
-        if (rules.whiteCanCastleQueenSide)
+        if (rules.whiteCastleRights.CanCastleQueenSide)
             returnString += "Q";
 
-        if (rules.blackCanCastleKingSide)
+        if (rules.blackCastleRights.CanCastleKingSide)
             returnString += "k";
 
-        if (rules.blackCanCastleQueenSide)
+        if (rules.blackCastleRights.CanCastleQueenSide)
             returnString += "q";
 
         if (returnString == string.Empty)
@@ -216,9 +215,9 @@ public class FENManager
 
     private string GetFENEnPassant(EspecialRules rules)
     {
-        if(rules.enPassantTile == null) return "-";
+        if(rules.HasEnPassant) return "-";
 
-        var pos = rules.enPassantTile.TilePosition;
+        var pos = rules.enPassantTileCoordinates;
         return GetTileStringPosition(pos);
     }
 

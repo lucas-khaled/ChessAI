@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5503e1363da341408237359dc46e62b, type: 3}
+  m_Name: PlayersConfig
+  m_EditorClassIdentifier: 
+  whitePlayerInfo:
+    rid: 5352729892453089280
+  blackPlayerInfo:
+    rid: 5352729730512584704
+  references:
+    version: 2
+    RefIds:
+    - rid: 5352729730512584704
+      type: {class: HumanPlayerInfo, ns: , asm: Assembly-CSharp}
+      data:
+        selected: 1
+    - rid: 5352729892453089280
+      type: {class: HumanPlayerInfo, ns: , asm: Assembly-CSharp}
+      data:
+        selected: 1

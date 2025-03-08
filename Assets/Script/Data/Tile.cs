@@ -1,19 +1,35 @@
 using System;
 
-public class Tile : IEnvironmentable
+public class Tile
 {
     public VisualTile visualTile { get; private set; }
 
     public Piece OccupiedBy { get; private set; }
     public bool IsOccupied => OccupiedBy != null;
 
+    public int Index { get; private set; }
+    public Bitboard Bitboard { get; private set; }
     public TileCoordinates TilePosition { get; set; }
+    public Board Board { get; private set; }
 
-    public Environment Environment { get; }
+    private Diagonals Diagonals;
+    private Diagonals InvertedDiagonals;
 
-    public Tile(Environment env) 
+    private Verticals Verticals;
+    private Verticals InvertedVerticals;
+
+    private Horizontals Horizontals;
+    private Horizontals InvertedHorizontals;
+
+    public Tile(Board board) 
     {
-        Environment = env;
+        Board = board;
+    }
+
+    public void SetIndex(int index) 
+    {
+        Index = index;
+        Bitboard = new Bitboard(index);
     }
 
     public void SetVisual(VisualTile visualTile)
@@ -37,16 +53,73 @@ public class Tile : IEnvironmentable
         return visualTile == null;
     }
 
-    public IEnvironmentable Copy(Environment env)
+    public Tile Copy(Board board)
     {
-        var tile = new Tile(env)
+        var tile = new Tile(board)
         {
             TilePosition = this.TilePosition,
             visualTile = null
         };
 
-        tile.OccupiedBy = (IsOccupied) ? this.OccupiedBy.Copy(env, tile) as Piece : null;
+        tile.SetIndex(Index);
+        tile.Diagonals = Diagonals;
+        tile.InvertedDiagonals = InvertedDiagonals;
+        tile.Verticals = Verticals;
+        tile.InvertedVerticals = InvertedVerticals;
+        tile.Horizontals = Horizontals;
+        tile.InvertedHorizontals = Horizontals;
+
+        tile.OccupiedBy = (IsOccupied) ? this.OccupiedBy.Copy(tile) : null;
 
         return tile;
+    }
+
+    public void SetVerticals(Verticals verticals) 
+    {
+        Verticals = verticals;
+        
+        InvertedVerticals = new Verticals();
+        InvertedVerticals.frontVerticals = verticals.backVerticals;
+        InvertedVerticals.backVerticals = verticals.frontVerticals;
+    }
+
+    public void SetHorizontals(Horizontals horizontals) 
+    {
+        Horizontals = horizontals;
+
+        InvertedHorizontals = new Horizontals();
+        InvertedHorizontals.rightHorizontals = horizontals.leftHorizontals;
+        InvertedHorizontals.leftHorizontals = horizontals.rightHorizontals;
+    }
+
+    public void SetDiagonals(Diagonals diagonals) 
+    {
+        Diagonals = diagonals;
+
+        InvertedDiagonals = new Diagonals();
+        InvertedDiagonals.topRightDiagonals = diagonals.downLeftDiagonals;
+        InvertedDiagonals.topLeftDiagonals = diagonals.downRightDiagonals;
+        InvertedDiagonals.downRightDiagonals = diagonals.topLeftDiagonals;
+        InvertedDiagonals.downLeftDiagonals = diagonals.topRightDiagonals;
+    }
+
+    public Verticals GetVerticalsByColor(PieceColor color) 
+    {
+        return (color == PieceColor.White) ? Verticals : InvertedVerticals;
+    }
+
+    public Horizontals GetHorizontalsByColor(PieceColor color) 
+    {
+        return (color == PieceColor.White) ? Horizontals : InvertedHorizontals;
+    }
+
+    public Diagonals GetDiagonalsByColor(PieceColor color) 
+    {
+        return (color == PieceColor.White) ? Diagonals : InvertedDiagonals;
+    }
+
+    public override bool Equals(object obj)
+    {
+        return obj is Tile tile && tile.TilePosition.Equals(TilePosition);
     }
 }

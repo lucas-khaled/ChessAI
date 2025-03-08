@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Random = UnityEngine.Random;
+using UnityEngine;
 
 public abstract class AIPlayer : Player
 {
@@ -22,35 +22,97 @@ public abstract class AIPlayer : Player
         onMove?.Invoke(move);
     }
 
-    public override void Init(PieceColor pieceColor)
+    protected List<Move> SortMoveWithLinq(List<Move> moves) 
     {
-        base.Init(pieceColor);
+        moves.Sort(Compare);
 
-        pieces = manager.environment.board.pieces.Where(x => x.pieceColor == actualColor).ToList();
-        manager.environment.events.onPromotionMade += PromotedMove;
-        manager.environment.events.onPieceCaptured += CapturedPiece;
+        return moves;
     }
 
-    private void CapturedPiece(Piece piece) 
+    protected List<Move> SortMoves(List<Move> moves) 
     {
-        if (piece.pieceColor != actualColor) return;
-
-        lock (pieceLock) 
+        int[] moveHeuristics = new int[moves.Count];
+        for(int i = 0; i < moves.Count; i++) 
         {
-            pieces.Remove(piece);
+            var move = moves[i];
+            var heuristic = GetMoveHeuristic(move);
+            moveHeuristics[i] = heuristic;
         }
+
+        var finalMoves = CountingSortMoves(moveHeuristics, moves);
+        return finalMoves;
     }
 
-    private void PromotedMove(PromotionMove promotion) 
+    private int Compare(Move x, Move y) 
     {
-        if (promotion.piece.pieceColor != actualColor) return;
+        var xHeuristic = GetMoveHeuristic(x);
+        var yHeuristic = GetMoveHeuristic(y);
 
-        lock (pieceLock)
+        return yHeuristic - xHeuristic; 
+    }
+
+    private int GetMoveHeuristic(Move move) 
+    {
+        var heuristic = 0;
+
+        var capture = move.capture;
+        if (capture != null)
         {
-            pieces.Remove(promotion.piece);
-            pieces.Add(promotion.promoteTo);
+            if (capture is Queen)
+                heuristic += 5;
+            else if (capture is Rook)
+                heuristic += 4;
+            else if (capture is Bishop || capture is Knight)
+                heuristic += 3;
+            else if (capture is Pawn)
+                heuristic += 2;
         }
+
+        if (move is CastleMove)
+            heuristic += 1;
+
+        if (move is PromotionMove)
+            heuristic += 5;
+
+        return heuristic;
+    }
+
+    private List<Move> CountingSortMoves(int[] moveHeuristics, List<Move> moves) 
+    {
+        if(moveHeuristics.Length != moves.Count) 
+        {
+            Debug.LogError("Move sort heuristics array are not the same length of moves array");
+            return null;
+        }
+
+        int[] count = new int[11];
+        Move[] outputMoves = new Move[moves.Count];
+
+        for(int i = 0; i< moveHeuristics.Length; i++) 
+        {
+            count[moveHeuristics[i]]++;
+        }
+
+        for (int i = 1; i < count.Length; i++)
+        {
+            count[i] += count[i - 1];
+        }
+
+        for(int i = moveHeuristics.Length-1; i >= 0; i--) 
+        {
+            --count[moveHeuristics[i]];
+            var index = moves.Count - count[moveHeuristics[i]] - 1;
+            outputMoves[index] = moves[i];
+        }
+
+        return outputMoves.ToList();
     }
 
     protected abstract Task<Move> CalculateMove();
+
+    protected struct MoveSortHeuristic
+    {
+        public Move move;
+        public int heuristic;
+    }
 }

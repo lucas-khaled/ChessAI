@@ -1,4 +1,5 @@
 using System.Linq;
+using UnityEngine;
 
 public struct EndGameInfo
 {
@@ -9,44 +10,53 @@ public struct EndGameInfo
 
 public class EndGameChecker
 {
-    private Environment environment;
+    private IGameManager manager;
 
-    public EndGameChecker(Environment environment) 
+    public EndGameChecker(IGameManager manager) 
     {
-        this.environment = environment;
+        SetManager(manager);
     }
 
-    public EndGameInfo CheckEnd()
+    public void SetManager(IGameManager manager) 
+    {
+        this.manager = manager;
+    }
+
+    public EndGameInfo CheckEnd(Board board)
     {
         EndGameInfo info = new EndGameInfo();
-        if (environment.moveChecker.IsCheckMate())
-            //GameManager.UIManager.ShowCheckmateMessage(lastTurnColor);
+        if (board.IsCheckMate)
             info.hasEnded = info.isCheckMate = true;
-        else if (HasDraw(out info.drawType)) 
+        else if (HasDraw(out info.drawType, board)) 
             info.hasEnded = true;
-            //GameManager.UIManager.ShowDrawMessage(drawType);
 
         return info;
     }
 
-    public bool HasDraw(out DrawType drawType) 
+    public bool HasDraw(Board board) 
     {
-        if (IsStaleMateDraw())
+        DrawType _;
+        return HasDraw(out _, board);
+    }
+
+    public bool HasDraw(out DrawType drawType, Board board) 
+    {
+        if (IsStaleMateDraw(board))
         {
             drawType = DrawType.Stalemate;
             return true;
         }
-        if (Is50MoveDraw()) 
+        if (Is50MoveDraw(board)) 
         {
             drawType = DrawType.RuleOf50Moves;
             return true;
         }
-        if (IsThreefoldDraw()) 
+        if (IsThreefoldDraw(board)) 
         {
             drawType = DrawType.ThreefoldDraw;
             return true;
         }
-        if (IsInsuficcientMaterialDraw()) 
+        if (IsInsuficcientMaterialDraw(board)) 
         {
             drawType = DrawType.Deadposition;
             return true;
@@ -56,38 +66,37 @@ public class EndGameChecker
         return false;
     }
 
-    private bool Is50MoveDraw()
+    private bool Is50MoveDraw(Board board)
     {
-        return environment.turnManager.halfMoves >= 50;
+        return board.LastTurn.halfMoves >= 50;
     }
 
-    private bool IsStaleMateDraw()
+    private bool IsStaleMateDraw(Board board)
     {
-        return environment.moveChecker.HasAnyMove() is false;
+        return board.HasMoves is false && board.IsCheckMate is false;
     }
 
-    private bool IsThreefoldDraw()
+    private bool IsThreefoldDraw(Board board)
     {
-        var moves = environment.turnManager.moves;
-        FEN fen = moves[moves.Count-1].fen;
-        int count = environment.turnManager.moves.Count(x => x.fen.fullPositionsString == fen.fullPositionsString);
+        var moves = board.turns;
+
+        if (moves.Count < 3) return false;
+
+        string hash = moves[moves.Count-1].zobristHash;
+        int count = moves.Count(x => x.zobristHash == hash);
 
         return count >= 3;
     }
 
-    private bool IsInsuficcientMaterialDraw() 
+    private bool IsInsuficcientMaterialDraw(Board board) 
     {
-        var pieces = environment.board.pieces;
+        if (board.piecesHolder.pieces.Count == 2) return true;
 
-        if (pieces.Count == 2) return true;
+        if (board.piecesHolder.whitePawns.Count > 0 || board.piecesHolder.blackPawns.Count > 0
+            || board.piecesHolder.blackQueens.Count > 0 || board.piecesHolder.whiteQueens.Count > 0
+            || board.piecesHolder.whiteRooks.Count > 0 || board.piecesHolder.blackRooks.Count > 0) return false;
 
-        var notKingPieces = pieces.Where(x => x is not King);
-
-        if (notKingPieces.Any(x => x is Pawn || x is Queen || x is Rook)) return false;
-
-        var notKingWhitePieces = notKingPieces.Where(x => x.pieceColor == PieceColor.White);
-        var notKingBlackPieces = notKingPieces.Where(x => x.pieceColor == PieceColor.Black);
-
-        return notKingWhitePieces.Count() < 2 && notKingBlackPieces.Count() < 2;
+        return (board.piecesHolder.whiteKnights.Count + board.piecesHolder.whiteBishops.Count <= 2) 
+            && (board.piecesHolder.blackKnights.Count + board.piecesHolder.blackBishops.Count <= 2);
     }
 }

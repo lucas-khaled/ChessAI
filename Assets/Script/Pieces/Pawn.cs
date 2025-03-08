@@ -1,91 +1,11 @@
 using System;
 using System.Collections.Generic;
+using UnityEngine.Profiling;
 
-public class Pawn : BlockableMovesPiece
+public class Pawn : SlidingPieces
 {
-    public Pawn(Environment env) : base(env)
+    public Pawn(Board board) : base(board)
     {
-    }
-
-    public override Move[] GetMoves()
-    {
-        List<Move> possibleMoves = new List<Move>();
-
-        if (NextMoveIsPromotion()) 
-        {
-            possibleMoves.AddRange(GetPromotionMoves());
-            return possibleMoves.ToArray();
-        }
-
-        possibleMoves.AddRange(GetFowardMoves());
-        possibleMoves.AddRange(GetCaptures());
-        
-        return possibleMoves.ToArray();
-    }
-    
-    private bool NextMoveIsPromotion() 
-    {
-        return (Row == 6 && IsWhite)
-            || (Row == 1 && !IsWhite);
-    }
-
-    private PromotionMove[] GetPromotionMoves()
-    {
-        List<PromotionMove> moves = new();
-
-        var forwardMoves = GetPromotionsForward();
-        moves.AddRange(forwardMoves);
-
-        var captureMoves = GetPromotionCaptures();
-        moves.AddRange(captureMoves);
-
-        return moves.ToArray();
-    }
-
-    private PromotionMove[] GetPromotionsForward() 
-    {
-        var verticals = Environment.boardManager.GetVerticalsFrom(actualTile.TilePosition, pieceColor, 1);
-
-        var toTile = verticals.frontVerticals[0];
-        return toTile.IsOccupied ? new PromotionMove[0] : GetPossiblePromotions(toTile);
-    }
-
-    private List<PromotionMove> GetPromotionCaptures() 
-    {
-        List<PromotionMove> moves = new();
-
-        var diagonals = Environment.boardManager.GetDiagonalsFrom(actualTile.TilePosition, pieceColor, 1);
-        
-        if (CanMoveToDiagonal(diagonals.topLeftDiagonals))
-            moves.AddRange(GetPossiblePromotions(diagonals.topLeftDiagonals[0]));
-
-        if (CanMoveToDiagonal(diagonals.topRightDiagonals))
-            moves.AddRange(GetPossiblePromotions(diagonals.topRightDiagonals[0]));
-
-        return moves;
-    }
-
-    private PromotionMove[] GetPossiblePromotions(Tile to) 
-    {
-        PromotionMove[] moves = new PromotionMove[4];
-        Piece[] promoteTo = new Piece[4] { new Rook(Environment), new Bishop(Environment), new Knight(Environment), new Queen(Environment) };
-
-        for(int i = 0; i < promoteTo.Length; i++) 
-        {
-            moves[i] = new PromotionMove(actualTile, to, this, promoteTo[i], to.OccupiedBy);
-        }
-
-        return moves;
-    }
-
-    private Move[] GetFowardMoves() 
-    {
-        int range = (IsOnInitialRow()) ? 2 : 1;
-
-        var verticals = Environment.boardManager.GetVerticalsFrom(actualTile.TilePosition, pieceColor, range);
-        var checkingBlockVerticals = CheckForBlockingSquares(verticals.frontVerticals, false);
-        
-        return CreateMovesFromSegment(checkingBlockVerticals);
     }
 
     private bool IsOnInitialRow()
@@ -94,33 +14,49 @@ public class Pawn : BlockableMovesPiece
             || (Row == 6 && !IsWhite);
     }
 
-    private Move[] GetCaptures() 
+    private bool CanMoveToDiagonal(List<TileCoordinates> diagonal) 
     {
-        List<Move> moves = new();
+        if (diagonal.Count <= 0)
+            return false;
 
-        var diagonals = Environment.boardManager.GetDiagonalsFrom(actualTile.TilePosition, pieceColor, 1);
-
-        if (CanMoveToDiagonal(diagonals.topLeftDiagonals)) 
-            moves.Add(CreateDiagonalMove(diagonals.topLeftDiagonals[0]));
-
-        if (CanMoveToDiagonal(diagonals.topRightDiagonals))
-            moves.Add(CreateDiagonalMove(diagonals.topRightDiagonals[0]));
-
-        return moves.ToArray();
+        var diagonalTile = Board.tiles[diagonal[0].row][diagonal[0].column];
+        return IsEnemyPiece(diagonalTile.OccupiedBy)
+            || Board.rules.HasEnPassant && diagonalTile.TilePosition.Equals(Board.rules.enPassantTileCoordinates);
     }
 
-    private bool CanMoveToDiagonal(List<Tile> diagonal) 
+    protected override void GenerateBitBoardMethod()
     {
-        if (diagonal.Count <= 0) return false;
+        Profiler.BeginSample("Move Generation > Generate Bitboard -> Pawn");
 
-        return IsEnemyPiece(diagonal[0].OccupiedBy)
-            || (Environment.rules.enPassantTile != null && diagonal[0].TilePosition.Equals(Environment.rules.enPassantTile.TilePosition));
-    }
+        int range = IsOnInitialRow() ? 2 : 1;
 
-    private Move CreateDiagonalMove(Tile diagonalTile) 
-    {
-        return diagonalTile.IsOccupied ?
-            new Move(actualTile, diagonalTile, this, diagonalTile.OccupiedBy) :
-            new Move(actualTile, diagonalTile, this, Environment.rules.enPassantPawn);
+        var verticals = actualTile.GetVerticalsByColor(pieceColor);
+        var checkingBlockVerticals = GetBitboardUntilBlockedSquare(verticals.frontVerticals.GetRange(0, range), false);
+
+        MovingSquares.Add(checkingBlockVerticals);
+
+        Diagonals diagonals = actualTile.GetDiagonalsByColor(pieceColor);
+
+        if (diagonals.topLeftDiagonals.Count > 0)
+        {
+            var topLeftCoord = diagonals.topLeftDiagonals[0];
+            var bitboard = Board.GetTiles()[topLeftCoord.row][topLeftCoord.column].Bitboard;
+            if (CanMoveToDiagonal(diagonals.topLeftDiagonals))
+                MovingSquares.Add(bitboard);
+
+            AttackingSquares.Add(bitboard);
+        }
+
+        if (diagonals.topRightDiagonals.Count > 0)
+        {
+            var topRightCoord = diagonals.topRightDiagonals[0];
+            var bitboard = Board.GetTiles()[topRightCoord.row][topRightCoord.column].Bitboard;
+
+            if (CanMoveToDiagonal(diagonals.topRightDiagonals))
+                MovingSquares.Add(bitboard);
+
+            AttackingSquares.Add(bitboard);
+        }
+        Profiler.EndSample();
     }
 }

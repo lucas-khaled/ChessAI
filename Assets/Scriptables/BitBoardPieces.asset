@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67cf1f19a73632848937c8f353b545ba, type: 3}
+  m_Name: BitBoardPieces
+  m_EditorClassIdentifier: 
+  lightMaterial: {fileID: 2100000, guid: 6b62b9c043cab094b9a3164ffed03f32, type: 2}
+  darkMaterial: {fileID: 2100000, guid: dea10d280864bef4aaa4282fdceb9061, type: 2}
+  kingPrefab: {fileID: 6754606611350665845, guid: 525b8a319c2207345a0a14d8fa687b4f, type: 3}
+  knightPrefab: {fileID: 2565360146360858294, guid: 43352820213a69842843a95c640bc47d, type: 3}
+  queenPrefab: {fileID: 3675661550070106847, guid: 38d717956e281244a946e36569d556ce, type: 3}
+  bishopPrefab: {fileID: 4032288519690130639, guid: fe91894603be67c4c8cecf2d8977e045, type: 3}
+  rookPrefab: {fileID: 7902074353339679675, guid: 3f618e983b7b6034f8d2a46eab74d6f9, type: 3}
+  pawnPrefab: {fileID: 7581396543487051238, guid: 68217f34c76e6794db118aabfec97a8f, type: 3}

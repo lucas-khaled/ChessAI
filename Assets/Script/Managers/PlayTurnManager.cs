@@ -1,39 +1,65 @@
+using System;
+using System.Threading.Tasks;
 using UnityEngine;
 
 public class PlayTurnManager : ManagerHelper
 {
-    IPlayer whitePlayer;
-    IPlayer blackPlayer;
+    private IPlayer whitePlayer;
+    private IPlayer blackPlayer;
 
-    public void SetPlayers(IPlayer player1, IPlayer player2) 
+    private object moveLock = new();
+    private Move madeMove = null;
+
+    public void SetPlayers(IPlayer whitePlayer, IPlayer blackPlayer, PieceColor startTurn) 
     {
-        int random = Random.Range(0, 100);
+        int random = UnityEngine.Random.Range(0, 100);
 
-        if (random > 50)
-        {
-            whitePlayer = player1;
-            blackPlayer = player2;
-        }
-        else 
-        {
-            whitePlayer = player2;
-            blackPlayer = player1;
-        }
+        this.whitePlayer = whitePlayer;
+        this.blackPlayer = blackPlayer;
 
-        whitePlayer.Init(PieceColor.White);
-        blackPlayer.Init(PieceColor.Black);
+        this.whitePlayer.Init(PieceColor.White);
+        this.blackPlayer.Init(PieceColor.Black);
+
+        Task.Run(() => PlayerMove(startTurn));
+        InvokeRepeating("CheckForMove", 0, 0.2f);
     }
+
 
     public void PlayerMove(PieceColor turn) 
     {
-        if (turn == PieceColor.White)
-            whitePlayer.StartTurn(OnMove);
-        if (turn == PieceColor.Black)
-            blackPlayer.StartTurn(OnMove);
+        try
+        {
+            if (turn == PieceColor.White)
+                whitePlayer.StartTurn(OnMove);
+            else
+                blackPlayer.StartTurn(OnMove);
+        }
+        catch(Exception e) 
+        {
+            Debug.LogError($"Was not able to do Turn\n{e}");
+        }
     }
 
     private void OnMove(Move move) 
     {
-        manager.environment.turnManager.DoMove(move);
+        lock (moveLock) 
+        {
+            madeMove = move;
+        }
+    }
+
+    private void CheckForMove() 
+    {
+        lock (moveLock) 
+        {
+            if (madeMove == null) return;
+
+            var board = manager.GameBoard;
+            manager.TurnManager.DoMove(madeMove, board);
+            madeMove = null;
+
+            if (manager.EndGameChecker.CheckEnd(manager.TestBoard).hasEnded is false)
+                Task.Run(() => PlayerMove(board.ActualTurn));
+        }
     }
 }

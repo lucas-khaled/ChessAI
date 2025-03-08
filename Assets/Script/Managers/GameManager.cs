@@ -2,13 +2,19 @@ using UnityEngine;
 
 [RequireComponent(typeof(PiecesSetup), typeof(PiecesCapturedController), typeof(BoardStarter))]
 [RequireComponent(typeof(PlayTurnManager))]
-public class GameManager : MonoBehaviour
+public class GameManager : MonoBehaviour, IGameManager
 {
     [SerializeField] private UIManager uiManager;
     [SerializeField] private string fen;
     [SerializeField] private bool startWithFen;
+    [SerializeField] private PlayersConfig playersConfig;
 
-    public Environment environment { get; private set; } = new();
+    public Board GameBoard { get; private set; }
+    public Board TestBoard { get; private set; }
+
+    public TurnManager TurnManager { get; private set; }
+    public EndGameChecker EndGameChecker { get; private set; }
+    public ZobristHashManager HashManager { get; private set; }
 
     private PiecesSetup setup;
     private PiecesCapturedController captureController;
@@ -17,8 +23,8 @@ public class GameManager : MonoBehaviour
 
     public UIManager UIManager => uiManager;
 
-    private EndGameChecker endGameChecker;
-    private FENManager FENManager;
+    public const string GAME_BOARD_NAME = "Game Board";
+    public const string TEST_BOARD_NAME = "Test Board";
 
     private void Awake()
     {
@@ -28,6 +34,9 @@ public class GameManager : MonoBehaviour
 
     private void GetHelperManagers()
     {
+        HashManager = new ZobristHashManager();
+        HashManager.InitializeHashes();
+
         setup = GetComponent<PiecesSetup>();
         setup.SetManager(this);
 
@@ -46,33 +55,35 @@ public class GameManager : MonoBehaviour
         var board = boardStarter.StartNewBoard();
         SetupEnvironment(board);
 
-        FENManager = new FENManager(environment);
-        endGameChecker = new EndGameChecker(environment);
+        EndGameChecker = new EndGameChecker(this);
+        TurnManager = new TurnManager(this);
 
         ChooseSetup();
+        UpdateTestBoard();
 
-        playTurnManager.SetPlayers(new RandomAI(this), new RandomAI(this));
-        playTurnManager.PlayerMove(environment.turnManager.ActualTurn);
+        playTurnManager.SetPlayers(playersConfig.GetWhitePlayer(this), playersConfig.GetBlackPlayer(this), GameBoard.ActualTurn);
+    }
+
+    private void UpdateTestBoard()
+    {
+        TestBoard = GameBoard.Copy();
+        TestBoard.Name = TEST_BOARD_NAME;
     }
 
     private void SetupEnvironment(Board board) 
     {
-        environment.StartRealEnvironment(board);
-
-        environment.events.onTurnDone += OnEndTurn;
-        environment.events.onPromotionMade += HandlePromotionMove;
-        environment.events.onPieceCaptured += captureController.PieceCaptured;
+        GameBoard = board;
+        GameBoard.events.onTurnDone += OnEndTurn;
+        GameBoard.events.onPromotionMade += HandlePromotionMove;
+        GameBoard.events.onPieceCaptured += captureController.PieceCaptured;
+        GameBoard.Name = GAME_BOARD_NAME;
     }
 
     private void OnEndTurn(PieceColor color)
     {
-        var endInfo = endGameChecker.CheckEnd();
-
-        if (endInfo.hasEnded is false)
-        {
-            playTurnManager.PlayerMove(environment.turnManager.ActualTurn);
-            return;
-        }
+        UpdateTestBoard();
+        var endInfo = EndGameChecker.CheckEnd(GameBoard);
+        if (endInfo.hasEnded is false) return;
 
         if (endInfo.isCheckMate)
         {
@@ -86,7 +97,7 @@ public class GameManager : MonoBehaviour
 
     private void HandlePromotionMove(PromotionMove move)
     {
-        setup.AddVisual(move.promoteTo, move.piece.visualPiece.name);
+        setup.AddVisual(move.promoteTo);
 
         Destroy(move.piece.visualPiece.gameObject);
     }
@@ -94,10 +105,13 @@ public class GameManager : MonoBehaviour
     private void ChooseSetup() 
     {
         if (string.IsNullOrEmpty(fen) || startWithFen is false)
+        {
             setup.SetInitialPieces();
+            GameBoard.SetTurn(PieceColor.White);
+        }
         else
         {
-            FENManager.SetupByFEN(new FEN(fen), setup.InstantiatePiece);
+            GameBoard.FENManager.SetupByFEN(new FEN(fen), setup.InstantiatePiece, this);
         }
     }
 
@@ -105,13 +119,13 @@ public class GameManager : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.F)) 
         {
-            FEN fen = FENManager.GetFEN();
+            FEN fen = GameBoard.FENManager.GetFEN();
             Debug.Log("FEN  -  " + fen);
         }
 
         if (Input.GetKeyDown(KeyCode.T)) 
         {
-            environment.turnManager.DebugAllTurns();
+            TurnManager.DebugAllTurns(GameBoard);
         }
     }
 }

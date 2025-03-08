@@ -6,11 +6,19 @@ public class CastleMove : Move
         this.rookMove = rookMove;
     }
 
-    public override Move VirtualizeTo(Environment env)
+    public override Move VirtualizeTo(Board board)
     {
-        var toTile = VirtualizeTile(to, env);
-        var fromTile = VirtualizeTile(from, env);
+        var toTile = VirtualizeTile(to, board);
+        var fromTile = VirtualizeTile(from, board);
 
-        return new CastleMove(fromTile, toTile, VirtualizePiece(piece, env, toTile) as King, rookMove.VirtualizeTo(env));
+        return new CastleMove(fromTile, toTile, fromTile.OccupiedBy as King, rookMove.VirtualizeTo(board));
+    }
+
+    public override string ToString()
+    {
+        return $"Castle Move Piece {piece}" +
+            $"\n - From tile ({from.TilePosition})" +
+            $"\n - To tile ({to.TilePosition})" +
+            $"\n - Rook move:\n{rookMove}";
     }
 }

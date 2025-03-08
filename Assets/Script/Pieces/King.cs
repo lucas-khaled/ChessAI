@@ -1,74 +1,52 @@
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
+using UnityEngine.Profiling;
 
-public class King : BlockableMovesPiece
+public class King : SlidingPieces
 {
-    private TileCoordinates initialTile;
+    private Bitboard leftBorder = new Bitboard(0b0000000100000001000000010000000100000001000000010000000100000001);
+    //new Bitboard(0) | new Bitboard(8) | new Bitboard(16) | new Bitboard(24) | new Bitboard(32) | new Bitboard(40) | new Bitboard(48) | new Bitboard(56);
 
-    private CheckChecker checkChecker = new();
-
-    public King(Environment env) : base(env)
+    private Bitboard rightBorder = new Bitboard(0b1000000010000000100000001000000010000000100000001000000010000000);
+        //new Bitboard(7) | new Bitboard(15) | new Bitboard(23) | new Bitboard(31) | new Bitboard(39) | new Bitboard(47) | new Bitboard(55) | new Bitboard(63);
+    public King(Board board) : base(board)
     {
         
     }
 
-    public override Move[] GetMoves()
+    protected override void GenerateBitBoardMethod()
     {
-        List<Move> moves = new List<Move>();
+        Profiler.BeginSample("Move Generation > Generate Bitboard -> King");
 
-        var horizontal = GetHorizontalMoves(1);
-        var vertical = GetVerticalMoves(1);
-        var diagonals = GetDiagonalMoves(1);
+        Bitboard rightMask = ~leftBorder;
+        Bitboard leftMask = ~rightBorder;
 
-        moves.AddRange(horizontal);
-        moves.AddRange(vertical);
-        moves.AddRange(diagonals);
-        moves.AddRange(GetCastleMoves());
+        var verticalUp = actualTile.Bitboard << 8;
+        var verticalDown = actualTile.Bitboard >> 8;
+        var horizontalLeft = actualTile.Bitboard >> 1 & leftMask;
+        var horizontalRight = actualTile.Bitboard << 1 & rightMask;
+        var diagonalUpLeft = actualTile.Bitboard << 7 & leftMask;
+        var diagonalUpRight = actualTile.Bitboard << 9 & rightMask;
+        var diagonalDownLeft = actualTile.Bitboard >> 9 & leftMask;
+        var diagonalDownRight = actualTile.Bitboard >> 7 & rightMask;
 
-        return moves.ToArray();
+        AttackingSquares = verticalUp | verticalDown | horizontalLeft | horizontalRight | diagonalUpLeft | diagonalUpRight | diagonalDownLeft | diagonalDownRight;
+        MovingSquares.Add(AttackingSquares);
+
+        Bitboard castleBitboard = GetCastleBitboard();
+        MovingSquares.Add(castleBitboard);
+        Profiler.EndSample();
     }
 
-    private List<CastleMove> GetCastleMoves() 
+    private Bitboard GetCastleBitboard()
     {
-        List<CastleMove> moves = new List<CastleMove>();
+        Bitboard bitboard = new Bitboard();
+        Bitboard initialSquare = (pieceColor == PieceColor.White) ? new Bitboard(4) : new Bitboard(60);
 
-        if (checkChecker.IsCheck(Environment, pieceColor)) return moves;
-        
-        var tiles = Environment.boardManager.GetRookTiles(pieceColor);
+        if(actualTile.Bitboard != initialSquare) return bitboard;
 
-        foreach(var tile in tiles) 
-            CheckRook(tile, ref moves);
+        bitboard.Add(actualTile.Bitboard >> 2);
+        bitboard.Add(actualTile.Bitboard << 2);
 
-        return moves;
-    }
-
-    private void CheckRook(Tile tile, ref List<CastleMove> moves) 
-    {
-        if (Environment.rules.CanCastle(pieceColor, tile.OccupiedBy as Rook) is false) return;
-
-        var range = tile.TilePosition.column - Column;
-
-        var inBetweenTiles = (range > 0) ?
-            Environment.boardManager.GetRightHorizontals(Coordinates) :
-            Environment.boardManager.GetLeftHorizontals(Coordinates);
-
-        var blockingCheckedBetween = CheckForBlockingSquares(inBetweenTiles, includeBlockingPieceSquare: true);
-
-        if (blockingCheckedBetween[blockingCheckedBetween.Count - 1].TilePosition.Equals(tile.TilePosition))
-            moves.Add(CreateCastleMove(tile, range));
-    }
-
-    private CastleMove CreateCastleMove(Tile rookTile, int range) 
-    {
-        var iterator = (range > 0) ? 1 : -1;
-
-        Tile rookToTile = Environment.board.GetTiles()[Row][Column + iterator]; 
-        Move rookMove = new Move(rookTile, rookToTile, rookTile.OccupiedBy);
-
-        Tile toTile = Environment.board.GetTiles()[Row][Column + iterator * 2];
-
-        return new CastleMove(actualTile, toTile, this, rookMove);
+        return bitboard;
     }
 }
