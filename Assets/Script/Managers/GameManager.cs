@@ -7,7 +7,7 @@ public class GameManager : MonoBehaviour, IGameManager
     [SerializeField] private UIManager uiManager;
     [SerializeField] private string fen;
     [SerializeField] private bool startWithFen;
-    [SerializeField] private PlayersConfig playersConfig;
+    
 
     public Board GameBoard { get; private set; }
     public Board TestBoard { get; private set; }
@@ -29,7 +29,6 @@ public class GameManager : MonoBehaviour, IGameManager
     private void Awake()
     {
         GetHelperManagers();
-        InitLogics();
     }
 
     private void GetHelperManagers()
@@ -50,7 +49,7 @@ public class GameManager : MonoBehaviour, IGameManager
         playTurnManager.SetManager(this);
     }
 
-    private void InitLogics()
+    public void Initialize(IPlayer firstPlayer, IPlayer secondPlayer, bool randomize)
     {
         var board = boardStarter.StartNewBoard();
         SetupEnvironment(board);
@@ -61,7 +60,8 @@ public class GameManager : MonoBehaviour, IGameManager
         ChooseSetup();
         UpdateTestBoard();
 
-        playTurnManager.SetPlayers(playersConfig.GetWhitePlayer(this), playersConfig.GetBlackPlayer(this), GameBoard.ActualTurn);
+        playTurnManager.SetPlayers(firstPlayer, secondPlayer, GameBoard.ActualTurn, randomize);
+        UIManager.ShowTurn(playTurnManager.GetCurrentPlayer());
     }
 
     private void UpdateTestBoard()
@@ -83,7 +83,11 @@ public class GameManager : MonoBehaviour, IGameManager
     {
         UpdateTestBoard();
         var endInfo = EndGameChecker.CheckEnd(GameBoard);
-        if (endInfo.hasEnded is false) return;
+        if (endInfo.hasEnded is false)
+        {
+            UIManager.ShowTurn(playTurnManager.GetCurrentPlayer());
+            return;
+        }
 
         if (endInfo.isCheckMate)
         {

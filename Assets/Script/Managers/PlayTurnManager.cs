@@ -10,15 +10,28 @@ public class PlayTurnManager : ManagerHelper
     private object moveLock = new();
     private Move madeMove = null;
 
-    public void SetPlayers(IPlayer whitePlayer, IPlayer blackPlayer, PieceColor startTurn) 
-    {
-        int random = UnityEngine.Random.Range(0, 100);
+    private object currentTurnLock = new();
+    private IPlayer currentTurn;
 
-        this.whitePlayer = whitePlayer;
-        this.blackPlayer = blackPlayer;
+    public void SetPlayers(IPlayer firstPlayer, IPlayer secondPlayer, PieceColor startTurn, bool randomize = true) 
+    {
+        this.whitePlayer = firstPlayer;
+        this.blackPlayer = secondPlayer;
+
+        if (randomize)
+        {
+            int random = UnityEngine.Random.Range(0, 100);
+
+            if (random >= 50)
+            {
+                this.whitePlayer = secondPlayer;
+                this.blackPlayer = firstPlayer;
+            }
+        }
 
         this.whitePlayer.Init(PieceColor.White);
         this.blackPlayer.Init(PieceColor.Black);
+        SetCurrentPlayer(startTurn);
 
         Task.Run(() => PlayerMove(startTurn));
         InvokeRepeating("CheckForMove", 0, 0.2f);
@@ -29,14 +42,30 @@ public class PlayTurnManager : ManagerHelper
     {
         try
         {
-            if (turn == PieceColor.White)
-                whitePlayer.StartTurn(OnMove);
-            else
-                blackPlayer.StartTurn(OnMove);
+            currentTurn.StartTurn(OnMove);
         }
-        catch(Exception e) 
+        catch (Exception e) 
         {
             Debug.LogError($"Was not able to do Turn\n{e}");
+        }
+    }
+
+    private void SetCurrentPlayer(PieceColor turn)
+    {
+        lock (currentTurnLock)
+        {
+            if (turn == PieceColor.White)
+                currentTurn = whitePlayer;
+            else
+                currentTurn = blackPlayer;
+        }
+    }
+
+    public IPlayer GetCurrentPlayer() 
+    {
+        lock (currentTurnLock) 
+        {
+            return currentTurn;
         }
     }
 
@@ -55,11 +84,14 @@ public class PlayTurnManager : ManagerHelper
             if (madeMove == null) return;
 
             var board = manager.GameBoard;
+            SetCurrentPlayer(board.ActualTurn.GetOppositeColor());
             manager.TurnManager.DoMove(madeMove, board);
             madeMove = null;
 
             if (manager.EndGameChecker.CheckEnd(manager.TestBoard).hasEnded is false)
+            {
                 Task.Run(() => PlayerMove(board.ActualTurn));
+            }
         }
     }
 }

@@ -1,19 +1,19 @@
 using UnityEngine;
 
-[CreateAssetMenu(menuName = "Chess/Players Configuration", fileName = "PlayersConfig")]
+[CreateAssetMenu(menuName = "Chess/Players Configuration/Player Config", fileName = "PlayersConfig")]
 public class PlayersConfig : ScriptableObject
 {
-    [SerializeReference] public PlayerSelectionInfo whitePlayerInfo;
-    [SerializeReference] public PlayerSelectionInfo blackPlayerInfo;
+    [SerializeReference] public PlayerSelectionInfo firstPlayerInfo;
+    [SerializeReference] public PlayerSelectionInfo secondPlayerInfo;
 
-    public IPlayer GetWhitePlayer(GameManager manager) 
+    public virtual IPlayer GetFirstPlayer(GameManager manager) 
     {
-        return whitePlayerInfo.GetPlayer(manager);
+        return firstPlayerInfo.GetPlayer(manager);
     }
 
-    public IPlayer GetBlackPlayer(GameManager manager) 
+    public virtual IPlayer GetSecondPlayer(GameManager manager) 
     {
-        return blackPlayerInfo.GetPlayer(manager);
+        return secondPlayerInfo.GetPlayer(manager);
     }
 }
 
