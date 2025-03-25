@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -14,6 +15,20 @@ public abstract class AIPlayer : Player
     {
         this.minimumWaitTime = minimumWaitTime;
     }
+
+#if UNITY_WEBGL
+    public override IEnumerator StartTurnRoutine(Action<Move> moveCallback)
+    {
+        yield return base.StartTurnRoutine(moveCallback);
+
+        Move move = null;
+        yield return manager.StartCoroutine(CalculateMoveRoutine(move));
+
+        onMove?.Invoke(move);
+    }
+
+    public abstract IEnumerator CalculateMoveRoutine(Move move);
+#endif
 
     public override async void StartTurn(Action<Move> moveCallback)
     {
@@ -109,6 +124,7 @@ public abstract class AIPlayer : Player
     }
 
     protected abstract Task<Move> CalculateMove();
+    
 
     protected struct MoveSortHeuristic
     {

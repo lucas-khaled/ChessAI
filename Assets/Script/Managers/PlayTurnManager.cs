@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Threading.Tasks;
 using UnityEngine;
 
@@ -13,7 +14,11 @@ public class PlayTurnManager : ManagerHelper
     private object currentTurnLock = new();
     private IPlayer currentTurn;
 
-    public void SetPlayers(IPlayer firstPlayer, IPlayer secondPlayer, PieceColor startTurn, bool randomize = true) 
+#if !UNITY_WEBGL
+    private bool hasInvoked;
+#endif
+
+    public void SetPlayers(IPlayer firstPlayer, IPlayer secondPlayer, PieceColor startTurn, bool randomize = true)
     {
         this.whitePlayer = firstPlayer;
         this.blackPlayer = secondPlayer;
@@ -31,14 +36,45 @@ public class PlayTurnManager : ManagerHelper
 
         this.whitePlayer.Init(PieceColor.White);
         this.blackPlayer.Init(PieceColor.Black);
-        SetCurrentPlayer(startTurn);
 
-        Task.Run(() => PlayerMove(startTurn));
-        InvokeRepeating("CheckForMove", 0, 0.2f);
+        StartPlayers(startTurn); 
     }
 
+    private void StartPlayers(PieceColor turn)
+    {
+        SetCurrentPlayer(turn);
 
-    public void PlayerMove(PieceColor turn) 
+#if UNITY_WEBGL
+        StartCoroutine(PlayerMoveRoutine());
+#else
+        Task.Run(() => PlayerMove());
+
+        if(hasInvoked is false)
+        {
+            InvokeRepeating("CheckForMove", 0, 0.2f);
+            hasInvoked = true;
+        }
+#endif
+    }
+
+#if UNITY_WEBGL
+
+    private IEnumerator PlayerMoveRoutine() 
+    {
+        bool madeMove = false;
+        currentTurn.StartTurn((move) =>
+        {
+            OnMove(move);
+            madeMove = true;
+        });
+
+        yield return new WaitUntil(() => madeMove);
+        CheckForMove();
+    }
+
+#else
+
+    public void PlayerMove() 
     {
         try
         {
@@ -49,6 +85,8 @@ public class PlayTurnManager : ManagerHelper
             Debug.LogError($"Was not able to do Turn\n{e}");
         }
     }
+
+#endif
 
     private void SetCurrentPlayer(PieceColor turn)
     {
@@ -84,13 +122,14 @@ public class PlayTurnManager : ManagerHelper
             if (madeMove == null) return;
 
             var board = manager.GameBoard;
-            SetCurrentPlayer(board.ActualTurn.GetOppositeColor());
+            var color = board.ActualTurn.GetOppositeColor();
+            SetCurrentPlayer(color);
             manager.TurnManager.DoMove(madeMove, board);
             madeMove = null;
 
             if (manager.EndGameChecker.CheckEnd(manager.TestBoard).hasEnded is false)
             {
-                Task.Run(() => PlayerMove(board.ActualTurn));
+                StartPlayers(color);
             }
         }
     }
