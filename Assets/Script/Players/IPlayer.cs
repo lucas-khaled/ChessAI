@@ -8,8 +8,4 @@ public interface IPlayer
     void Init(PieceColor pieceColor);
     void StartTurn(Action<Move> moveCallback);
     void EndGame();
-
-#if UNITY_WEBGL
-    IEnumerator StartTurnRoutine(Action<Move> moveCallback);
-#endif
 }

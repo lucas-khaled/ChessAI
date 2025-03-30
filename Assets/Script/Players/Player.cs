@@ -1,5 +1,8 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
+using Unity.VisualScripting;
+using UnityEngine;
 
 public abstract class Player : IPlayer
 {
@@ -28,13 +31,4 @@ public abstract class Player : IPlayer
         canPlay = true;
         onMove = moveCallback;
     }
-
-#if UNITY_WEBGL
-    public virtual IEnumerator StartTurnRoutine(Action<Move> moveCallback)
-    {
-        canPlay = true;
-        onMove = moveCallback;
-        yield return null;
-    }
-#endif
 }
